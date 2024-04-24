@@ -45,43 +45,45 @@ const login = async ({
 
 const LoginPage = () => {
 	useTitle("Sekure | Login");
-	const { dispatch } = useContext(context);
-	const router = useRouter();
-	const {
-		register,
-		formState: { errors },
-		handleSubmit,
-	} = useForm({
-		defaultValues: {
-			email: "",
-			password: "",
-		},
-		resolver: zodResolver(schema),
-	});
-	const [isVisible, setIsVisible] = useState(false);
+	// const { dispatch } = useContext(context);
+	// const router = useRouter();
 
-	const mutation = useMutation({
-		mutationFn: login,
-		onError: () => {
-			toast.error("Login failed. Check your email and password");
-		},
-		onSuccess: (data) => {
-			toast.success("Login successful! Redirecting...");
-			localStorage.setItem("user", JSON.stringify(data.user));
-			localStorage.setItem("token", data.token);
-			dispatch({ type: "set_user", payload: data.user });
-			router.push("/");
-		},
-	});
+	
+	// const {
+	// 	register,
+	// 	formState: { errors },
+	// 	handleSubmit,
+	// } = useForm({
+	// 	defaultValues: {
+	// 		email: "",
+	// 		password: "",
+	// 	},
+	// 	resolver: zodResolver(schema),
+	// });
+	// const [isVisible, setIsVisible] = useState(false);
 
-	const onSubmit = (data: any) => {
-		mutation.mutate(data);
-	};
-	const onError = (err: any) => {
-		console.error("any", err);
-	};
+	// const mutation = useMutation({
+	// 	mutationFn: login,
+	// 	onError: () => {
+	// 		toast.error("Login failed. Check your email and password");
+	// 	},
+	// 	onSuccess: (data) => {
+	// 		toast.success("Login successful! Redirecting...");
+	// 		localStorage.setItem("user", JSON.stringify(data.user));
+	// 		localStorage.setItem("token", data.token);
+	// 		dispatch({ type: "set_user", payload: data.user });
+	// 		router.push("/");
+	// 	},
+	// });
 
-	const toggleVisibility = () => setIsVisible(!isVisible);
+	// const onSubmit = (data: any) => {
+	// 	mutation.mutate(data);
+	// };
+	// const onError = (err: any) => {
+	// 	console.error("any", err);
+	// };
+
+	// const toggleVisibility = () => setIsVisible(!isVisible);
 
 
 	return (

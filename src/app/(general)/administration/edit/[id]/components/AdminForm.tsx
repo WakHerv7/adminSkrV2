@@ -55,8 +55,11 @@ export default function AdminForm({ data }: { data: IData }) {
       return (
         <>
         <Form {...form}>
+            
           <form onSubmit={form.handleSubmit(onSubmit)} className="justify-between items-start w-full">
-            <div className="w-full flex flex-col gap-4">
+            <h1 className="text-lg font-bold">Informations de l'administrateur </h1>
+            <p className="text-sm text-gray-600">Informations de l'administrateur</p>
+            <div className="my-6 w-full flex flex-col gap-4">
               <FormField
                 control={form.control}
                 name="fullname"
@@ -127,8 +130,7 @@ export default function AdminForm({ data }: { data: IData }) {
                     </Button>
                     <Button type="submit" className="ring-2 ring-black bg-transparent  hover:bg-black/10 px-16 text-black rounded-full">
                     Annuler
-                    </Button>
-                    
+                    </Button>                    
                 </div>
             </div>
           </form>

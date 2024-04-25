@@ -23,6 +23,7 @@ export default async function AdminEdit({params: { adminId }}: Params) {
 	return (
 		<Layout
 		title={"Editer l'administrateur"}
+        backLink={'/administration'}
 		>
 			<>
             <section className="py-3">

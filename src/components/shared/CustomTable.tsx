@@ -1,3 +1,4 @@
+"use client";
 import AdminTable, { ITableData } from '@/components/AdminTable/Table';
 import SearchBar from '@/components/shared/SearchBar';
 import { Button } from '@/components/ui/button';
@@ -38,15 +39,21 @@ const TableData: ITableData[] = [
   },
 ];
 
-const CustomTable = () => {
+interface CustomDropdownProps {
+  btnLink?: string;
+}
+
+const CustomTable: React.FC<CustomDropdownProps> = ({ btnLink}) =>  {
   return (
     <>
     <div className='flex justify-between items-center'>
       <SearchBar />
       <div className='flex items-center gap-5 ml-[100px]'>
-        <Button className='bg-[#18BC7A] rounded-full px-4 h-[32px] hover:bg-[#18BC7A]/80'>
+        <Link 
+        href={btnLink ?? ''} 
+        className='flex items-center bg-[#18BC7A] text-sm text-white text-nowrap rounded-full px-4 h-[32px] hover:bg-[#18BC7A]/80'>
           Ajouter un Admin
-        </Button>        
+        </Link>        
         <CustomDropdown			
           cstyle={'light-green'}
           iconSize={20}

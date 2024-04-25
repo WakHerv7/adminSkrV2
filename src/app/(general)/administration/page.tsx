@@ -36,7 +36,7 @@ export default function Home() {
 		<Layout
 		title={"Administration"}
 		>
-			<CustomTable/>
+			<CustomTable btnLink={'/administration/create'}/>
 
 			{/* <CustomDropdown			
 			cstyle={'light-green'}

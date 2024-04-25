@@ -8,3 +8,9 @@ export const formSchema = z.object({
     message: 'Password must be at least 8 characters long'
   }),
 });
+
+export const adminSchema = z.object({
+  fullname: z.string().min(10),
+  email: z.string().min(8),
+  date: z.string(),
+});

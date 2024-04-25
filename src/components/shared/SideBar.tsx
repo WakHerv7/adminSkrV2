@@ -89,13 +89,18 @@ const SideBar = () => {
       </div>
       <ul className='list-image-none w-full my-0 py-0'
       style={{marginBlockStart:0, marginBlockEnd:0, paddingInlineStart:0}}>
-        {SideBarLinks.map((link) => (
+        {SideBarLinks.map((link) =>  {
+          const isActive = pathname?.split('/')[1] === link.path.split('/')[1];
+          const iconColor = isActive ? 'fill-[#fff]' : 'fill-[#444]'; // Adjust the color based on the condition
+
+          return (
           <li key={link.title} className={`flex items-center justify-between gap-[15px] group 
           pl-[22px] pr-3 py-3 text-gray-700 group hover:bg-[#18BC7A] 
-          hover:pl-7 transition-all ${pathname?.split('/')[1] === link.path.split('/')[1] ? 'bg-[#18BC7A] pl-7' : ''}`}>
+          hover:pl-7 transition-all ${isActive ? 'bg-[#18BC7A] pl-7' : ''}`}>
             <div className='flex items-center gap-[15px]'>
-              <div>
-                {link.icon}
+              <div className=''>
+                {/* {link.icon} */}
+                {React.cloneElement(link.icon, { className: iconColor })}
               </div>
               <Link href={link.path} className={`text-sm group-hover:text-gray-100 transition-all ${pathname?.split('/')[1] === link.path.split('/')[1] ? 'text-white' : ''}`}>
                 {link.title}
@@ -110,7 +115,7 @@ const SideBar = () => {
             </div>
             :<></>}
           </li>
-        ))}
+        )})}
       </ul>
     </div>
   )

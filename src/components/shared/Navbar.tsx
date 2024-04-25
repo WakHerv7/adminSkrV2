@@ -4,6 +4,7 @@ import { CgProfile } from "react-icons/cg";
 import { FaArrowLeftLong } from "react-icons/fa6";
 import Image from "next/image";
 import './style-navbar.css';
+import CustomDropdown from "./CustomDropdown";
 
 type Props = {
     title: string | undefined;
@@ -19,8 +20,31 @@ export default function Navbar(props:Props) {
         </div>
         <h1 className="font-semibold text-2xl pl-1 py-0">{title}</h1>
         </div>
-        <div className="flex justify-between items-center gap-2">
-        <button className="bg-[#F3FFF8] rounded-full pl-5 pr-3 py-2 text-sm font-[500] text-gray-700 flex justify-between items-center gap-5">ce jour <RxCaretDown color="#33E89C" size={24} /></button>
+        <div className="flex justify-between items-center gap-3">
+        {/* <button className="bg-[#F3FFF8] rounded-full pl-5 pr-3 py-2 text-sm font-[500] text-gray-700 flex justify-between items-center gap-5">ce jour <RxCaretDown color="#33E89C" size={24} /></button> */}
+        <CustomDropdown
+        title={'Ce jour'}			
+        cstyle={'light-green'}
+        iconSize={20}
+        items={[
+            <div className='flex justify-between gap-2'>            
+                <span className='text-nowrap text-sm text-[#18BC7A]'>
+                Ce jour
+                </span>
+            </div>,
+            <div className='flex justify-between gap-2'>            
+                <span className='text-nowrap text-sm text-[#18BC7A]'>
+                Cette semaine
+                </span>
+            </div>,
+            <div className='flex justify-between gap-2'>            
+                <span className='text-nowrap text-sm text-[#18BC7A]'>
+                Ce mois
+                </span>
+            </div>,
+        ]}
+        />
+
         <div className="flex justify-between items-center gap-[15px]">
             <div className="relative w-[30px] h-[30px] flex justify-center items-center rounded-full bg-[#F4EFE3]">
                 <IoIosNotificationsOutline color="#18BC7A" size={22}  />

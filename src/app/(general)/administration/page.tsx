@@ -1,4 +1,3 @@
-"use client";
 import Image from "next/image";
 import { useTitle } from "@/hooks/useTitle";
 import ProductsSection from "@/components/sections/ProductsSection";
@@ -10,11 +9,14 @@ import { Kbd } from "@nextui-org/react";
 import { useEffect } from "react";
 
 import SideBar from "@/components/shared/SideBar"
-import { RxCaretDown } from "react-icons/rx"
+import { RxCaretDown, RxDotsHorizontal } from "react-icons/rx"
 import { IoIosDisc, IoIosNotificationsOutline } from "react-icons/io"
 import { CgProfile } from "react-icons/cg";
 import Navbar from "@/components/shared/Navbar";
 import CustomTable from "@/components/shared/CustomTable";
+import Layout from "@/components/shared/Layout";
+import CustomDropdown from "@/components/shared/CustomDropdown";
+import Link from "next/link";
 
 
 export default function Home() {
@@ -31,16 +33,19 @@ export default function Home() {
 	// });
 
 	return (
-		<main className="flex">
-			<SideBar/>
-			<div className="flex flex-col w-full">
-			<Navbar title={"Administration"}/>
-			<div className="px-10">
-				<CustomTable/>	
-			</div>
-			</div>
-				
-		</main>
-		
+		<Layout
+		title={"Administration"}
+		>
+			<CustomTable/>
+
+			{/* <CustomDropdown			
+			cstyle={'light-green'}
+			hasDropdownIcon={false}
+			icon= {<RxDotsHorizontal/>}
+			items={[
+				<Link href={'#'}></Link>
+			]}
+			/> */}
+	  </Layout>
 	);
 }

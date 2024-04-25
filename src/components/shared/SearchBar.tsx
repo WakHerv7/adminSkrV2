@@ -11,7 +11,7 @@ const SearchBar = () => {
       <form id='search-form' role='search' className='w-full'>
         <Input
           type='search' 
-          placeholder='Search'
+          placeholder='Rechercher ...'
           className='bg-inherit text-sm text-gray-700 font-medium ring ring-transparent h-[33px] w-full border-none'
           aria-label='search'
           id='search'

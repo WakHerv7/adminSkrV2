@@ -1,6 +1,7 @@
 import { BsUiRadiosGrid } from 'react-icons/bs';
 import { Button } from '../ui/button'
 import { FourDots } from '../shared/icons';
+import Link from 'next/link';
 
 
 export interface ITableData {
@@ -8,7 +9,8 @@ export interface ITableData {
   email: string;
   status: boolean;
   access: string;
- date: string;
+  date: string;
+  edit: string;
 }
 
 type Props = {
@@ -63,11 +65,11 @@ const AdminTable = (props: Props) => {
             <td className='px-2 text-sm mr-36'>{item.date}</td>
             <td className='px-2 text-sm w-10 px-3'>
               <div className='flex gap-5'>
-              <Button className='border border-solid border-2 border-[#18BC7A] rounded-full 
+              <Link href={item.edit} className='border border-solid border-2 border-[#18BC7A] rounded-full 
               px-4 bg-transparent text-faded-green hover:bg-[#18BC7A]/20 
-              font-semibold flex gap-2 text-[#18BC7A]'>
+              font-semibold flex items-center gap-2 text-[#18BC7A]'>
                 <FourDots color={'#18BC7A'}/> Editer
-              </Button>
+              </Link>
               <Button className='border border-solid border-2 border-[#444] font-semibold 
               rounded-full px-6 bg-transparent text-[#202020] hover:bg-gray-300/50
               flex gap-2'>

@@ -14,9 +14,6 @@ const Logo = () => {
         className="w-[56px] h-[19px] ml-1"
       />
     </div>
-    // <div className="flex flex-row justify-between items-center gap-1">
-    //   <FaBorderAll size={26} color="#18BC7A" /><span className="text-4xl font-bold text-[#18BC7A]">sekure</span><span className="text-xs font-semibold bg-[#FFDB5A] text-gray-100 rounded-full px-2 py-1 align-middle">Admin</span>
-    // </div>
   )
 }
 

@@ -19,19 +19,19 @@ const SideBarLinks = [
   },
   {
     title: 'Comptes utilisateurs',
-    path: '/users',
+    path: '/users_accounts',
     count: null,
     icon: <Users/>,    
   },
   {
     title: 'Transactions wallet',
-    path: '/products',
+    path: '/wallet_transactions',
     count: null,
     icon: <Wallet/>,    
   },
   {
     title: 'Transfert d\'argent',
-    path: '/orders',
+    path: '/transferts',
     count: null,
     icon: <Transfert/>,    
   },
@@ -67,7 +67,7 @@ const SideBarLinks = [
   },
   {
     title: 'Paramètres généraux',
-    path: '/settings',
+    path: '/general_settings',
     count: null,
     icon: <Parameters/>,    
   },
@@ -83,7 +83,7 @@ const SideBar = () => {
   const pathname = usePathname()
   
   return (
-    <div className='pt-[22px] w-[300px] h-screen flex flex-col gap-0 border-r-4 border-gray-200'>
+    <div className='pt-[22px] w-[250px] h-screen flex flex-col gap-0 border-r-4 border-gray-200'>
       <div className='pl-[20px] mb-[40px]'>
         <Logo/>
       </div>

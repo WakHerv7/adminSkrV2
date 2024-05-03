@@ -13,7 +13,9 @@ interface LayoutProps {
 const Layout: React.FC<LayoutProps> = ({ children, title, backLink }) => {
   return (
     <main className="flex">
-        <SideBar/>
+        <div>
+          <SideBar/>
+        </div>
         <div className="flex flex-col w-full">
             <Navbar title={title} backLink={backLink}/>
             <div className="px-10 pt-3">

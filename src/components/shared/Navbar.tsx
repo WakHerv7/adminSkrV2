@@ -1,7 +1,7 @@
 import { RxArrowLeft, RxCaretDown } from "react-icons/rx"
 import { IoIosDisc, IoIosNotificationsOutline } from "react-icons/io"
 import { CgProfile } from "react-icons/cg";
-import { FaArrowLeft, FaArrowLeftLong } from "react-icons/fa";
+import { FaArrowLeft } from "react-icons/fa";
 import Image from "next/image";
 import './style-navbar.css';
 import CustomDropdown from "./CustomDropdown";

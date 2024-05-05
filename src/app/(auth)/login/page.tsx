@@ -126,7 +126,7 @@ const LoginPage = () => {
 							<FaUserCircle color="#FFDB5A" size={70} />
 						</div> */}
 						<h1 className="text-[25px] font-semibold text-gray-900">Connexion</h1>
-						<p className="text-gray-600 font-thin text-sm mb-[30px]">Visualisez la courbe d'evolution en nom</p>
+						<p className="text-gray-600 font-thin text-sm mb-[30px]">{`Visualisez la courbe d'evolution en nom`}</p>
 						<div className="mb-[7vh]">
 							<LoginForm />
 						</div>

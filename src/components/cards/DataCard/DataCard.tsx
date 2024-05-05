@@ -77,7 +77,7 @@ const DataCard = ({
       </div>
       <div className='flex flex-col gap-1'>
         <div className='flex justify-between items-center gap-3'>
-          <p className='text-xs'>Aujourd'hui</p>
+          <p className='text-xs'>{`Aujourd'hui`}</p>
           <h1 className='text-sm font-semibold'>{data.Aujourd}</h1>
         </div>
         <div className='flex justify-between items-center gap-3'>

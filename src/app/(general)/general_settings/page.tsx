@@ -148,7 +148,7 @@ export default function GeneralSettings() {
 					<AccordionTrigger>
 					<div>
 						<h1 className="text-[20px] font-bold tracking-tight">
-						Paramètres du Cote d'ivoire<></>
+						{`Paramètres de Cote d'ivoire`}<></>
 						</h1>
 					</div>
 					</AccordionTrigger>

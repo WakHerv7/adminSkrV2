@@ -361,7 +361,7 @@ export default function Home() {
             <section className='mt-2'>
                 <div className='mb-10 grid lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-1' style={{gap:'20px'}}>
                     {infoData.map((data, index) => (
-                        <InfoCard data={data} />
+                        <InfoCard key={index} data={data} />
                     ))}
                 </div>
 
@@ -379,17 +379,17 @@ export default function Home() {
                             cstyle={'outline'}
                             iconSize={20}
                             items={[
-                                <div className='flex justify-between gap-2'>            
+                                <div key={'1'} className='flex justify-between gap-2'>            
                                     <span className='text-nowrap text-sm '>
                                     Par jour
                                     </span>
                                 </div>,
-                                <div className='flex justify-between gap-2'>            
+                                <div key={'2'} className='flex justify-between gap-2'>            
                                     <span className='text-nowrap text-sm '>
                                     Par semaine
                                     </span>
                                 </div>,
-                                <div className='flex justify-between gap-2'>            
+                                <div key={'3'} className='flex justify-between gap-2'>            
                                     <span className='text-nowrap text-sm '>
                                     Par mois
                                     </span>

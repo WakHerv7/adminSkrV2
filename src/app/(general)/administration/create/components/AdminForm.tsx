@@ -56,8 +56,8 @@ export default function AdminForm({ data }: { data: IData }) {
         <>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="justify-between items-start w-full">
-            <h1 className="text-lg font-bold">Informations de l'administrateur </h1>
-            <p className="text-sm text-gray-600">Informations de l'administrateur</p>
+            <h1 className="text-lg font-bold">{`Informations de l'administrateur`} </h1>
+            <p className="text-sm text-gray-600">{`Informations de l'administrateur`}</p>
             <div className="my-6 w-full flex flex-col gap-4">
               <FormField
                 control={form.control}
@@ -98,13 +98,13 @@ export default function AdminForm({ data }: { data: IData }) {
             </div>
             {/* <Link to="#" className="text-gray-800 font-semibold text-righttext-sm">Forgotten Password?</Link> */}
             <div className='pt-[20px]'>
-                <h1 className="text-lg font-bold">Niveau d'accès</h1>
-                <p className="text-sm text-gray-600">Choisir les niveaux d'accès</p>            
+                <h1 className="text-lg font-bold">{`Niveau d'accès`}</h1>
+                <p className="text-sm text-gray-600">{`Choisir les niveaux d'accès`}</p>            
                 <section className="grid grid-cols-2 mt-4 w-[100%]">
 
                     {accessLevels.map((item, idx) =>  {
                         return (
-                            <label htmlFor={`customCheckbox${idx}`} className="flex items-center cursor-pointer">                
+                            <label key={idx} htmlFor={`customCheckbox${idx}`} className="flex items-center cursor-pointer">                
                                 <div className="relative">                
                                     <input type="checkbox" id={`customCheckbox${idx}`} className="customCheckbox sr-only"/>                
                                     <div className="checkboxContainer block p-[3px] border border-solid border-1 border-gray-300 bg-[#f2f2f2] rounded-full flex items-center text-xs">

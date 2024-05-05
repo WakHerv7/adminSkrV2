@@ -10,7 +10,7 @@ const Transfers = ({ data }: { data: IData }) => {
     <div className='ring-1 ring-[#898989] w-full h-[66px] px-2 py-4 rounded-md flex flex-col justify-between '>
       <div className='flex gap- justify-between items-center'>
         <h1 className='text-gray-900 text-[10px] font-bold'>
-          Transferts aujourd'hui
+          {`Transferts aujourd'hui`}
         </h1>
         <h1 className='text-gray-900 text-[10px] font-bold'>
           {data.reuse}F

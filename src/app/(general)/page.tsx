@@ -4,7 +4,7 @@ import { useTitle } from "@/hooks/useTitle";
 import ProductsSection from "@/components/sections/ProductsSection";
 import { useQuery } from "react-query";
 import { axiosOpenedInstance } from "@/utils/axios";
-import Category, { ICategory } from "@/components/cards/Category";
+// import Category, { ICategory } from "@/components/cards/Category";
 import toast from "react-hot-toast";
 import { Kbd } from "@nextui-org/react";
 import { useEffect } from "react";

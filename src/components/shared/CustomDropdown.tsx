@@ -74,9 +74,9 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({ title, cstyle, iconSize
                 'bg-[#F3FFF8]'
                 :''
              }`}>
-                {items?.map((item) =>  {
+                {items?.map((item, index) =>  {
                     return (
-                        <Menu.Item>
+                        <Menu.Item key={index}>
                             <div className={`min-h-[30px] py-1 px-2 cursor-pointer flex items-center 
                             ${cstyle == 'green' || cstyle == 'light-green' ?
                                 'hover:bg-[#18BC7A]/20'

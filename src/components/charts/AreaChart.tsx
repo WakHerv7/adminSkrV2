@@ -75,7 +75,7 @@ const AreaChart = ({ data, legend }: {data: any, legend?: TLegend[]}) => {
       
         <div className='w-full flex justify-center items-center gap-3'>
           {legend && legend.map((item, index) => (
-            <div className='flex items-center gap-2'>
+            <div key={index} className='flex items-center gap-2'>
               <span className={`rounded-full p-[7px]`} style={{background: item.color}} />
               <span className='text-xs font-normal text-gray-900'>{item.label}</span>
             </div>

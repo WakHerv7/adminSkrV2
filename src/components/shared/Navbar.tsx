@@ -32,17 +32,17 @@ export default function Navbar(props:Props) {
         cstyle={'light-green'}
         iconSize={20}
         items={[
-            <div className='flex justify-between gap-2'>            
+            <div key={'1'} className='flex justify-between gap-2'>            
                 <span className='text-nowrap text-sm text-[#18BC7A]'>
                 Ce jour
                 </span>
             </div>,
-            <div className='flex justify-between gap-2'>            
+            <div key={'2'} className='flex justify-between gap-2'>            
                 <span className='text-nowrap text-sm text-[#18BC7A]'>
                 Cette semaine
                 </span>
             </div>,
-            <div className='flex justify-between gap-2'>            
+            <div key={'3'} className='flex justify-between gap-2'>            
                 <span className='text-nowrap text-sm text-[#18BC7A]'>
                 Ce mois
                 </span>

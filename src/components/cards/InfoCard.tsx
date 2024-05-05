@@ -27,14 +27,14 @@ const InfoCard: React.FC<InfoCardProps> = ({data}) => {
   return (
     <div className='ring-1 ring-[#444] w-full px-2 py-4 rounded-md flex flex-col'>
       
-      {data.map((line, index) => (
-        <div className={`flex justify-between items-center mx-1`} 
+      {data.map((line, index1) => (
+        <div key={index1} className={`flex justify-between items-center mx-1`} 
         style={{
           // display: 'flex', 
           // gridTemplateColumns: `repeat(${line.length}, 1fr)` ,
           gap:`${line.length*5}px`}}>
-          {line.map((item, index) => (
-            <div className={`my-1 flex ${line.length>1 ? 'gap-3' : 'w-full'}  justify-between items-center`}>
+          {line.map((item, index2) => (
+            <div key={index2} className={`my-1 flex ${line.length>1 ? 'gap-3' : 'w-full'}  justify-between items-center`}>
               <span style={{fontSize: item.label.fs ?? '14px', color:item.label.color ?? '#444'}} className={`font-${item.label.fw ?? 'normal'}`}>
                 {item.label.text}
               </span>

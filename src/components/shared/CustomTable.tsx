@@ -68,19 +68,19 @@ const CustomTable: React.FC<CustomDropdownProps> = ({headerData, tableData, btn,
           hasDropdownIcon={false}
           icon= {<RxDotsHorizontal/>}
           items={[
-            <div className='flex justify-between gap-2'>
+            <div key={'1'} className='flex justify-between gap-2'>
             <IoCopyOutline size={15} color={'#18BC7A'} />
             <span className='text-sm text-[#18BC7A]'>
               Copy
             </span>
           </div>,
-          <div className='flex justify-between gap-2'>
+          <div key={'2'} className='flex justify-between gap-2'>
             <BsFileEarmarkExcel size={15} color={'#18BC7A'} />
             <span className='text-sm text-[#18BC7A] h-fit'>
               Excel
             </span>
           </div>,
-          <div className='flex justify-between gap-2'>
+          <div key={'3'} className='flex justify-between gap-2'>
             <IoPrintOutline size={15} color={'#18BC7A'} />
             <span className='text-sm text-[#18BC7A]'>
               Print

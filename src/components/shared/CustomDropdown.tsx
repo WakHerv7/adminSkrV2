@@ -34,6 +34,8 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({ title, cstyle, iconSize
                 'bg-[#18BC7A] hover:bg-[#18BC7A]/80'
                 : cstyle == 'light-green'?
                 'bg-[#18BC7A]/10 hover:bg-[#18BC7A]/20'
+                : cstyle == 'outline'?
+                'border border-solid border-[#444]'
                 :''
              } `}>          
                 {title ? <span className={`text-sm text-[${color}]`}>
@@ -78,7 +80,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({ title, cstyle, iconSize
                             <div className={`min-h-[30px] py-1 px-2 cursor-pointer flex items-center 
                             ${cstyle == 'green' || cstyle == 'light-green' ?
                                 'hover:bg-[#18BC7A]/20'
-                                :''
+                                :'hover:bg-[#444]/20'
                             }`}>
                             {React.cloneElement(item as React.ReactElement<any>)}
                             </div>

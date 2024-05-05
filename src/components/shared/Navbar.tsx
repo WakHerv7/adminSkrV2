@@ -1,23 +1,28 @@
-import { RxCaretDown } from "react-icons/rx"
+import { RxArrowLeft, RxCaretDown } from "react-icons/rx"
 import { IoIosDisc, IoIosNotificationsOutline } from "react-icons/io"
 import { CgProfile } from "react-icons/cg";
-import { FaArrowLeftLong } from "react-icons/fa6";
+import { FaArrowLeft } from "react-icons/fa";
 import Image from "next/image";
 import './style-navbar.css';
 import CustomDropdown from "./CustomDropdown";
+import Link from "next/link";
+import { BsArrowLeft } from "react-icons/bs";
 
 type Props = {
     title: string | undefined;
+    backLink?: string;
 };
 
 export default function Navbar(props:Props) {
-    const { title } = props;
+    const { title, backLink } = props;
   return (
     <div className="w-full flex justify-between items-center h-fit px-10 py-5 ">
         <div className="relative flex justify-start items-center gap-3">
-        <div className="hidden absolute top-1 left-[-30px]">
-            <FaArrowLeftLong color="#000" size={20}/>
-        </div>
+        {backLink ?
+        <Link href={backLink} className="absolute top-1 left-[-30px]">
+            <FaArrowLeft color="#000" size={20} />
+        </Link>
+        :<></>}
         <h1 className="font-semibold text-2xl pl-1 py-0">{title}</h1>
         </div>
         <div className="flex justify-between items-center gap-3">

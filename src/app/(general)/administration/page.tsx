@@ -3,7 +3,6 @@ import { useTitle } from "@/hooks/useTitle";
 import ProductsSection from "@/components/sections/ProductsSection";
 import { useQuery } from "react-query";
 import { axiosOpenedInstance } from "@/utils/axios";
-import Category, { ICategory } from "@/components/cards/Category";
 import toast from "react-hot-toast";
 import { Kbd } from "@nextui-org/react";
 import { useEffect } from "react";
@@ -17,35 +16,86 @@ import CustomTable from "@/components/shared/CustomTable";
 import Layout from "@/components/shared/Layout";
 import CustomDropdown from "@/components/shared/CustomDropdown";
 import Link from "next/link";
-
+import ButtonFilled from "@/components/shared/ButtonFilled";
+import { IGenericRow } from '@/components/AdminTable/Table';
+import ActiveYesNo from "@/components/shared/ActiveYesNo";
+import ButtonOutlined from "@/components/shared/ButtonOutlined";
+import { FourDots } from "@/components/shared/icons";
+import { isString } from "@/utils/utils";
+import CButton from "@/components/shared/CButton";
+const headerData: string[] = [
+    "S/N", "Nom", "Email","Statut", "Accès", "Date de création", ""
+]
+const tableData: IGenericRow[] = [
+  {
+    name: 'John Doe',
+    email: 'abc123@xyz.com',
+    status: true,
+    access: 'Admin',
+    date: '12/03/2024',
+    edit: '/administration/edit/1',
+  },
+  {
+    name: 'John Doe',
+    email: 'abc123@xyz.com',
+    status: false,
+    access: 'Manager',
+    date: '12/03/2024',
+    edit: '/administration/edit/2',
+  },
+  {
+    name: 'John Doe',
+    email: 'abc123@xyz.com',
+    status: true,
+    access: 'Visitor',
+    date: '12/03/2024',
+    edit: '/administration/edit/3',
+  },
+];
 
 export default function Home() {
-	// useTitle("Sekure | Admin");
-	// useEffect(() => {
-	// 	toast(<div>press <Kbd keys={["command"]}>K</Kbd> at anytime to make a search</div>)
-	// }, []);
-	// const categoriesView = useQuery({
-	// 	queryKey: ["categories"],
-	// 	queryFn: async () => {
-	// 		const res = await axiosOpenedInstance.get("/categories");
-	// 		return res.data.categories as ICategory[];
-	// 	},
-	// });
+
+	const rearrangedTableData = tableData.map((item, index) => {
+		const rearrangedItem = {
+			index: index+1,
+			name: item.name,			
+			email: item.email,
+			status: <ActiveYesNo isActive={item.status}/>,
+			access: item.access,
+			date: item.date,
+			actions: <>
+			<div className='flex gap-5'>
+			  <CButton 
+			  text={'Editer'}
+			  href={item.edit}
+			  btnStyle={'outlineGreen'}
+			  icon={<FourDots />} 
+			  />
+			  <CButton 
+			  text={'Supprimer'} 
+			  btnStyle={'outlineDark'}
+			  icon={<FourDots />} 
+			  />
+			  </div>
+			</>
+		};
+		item = rearrangedItem;
+		return item;
+	});
 
 	return (
 		<Layout
 		title={"Administration"}
 		>
-			<CustomTable/>
-
-			{/* <CustomDropdown			
-			cstyle={'light-green'}
-			hasDropdownIcon={false}
-			icon= {<RxDotsHorizontal/>}
-			items={[
-				<Link href={'#'}></Link>
-			]}
-			/> */}
+			<CustomTable
+			headerData={headerData}
+			tableData={rearrangedTableData}
+			btn={<CButton
+				text={'Ajouter un Admin'}
+				btnStyle={'green'}
+				href={'/administration/create'}
+			   />}
+			/>
 	  </Layout>
 	);
 }

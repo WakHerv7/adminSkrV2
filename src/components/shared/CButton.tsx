@@ -1,0 +1,99 @@
+import React from 'react'
+import { Button } from '../ui/button'
+import Link from 'next/link';
+
+
+const CButton = ({
+  text, color, height, width, icon, href, px, py, 
+  hoverBgColor, iconSize, fontWeight, type,
+  textColor, hoverTextColor, textWrap, mode, btnStyle
+}: {
+  text: string;
+  btnStyle: "outlineDark" | "outlineGreen" | "dark" | "green" | "yellow" | "lightGreen" | "lightYellow";
+  color?: string;
+  height?: string;
+  width?: string;
+  href?: string;
+  px?: string;
+  py?: string;
+  type?: "button" | "submit" | "reset";
+  hoverBgColor?: string;
+  textColor?: string;
+  hoverTextColor?: string;
+  textWrap?: boolean; 
+  iconSize?: string;  
+  mode?: string;
+  fontWeight?: 'normal' | 'semibold' | 'bold';
+  icon?: React.ReactNode;
+}) => {
+  const iconColor = (btnStyle === 'lightGreen' || btnStyle === 'outlineGreen') ? 
+      '#18BC7A' 
+      : (btnStyle === 'green' || btnStyle === 'dark') ? 
+        '#fff'
+        : (btnStyle === 'lightYellow') ? 
+          '#FFDB5A'
+          :'#444'
+  const iconElement = icon ? React.cloneElement(icon as React.ReactElement<any>, { size: iconSize ?? 15, color: iconColor }) : null;
+
+  const btnStyles = {
+    outlineDark: `border-[#444]
+      bg-transparent hover:bg-[#444]/20`,
+    outlineGreen: `border-[#18BC7A]
+      bg-transparent hover:bg-[#18BC7A]/20 text-[#18BC7A]`,
+    dark: `
+      border-[#202020] hover:border-[#202020]/80   bg-[#202020] hover:bg-[#202020]/80
+      text-white`,
+    green: `
+      border-[#18BC7A] hover:border-[#18BC7A]/80   bg-[#18BC7A] hover:bg-[#18BC7A]/80
+      text-white`,
+    yellow: `
+      border-[#FFDB5A] hover:border-[#FFDB5A]/80   bg-[#FFDB5A] hover:bg-[#FFDB5A]/80
+      text-black`,
+    lightGreen:`
+      border-[#18BC7A]/20 hover:border-[#18BC7A]/30   bg-[#18BC7A]/20 hover:bg-[#18BC7A]/30
+      text-[#18BC7A]`,
+    lightYellow:` 
+    border-[#FFDB5A]/20 hover:border-[#FFDB5A]/30   bg-[#FFDB5A]/20 hover:bg-[#FFDB5A]/30
+    text-[#FFDB5A]`,
+
+  }
+  const btnClassZero = `flex justify-center items-center gap-2 outline-none font-semibold border border-solid border-1 rounded-full text-sm text-nowrap 
+      ${px ? 'px-['+px+']':'px-4'} ${py ? 'py-['+py+']':'py-1'}
+      ${width ? `w-[${width}]` : ''} ${height ? `h-[${height}]` : ''}`
+
+      
+  return (
+    <>
+    { href ?
+      <Link 
+      href={href} 
+      className={btnClassZero +' ' +btnStyles[btnStyle]}
+      style={{
+        // padding: `${px ?? '0'} ${py ?? '0'}`,
+        height: `${height ?? ''}`,
+        width: `${width ?? ''}`,
+      }}
+      >
+        {iconElement}
+        {text}
+      </Link>
+      :
+      <>
+      <button
+      type={type ? type : 'button'}   
+      className={btnClassZero +' ' +btnStyles[btnStyle]}
+      style={{
+        // padding: `${px ?? '0'} ${py ?? '0'}`,
+        height: `${height ?? ''}`,
+        width: `${width ?? ''}`,
+      }}
+      >
+        {iconElement}
+        {text}
+      </button>
+      </>
+    }
+    </>
+  )
+}
+export default CButton

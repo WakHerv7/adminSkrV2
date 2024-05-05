@@ -23,12 +23,12 @@ export default async function AdminEdit({params: { adminId }}: Params) {
 	return (
 		<Layout
 		title={"Editer l'administrateur"}
+        backLink={'/administration'}
 		>
 			<>
             <section className="py-3">
-                <h1 className="text-lg font-bold">Informations de l'administrateur </h1>
-                <p className="text-sm text-gray-600">Informations de l'administrateur</p>
-                <div className="flex justify-between gap-6 my-6">
+                
+                <div className="flex justify-between gap-6">
                     <AdminForm data={{title: 'hello world', detail: 'checking for details'}} />
                 </div>
                 {/* <div>

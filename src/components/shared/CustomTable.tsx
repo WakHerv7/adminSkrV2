@@ -1,52 +1,67 @@
-import AdminTable, { ITableData } from '@/components/AdminTable/Table';
+"use client";
+import AdminTable, { IGenericRow } from '@/components/AdminTable/Table';
 import SearchBar from '@/components/shared/SearchBar';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { BsFileEarmarkExcel } from 'react-icons/bs';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import { IoCopyOutline, IoPrintOutline } from 'react-icons/io5';
+import { HiOutlineFilter } from 'react-icons/hi'; 
 import CustomDropdown from './CustomDropdown';
 import { RxDotsHorizontal } from 'react-icons/rx';
+import ButtonFilled from './ButtonFilled';
+import CButton from './CButton';
 
-const headerData: string[] = [
-    "S/N", "Nom", "Email","Statut", "Accès", "Date de création", ""
-]
-const TableData: ITableData[] = [
-  {
-    name: 'John Doe',
-    email: 'abc123@xyz.com',
-    status: true,
-    access: 'Admin',
-    date: '12/03/2024',
-    edit: '/administration/edit/1',
-  },
-  {
-    name: 'John Doe',
-    email: 'abc123@xyz.com',
-    status: false,
-    access: 'Manager',
-    date: '12/03/2024',
-    edit: '/administration/edit/2',
-  },
-  {
-    name: 'John Doe',
-    email: 'abc123@xyz.com',
-    status: true,
-    access: 'Visitor',
-    date: '12/03/2024',
-    edit: '/administration/edit/3',
-  },
-];
 
-const CustomTable = () => {
+
+interface CustomDropdownProps {
+  btn?: React.ReactNode;
+  filter?: boolean;
+  threeButtons?: boolean;
+  headerData: string[];
+  tableData: IGenericRow[];
+}
+
+const CustomTable: React.FC<CustomDropdownProps> = ({headerData, tableData, btn, filter, threeButtons}) =>  {
   return (
     <>
     <div className='flex justify-between items-center'>
       <SearchBar />
-      <div className='flex items-center gap-5 ml-[100px]'>
-        <Button className='bg-[#18BC7A] rounded-full px-4 h-[32px] hover:bg-[#18BC7A]/80'>
-          Ajouter un Admin
-        </Button>        
+      <div className='flex items-center gap-5 ml-[100px]'>        
+       
+       {btn}
+
+       {filter ?
+       <CButton
+       text={'Filtrer par'}
+       icon={<HiOutlineFilter/>}
+       btnStyle={'green'}
+       height={'32px'}
+       />
+       :<></>}
+       
+       {threeButtons ?
+        <div className={`flex gap-x-3`}>
+          <CButton
+          text={'Copier'}
+          icon={<IoCopyOutline/>}
+          btnStyle={'lightGreen'}
+          height={'32px'}
+          />
+          <CButton
+          text={'Excel'}
+          icon={<BsFileEarmarkExcel/>}
+          btnStyle={'lightGreen'}
+          height={'32px'}
+          />
+          <CButton
+          text={'Imprimer'}
+          icon={<IoPrintOutline/>}
+          btnStyle={'lightGreen'}
+          height={'32px'}
+          />
+        </div>
+        :
         <CustomDropdown			
           cstyle={'light-green'}
           iconSize={20}
@@ -73,11 +88,13 @@ const CustomTable = () => {
           </div>
           ]}
         />
+        }
+        
         
       </div>
     </div>
     <div className='mt-6 w-full'>
-      <AdminTable headerData={headerData}data={TableData} />
+      <AdminTable headerData={headerData}data={tableData} />
     </div>
 
     <div className='py-10 text-sm flex justify-end items-center'>

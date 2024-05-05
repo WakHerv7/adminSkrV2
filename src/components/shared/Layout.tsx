@@ -7,14 +7,17 @@ import SideBar from "./SideBar";
 interface LayoutProps {
     title: string;
     children: React.ReactNode;
+    backLink?: string;
 }
 
-const Layout: React.FC<LayoutProps> = ({ children, title }) => {
+const Layout: React.FC<LayoutProps> = ({ children, title, backLink }) => {
   return (
     <main className="flex">
-        <SideBar/>
+        <div>
+          <SideBar/>
+        </div>
         <div className="flex flex-col w-full">
-            <Navbar title={title}/>
+            <Navbar title={title} backLink={backLink}/>
             <div className="px-10 pt-3">
                 {children}
             </div>

@@ -55,8 +55,11 @@ export default function AdminForm({ data }: { data: IData }) {
       return (
         <>
         <Form {...form}>
+            
           <form onSubmit={form.handleSubmit(onSubmit)} className="justify-between items-start w-full">
-            <div className="w-full flex flex-col gap-4">
+            <h1 className="text-lg font-bold">Informations de l'administrateur </h1>
+            <p className="text-sm text-gray-600">Informations de l'administrateur</p>
+            <div className="my-6 w-full flex flex-col gap-4">
               <FormField
                 control={form.control}
                 name="fullname"
@@ -98,8 +101,7 @@ export default function AdminForm({ data }: { data: IData }) {
             <div className='pt-[20px]'>
                 <h1 className="text-lg font-bold">Niveau d'accès</h1>
                 <p className="text-sm text-gray-600">Choisir les niveaux d'accès</p>            
-                <section className="grid grid-cols-2 mt-4 w-[100%]">
-
+                <section className="grid grid-cols-2 w-[100%]">
                     {accessLevels.map((item, idx) =>  {
                         return (
                             <label htmlFor={`customCheckbox${idx}`} className="flex items-center cursor-pointer">                
@@ -123,13 +125,12 @@ export default function AdminForm({ data }: { data: IData }) {
                     )})}
                 </section>
                 <div className="flex justify-start items-center gap-4 mt-10">
-                    <Button className="ring-2 ring-black bg-black px-16 text-white rounded-full">
+                    <Button className="ring-2 ring-black bg-black  hover:bg-black/70 px-16 text-white rounded-full">
                     Enregistrer
                     </Button>
-                    <Button type="submit" className="ring-2 ring-black bg-transparent px-16 text-black rounded-full">
+                    <Button type="submit" className="ring-2 ring-black bg-transparent  hover:bg-black/10 px-16 text-black rounded-full">
                     Annuler
-                    </Button>
-                    
+                    </Button>                    
                 </div>
             </div>
           </form>
@@ -149,7 +150,7 @@ export default function AdminForm({ data }: { data: IData }) {
                         <span>Actif</span>
                     </div>
                 </div>
-                <Button type="submit" className="ring-2 ring-black bg-transparent px-16 text-black rounded-full">
+                <Button type="submit" className="ring-2 ring-black bg-transparent hover:bg-black/10 px-16 text-black rounded-full">
                     <div className='flex justify-between gap-2'>
                         <IoLockClosed size={15}/>
                         <span className=''>
@@ -157,7 +158,7 @@ export default function AdminForm({ data }: { data: IData }) {
                         </span>
                     </div>
                 </Button>
-                <Button className="ring-2 ring-black bg-black px-16 text-white rounded-full">
+                <Button className="ring-2 ring-black bg-black hover:bg-black/70 px-16 text-white rounded-full">
                 Supprimer
                 </Button>
             </div>

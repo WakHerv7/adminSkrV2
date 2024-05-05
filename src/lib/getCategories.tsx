@@ -1,10 +1,10 @@
 
 // import { useQuery } from "react-query";
-import { axiosOpenedInstance } from "@/utils/axios";
-import Category, { ICategory } from "@/components/cards/Category";
+// import { axiosOpenedInstance } from "@/utils/axios";
+// import Category, { ICategory } from "@/components/cards/Category";
 
-export default function getAllCategories() {\
-	return null
+// export default function getAllCategories() {
+	// return null
     // const categoriesView = useQuery({
 	// 	queryKey: ["categories"],
 	// 	queryFn: async () => {
@@ -13,4 +13,16 @@ export default function getAllCategories() {\
 	// 	},
 	// });
 //   return categoriesView
+// }
+
+import React from 'react'
+
+function getCategories() {
+  return (
+	<div>
+	  
+	</div>
+  )
 }
+
+export default getCategories

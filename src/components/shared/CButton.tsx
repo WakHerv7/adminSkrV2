@@ -4,7 +4,7 @@ import Link from 'next/link';
 
 
 const CButton = ({
-  text, color, height, width, icon, href, px, py, 
+  text, color, height, width, icon, iconLeft, href, px, py, 
   hoverBgColor, iconSize, fontWeight, type,
   textColor, hoverTextColor, textWrap, mode, btnStyle
 }: {
@@ -25,6 +25,7 @@ const CButton = ({
   mode?: string;
   fontWeight?: 'normal' | 'semibold' | 'bold';
   icon?: React.ReactNode;
+  iconLeft?: React.ReactNode;
 }) => {
   const iconColor = (btnStyle === 'lightGreen' || btnStyle === 'outlineGreen') ? 
       '#18BC7A' 
@@ -34,6 +35,7 @@ const CButton = ({
           '#FFDB5A'
           :'#444'
   const iconElement = icon ? React.cloneElement(icon as React.ReactElement<any>, { size: iconSize ?? 15, color: iconColor }) : null;
+  const iconLeftElement = iconLeft ? React.cloneElement(iconLeft as React.ReactElement<any>, { size: iconSize ?? 15, color: iconColor }) : null;
 
   const btnStyles = {
     outlineDark: `border-[#444]
@@ -81,7 +83,7 @@ const CButton = ({
       <>
       <button
       type={type ? type : 'button'}   
-      className={btnClassZero +' ' +btnStyles[btnStyle]}
+      className={btnClassZero +' relative ' +btnStyles[btnStyle]}
       style={{
         // padding: `${px ?? '0'} ${py ?? '0'}`,
         height: `${height ?? ''}`,
@@ -90,6 +92,7 @@ const CButton = ({
       >
         {iconElement}
         {text}
+        {iconLeftElement && <span className={`absolute top-[5px] left-[5px]`}>{iconLeftElement}</span>}
       </button>
       </>
     }

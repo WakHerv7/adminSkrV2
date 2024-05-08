@@ -1,0 +1,124 @@
+export const dualData = {
+    labels: ['Mon1', 'Mon2', 'Mon3', 'Mon4', 'Mon5', 'Mon6', 'Mon7', 'Mon8', 'Mon9', 'Mon10', 'Mon11', 'Mon12'],
+    datasets: [
+      {
+        label: 'Total Transactions',
+        data: [410, 300, 200, 400, 400, 300, 210, 100, 300, 200, 120, 100], // Example data for total transactions
+        backgroundColor: '#18BC7Ac3',
+        borderColor: 'rgba(75, 192, 192, 1)',
+        borderWidth: 1,
+        fill: true,
+        pointStyle: false
+      },
+      {
+        label: 'Failed Transactions',
+        data: [310, 200, 100, 40, 100, 100, 400, 190, 210, 300, 210, 180], // Example data for total transactions
+        backgroundColor: '#FFDB5A',
+        borderColor: 'rgba(75, 192, 192, 1)',
+        borderWidth: 1,
+        fill: true,
+        pointStyle: false
+      }
+    ]
+};
+  
+export const trxData = {
+    labels: ['J1', 'J2', 'J3', 'J4', 'J5', 'J6', 'J7', 'J8', 'J9', 'J10', 
+            'J11', 'J12', 'J13', 'J14', 'J15', 'J16', 'J17', 'J18', 'J19', 'J20',
+            'J21', 'J22', 'J23', 'J24', 'J25', 'J26', 'J27', 'J28', 'J29', 'J30'],
+    datasets: [
+      
+      
+      {
+        label: 'Total Transactions',
+        data: Array.from({length: 30}, () => Math.floor(Math.random() * 301) + 100),        
+        backgroundColor: '#FFDB5Aaa',
+        borderColor: '#FFDB5Aaa',
+        borderWidth: 1,
+        fill: true,
+        pointStyle: false,
+      },
+      {
+        label: 'Total Transactions',
+        data: Array.from({length: 30}, () => Math.floor(Math.random() * 301) + 100),        
+        backgroundColor: '#3870C0aa',
+        borderColor: '#3870C0aa',
+        borderWidth: 1,
+        fill: true,
+        pointStyle: false,
+      },
+      {
+        label: 'Total Transactions',
+        data: Array.from({length: 30}, () => Math.floor(Math.random() * 301) + 100),        
+        backgroundColor: '#33E89Caa',
+        borderColor: '#33E89Caa',
+        borderWidth: 1,
+        fill: true,
+        pointStyle: false,
+      },
+    ]
+};
+  
+export const doughnutData = {
+    labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+    datasets: [
+      {
+        label: 'My First Dataset',
+        // data: [300, 50, 100, 40, 120, 80],
+        data: Array.from({length: 6}, () => Math.floor(Math.random() * 301) + 100),
+        backgroundColor: [
+          '#FFDB5A',
+          '#F85D4B',
+          '#6200EE',
+          '#FD8A49',
+          '#33E89C',
+          '#5BCEFF',
+        ],
+        hoverOffset: 4,
+      },
+    ],
+};
+
+export const pieData = {
+    labels: ['Red', 'Blue', 'Yellow', 'Green'],
+    datasets: [
+       {
+         label: '# of Votes',
+        //  data: [9, 10, 17, 5],
+        data: Array.from({length: 4}, () => Math.floor(Math.random() * 301) + 100),
+        backgroundColor: [
+           '#33E89C',
+           '#FFDB5A',
+           '#FD8A49',
+           '#6200EE',
+         ],
+         borderColor: [
+            '#33E89C',
+            '#FFDB5A',
+            '#FD8A49',
+            '#6200EE',
+         ],
+         borderWidth: 1
+       }
+    ]
+}; 
+
+export const pieData2 = {
+  labels: ['Red', 'Blue', 'Yellow', 'Green'],
+  datasets: [
+     {
+       label: '# of Votes',
+      //  data: [9, 10, 17, 5],
+      data: Array.from({length: 2}, () => Math.floor(Math.random() * 301) + 100),
+      backgroundColor: [
+         '#33E89C',
+         '#FFDB5A',
+       ],
+       borderColor: [
+          '#33E89C',
+          '#FFDB5A',
+       ],
+       borderWidth: 1
+     }
+  ]
+};

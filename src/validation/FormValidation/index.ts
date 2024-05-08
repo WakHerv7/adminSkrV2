@@ -42,3 +42,12 @@ export const transfertsSchema = z.object({
   Frais_de_transfert_ver_Mobile_Money: z.number().default(0),
   Frais_de_transfert_vers_sekure: z.number().default(0),
 })
+
+export const detailsSchema = z.object({
+  Nom_complet: z.string(),
+  Email : z.string(),
+  Pays_de_rsidence: z.string(),
+  Sexe: z.string(),
+  téléphone: z.string(),
+  Ville_de_residence: z.string(),
+})

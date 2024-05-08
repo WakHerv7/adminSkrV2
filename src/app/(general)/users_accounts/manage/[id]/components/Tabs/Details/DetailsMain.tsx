@@ -22,8 +22,8 @@ export default function Details() {
   const form = useForm<z.infer<typeof detailsSchema>>({
     resolver: zodResolver(adminSchema),
     defaultValues: {
-      Email: "abc@123.xyz",
-      téléphone: "1234567890",
+      email: "abc@123.xyz",
+      phone: "1234567890",
     },
   });
 
@@ -33,7 +33,7 @@ export default function Details() {
 
   return (
     <div className="flex-1">
-        <h1 className="text-lg text-gray-700 font-bold">Informations personnelles de l'utilisateur</h1>
+        <h1 className="text-lg text-gray-700 font-bold">{`Informations personnelles de l'utilisateur`}</h1>
         <p className="text-xs text-gray-500">liste en temps réel des dernieres transactions effectuées avec les cartes</p>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} 
@@ -41,7 +41,7 @@ export default function Details() {
             <div className="w-full flex flex-col gap-7">
               <FormField
                 control={form.control}
-                name="Nom_complet"
+                name="name"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="text-gray-900 text-sm font-semibold tracking-tight">Nom complet</FormLabel>
@@ -54,7 +54,7 @@ export default function Details() {
               <div className="grid grid-cols-2 gap-x-7 gap-y-7">
               <FormField
                 control={form.control}
-                name="Email"
+                name="email"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="text-gray-900 text-sm font-semibold tracking-tight">Email</FormLabel>
@@ -66,7 +66,7 @@ export default function Details() {
                 />
               <FormField
                 control={form.control}
-                name="Country"
+                name="country"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="text-gray-900 text-sm font-semibold tracking-tight">Pays de résidence</FormLabel>
@@ -78,7 +78,7 @@ export default function Details() {
               />
               <FormField
                 control={form.control}
-                name="Sexe"
+                name="gender"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="text-gray-900 text-sm font-semibold tracking-tight">Sexe</FormLabel>
@@ -90,7 +90,7 @@ export default function Details() {
               />
               <FormField
                 control={form.control}
-                name="Phone"
+                name="phone"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="text-gray-900 text-sm font-semibold tracking-tight">téléphone</FormLabel>
@@ -103,7 +103,7 @@ export default function Details() {
               </div>
               <FormField
                 control={form.control}
-                name="Ville_de_residence"
+                name="city"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="text-gray-900 text-sm font-semibold tracking-tight">Ville de residence</FormLabel>

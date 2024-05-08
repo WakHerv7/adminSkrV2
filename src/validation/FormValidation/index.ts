@@ -44,10 +44,10 @@ export const transfertsSchema = z.object({
 })
 
 export const detailsSchema = z.object({
-  Nom_complet: z.string(),
-  Email : z.string(),
-  Pays_de_rsidence: z.string(),
-  Sexe: z.string(),
-  téléphone: z.string(),
-  Ville_de_residence: z.string(),
+  name: z.string(),
+  email : z.string(),
+  country: z.string(),
+  gender: z.string(),
+  phone: z.string(),
+  city: z.string(),
 })

@@ -96,7 +96,7 @@ export default function AdminForm({ data }: { data: IData }) {
                   )}
                 />
             </div>
-            {/* <Link to="#" className="text-gray-800 font-semibold text-righttext-sm">Forgotten Password?</Link> */}
+            {/* <Link href="#" className="text-gray-800 font-semibold text-righttext-sm">Forgotten Password?</Link> */}
             <div className='pt-[20px]'>
                 <h1 className="text-lg font-bold">{`Niveau d'accès`}</h1>
                 <p className="text-sm text-gray-600">{`Choisir les niveaux d'accès`}</p>            

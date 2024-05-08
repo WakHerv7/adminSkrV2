@@ -35,295 +35,112 @@ import LegendItem from "@/components/shared/LegendItem";
 import PieChart from "@/components/charts/pieChart/PieChart";
 import CButton from "@/components/shared/CButton";
 import { FaLock } from "react-icons/fa";
+import { 
+    headerTransactionData as headerData, tableTransactionData as tableData,
+    trxData as data, pieData, pieData2, doughnutData } from "@/constants/Index";
+
+import {
+    checkCircleIcon,
+    ongoingCircleIcon,
+    closeCircleIcon,
+    transferIcon,
+    calendarIcon,
+    transferIconToday,
+    transferIconAvg,
+    transferIconTotal,
+    mobileMoneyIcon,
+    sekureIcon,
+    transferIconMomoToday,
+    transferIconMomoTotal,
+    transferIconSekureToday,
+    transferIconSekureTotal,
+  } from '@/constants/Index';
 
 const infoData: TDataList[] = [
     [
         [{
-            label:{text:"Transferts aujourd'hui", fw:"bold", color:"#444"},
+            label:{
+                text: transferIconToday,
+                tooltip:"Transferts aujourd'hui", 
+                fw:"bold", 
+                color:"#444"
+            },
             value:{text:"1 558 450 XAF", fw:"bold", color:"#444"}
         }],
         [{
-            label:{text:"Moy. transferts", fw:"", color:"#444"},
+            label:{
+                text: transferIconAvg,
+                tooltip:"Moyenne transferts", 
+                color:"#444"
+            },
             value:{text:"1 855 950 XAF / jour", fw:"bold", color:"#444"}
         }]
     ],
     [
         [{
-            label:{text:"Total transferts", fw:"bold", color:"#444"},
+            label:{
+                text: transferIconTotal, 
+                tooltip:"Total transferts", 
+                fw:"bold", 
+                color:"#444"
+            },
             value:{text:"9 850 675 XAF", fw:"bold", color:"#444"}
         }],
         [
             {
-                label:{text:"Réussis", fw:"", color:"#444", fs:'11px'},
-                value:{text:"1399", fw:"bold", color:"#18BC7A", fs:'14px'}
+                label:{text:checkCircleIcon, tooltip:"Réussis", fw:"", color:"#444", fs:'11px'},
+                value:{text:"1399", fw:"bold", color:"#18BC7A", fs:'14px', tooltip:"Réussis",}
             },
             {
-                label:{text:"En cours", fw:"", color:"#444", fs:'11px'},
-                value:{text:"577", fw:"bold", color:"#888", fs:'14px'}
+                label:{text:ongoingCircleIcon, tooltip:"En cours", fw:"", color:"#444", fs:'11px'},
+                value:{text:"577", fw:"bold", color:"#888", fs:'14px', tooltip:"En cours",}
             },
             {
-                label:{text:"Bloqués", fw:"", color:"#444", fs:'11px'},
-                value:{text:"780", fw:"bold", color:"#F85D4B", fs:'14px'}
+                label:{text:closeCircleIcon, tooltip:"Bloqués", fw:"", color:"#444", fs:'11px'},
+                value:{text:"780", fw:"bold", color:"#F85D4B", fs:'14px', tooltip:"Bloqués",}
             },
         ]
     ],
     [
         [{
-            label:{text:"Transferts vers Mobile money aujourd'hui", fw:"bold", color:"#444"},
+            label:{
+                text: transferIconMomoToday,
+                tooltip:"Transferts vers Mobile money aujourd'hui", 
+                fw:"bold", 
+                color:"#444"},
             value:{text:"2 558 450 XAF", fw:"bold", color:"#444"}
         }],
         [{
-            label:{text:"Total transferts vers Mobile money", fw:"", color:"#444"},
+            label:{
+                text: transferIconMomoTotal,
+                tooltip:"Total transferts vers Mobile money", 
+                color:"#444"},
             value:{text:"15 855 950 XAF", fw:"bold", color:"#444"}
         }]
     ],
     [
         [{
-            label:{text:"Transferts vers Sekure aujourd'hui", fw:"bold", color:"#444"},
+            label:{
+                text: transferIconSekureToday,
+                tooltip:"Transferts vers Sekure aujourd'hui", 
+                fw:"bold", color:"#444"},
             value:{text:"2 558 450 XAF", fw:"bold", color:"#444"}
         }],
         [{
-            label:{text:"Total transferts vers Sekure", fw:"", color:"#444"},
+            label:{
+                text: transferIconSekureTotal,
+                tooltip:"Total transferts vers Sekure", 
+                fw:"", color:"#444"},
             value:{text:"15 855 950 XAF", fw:"bold", color:"#444"}
         }]
     ],
     
 ];
 
-const dualData = {
-    labels: ['Mon1', 'Mon2', 'Mon3', 'Mon4', 'Mon5', 'Mon6', 'Mon7', 'Mon8', 'Mon9', 'Mon10', 'Mon11', 'Mon12'],
-    datasets: [
-      {
-        label: 'Total Transactions',
-        data: [410, 300, 200, 400, 400, 300, 210, 100, 300, 200, 120, 100], // Example data for total transactions
-        backgroundColor: '#18BC7Ac3',
-        borderColor: 'rgba(75, 192, 192, 1)',
-        borderWidth: 1,
-        fill: true,
-        pointStyle: false
-      },
-      {
-        label: 'Failed Transactions',
-        data: [310, 200, 100, 40, 100, 100, 400, 190, 210, 300, 210, 180], // Example data for total transactions
-        backgroundColor: '#FFDB5A',
-        borderColor: 'rgba(75, 192, 192, 1)',
-        borderWidth: 1,
-        fill: true,
-        pointStyle: false
-      }
-    ]
-};
-  
-const data = {
-    labels: ['J1', 'J2', 'J3', 'J4', 'J5', 'J6', 'J7', 'J8', 'J9', 'J10', 
-            'J11', 'J12', 'J13', 'J14', 'J15', 'J16', 'J17', 'J18', 'J19', 'J20',
-            'J21', 'J22', 'J23', 'J24', 'J25', 'J26', 'J27', 'J28', 'J29', 'J30'],
-    datasets: [
-      
-      
-      {
-        label: 'Total Transactions',
-        data: Array.from({length: 30}, () => Math.floor(Math.random() * 301) + 100),        
-        backgroundColor: '#FFDB5Aaa',
-        borderColor: '#FFDB5Aaa',
-        borderWidth: 1,
-        fill: true,
-        pointStyle: false,
-      },
-      {
-        label: 'Total Transactions',
-        data: Array.from({length: 30}, () => Math.floor(Math.random() * 301) + 100),        
-        backgroundColor: '#3870C0aa',
-        borderColor: '#3870C0aa',
-        borderWidth: 1,
-        fill: true,
-        pointStyle: false,
-      },
-      {
-        label: 'Total Transactions',
-        data: Array.from({length: 30}, () => Math.floor(Math.random() * 301) + 100),        
-        backgroundColor: '#33E89Caa',
-        borderColor: '#33E89Caa',
-        borderWidth: 1,
-        fill: true,
-        pointStyle: false,
-      },
-    ]
-};
-  
-const doughnutData = {
-    labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-    datasets: [
-      {
-        label: 'My First Dataset',
-        // data: [300, 50, 100, 40, 120, 80],
-        data: Array.from({length: 6}, () => Math.floor(Math.random() * 301) + 100),
-        backgroundColor: [
-          '#FFDB5A',
-          '#F85D4B',
-          '#6200EE',
-          '#FD8A49',
-          '#33E89C',
-          '#5BCEFF',
-        ],
-        hoverOffset: 4,
-      },
-    ],
-};
-
-const pieData = {
-    labels: ['Red', 'Blue', 'Yellow', 'Green'],
-    datasets: [
-       {
-         label: '# of Votes',
-        //  data: [9, 10, 17, 5],
-        data: Array.from({length: 4}, () => Math.floor(Math.random() * 301) + 100),
-        backgroundColor: [
-           '#33E89C',
-           '#FFDB5A',
-           '#FD8A49',
-           '#6200EE',
-         ],
-         borderColor: [
-            '#33E89C',
-            '#FFDB5A',
-            '#FD8A49',
-            '#6200EE',
-         ],
-         borderWidth: 1
-       }
-    ]
-}; 
-
-const pieData2 = {
-    labels: ['Red', 'Blue', 'Yellow', 'Green'],
-    datasets: [
-       {
-         label: '# of Votes',
-        //  data: [9, 10, 17, 5],
-        data: Array.from({length: 2}, () => Math.floor(Math.random() * 301) + 100),
-        backgroundColor: [
-           '#33E89C',
-           '#6200EE',
-         ],
-         borderColor: [
-            '#33E89C',
-            '#6200EE',
-         ],
-         borderWidth: 1
-       }
-    ]
-};
-
-
-const headerData: string[] = [
-    "S/N", "Type", "Nom", "Pays", 
-    "Telephone", "ID Transaction", "Montant", 
-    "Mode paiement", "Statut",
-     "Date de création", ""
-]
-const tableData: IGenericRow[] = [
-  {
-    type: 'Recharge',
-    name: 'John Doe',
-    country: 'Cameroun',
-    phone: '+237 688 777 999',
-    idTrx: 'H6G96Y2SB3HJ6KS3',
-    amount: '2 455 000F',
-    paymentMethod: 'Mobile money',
-    status: true,
-    date: '12/03/2024',
-    edit: '#',
-  },
-  {
-    type: 'Recharge',
-    name: 'John Doe',
-    country: 'Cameroun',
-    phone: '+237 688 777 999',
-    idTrx: 'H6G96Y2SB3HJ6KS3',
-    amount: '2 455 000F',
-    paymentMethod: 'Mobile money',
-    status: true,
-    date: '12/03/2024',
-    edit: '#',
-  },
-  {
-    type: 'Recharge',
-    name: 'John Doe',
-    country: 'Cameroun',
-    phone: '+237 688 777 999',
-    idTrx: 'H6G96Y2SB3HJ6KS3',
-    amount: '2 455 000F',
-    paymentMethod: 'Mobile money',
-    status: true,
-    date: '12/03/2024',
-    edit: '#',
-  },
-  {
-    type: 'Retrait',
-    name: 'John Doe',
-    country: 'Cameroun',
-    phone: '+237 688 777 999',
-    idTrx: 'H6G96Y2SB3HJ6KS3',
-    amount: '2 455 000F',
-    paymentMethod: 'Mobile money',
-    status: false,
-    date: '12/03/2024',
-    edit: '#',
-  },
-  {
-    type: 'Retrait',
-    name: 'John Doe',
-    country: 'Cameroun',
-    phone: '+237 688 777 999',
-    idTrx: 'H6G96Y2SB3HJ6KS3',
-    amount: '2 455 000F',
-    paymentMethod: 'Mobile money',
-    status: false,
-    date: '12/03/2024',
-    edit: '#',
-  },
-  {
-    type: 'Recharge',
-    name: 'John Doe',
-    country: 'Cameroun',
-    phone: '+237 688 777 999',
-    idTrx: 'H6G96Y2SB3HJ6KS3',
-    amount: '2 455 000F',
-    paymentMethod: 'Mobile money',
-    status: true,
-    date: '12/03/2024',
-    edit: '#',
-  },
-  {
-    type: 'Recharge',
-    name: 'John Doe',
-    country: 'Cameroun',
-    phone: '+237 688 777 999',
-    idTrx: 'H6G96Y2SB3HJ6KS3',
-    amount: '2 455 000F',
-    paymentMethod: 'Mobile money',
-    status: true,
-    date: '12/03/2024',
-    edit: '#',
-  },
-  {
-    type: 'Recharge',
-    name: 'John Doe',
-    country: 'Cameroun',
-    phone: '+237 688 777 999',
-    idTrx: 'H6G96Y2SB3HJ6KS3',
-    amount: '2 455 000F',
-    paymentMethod: 'Mobile money',
-    status: true,
-    date: '12/03/2024',
-    edit: '#',
-  },
-];
 
 export default function Home() {
 
-	const rearrangedTableData = tableData.map((item, index) => {
+	const rearrangedTableData = tableData.map((item:any, index:any) => {
 		const rearrangedItem = {
 			index: index+1,
 			type: item.type,

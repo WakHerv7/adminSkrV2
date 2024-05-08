@@ -1,3 +1,4 @@
+"use client"
 import { axiosOpenedInstance } from "@/utils/axios";
 import {
 	Button,
@@ -10,7 +11,8 @@ import {
 	ModalHeader,
 	useDisclosure,
 } from "@nextui-org/react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect,
+	useState } from "react";
 import { FaChevronRight, FaSearch } from "react-icons/fa";
 import { useMutation } from "react-query";
 import { IProduct } from "./sections/ProductsSection";
@@ -18,7 +20,7 @@ import { useRouter } from "next/navigation";
 import slugify from "slugify";
 
 export default function Search() {
-	const searchRef = useRef<HTMLInputElement>(null);
+	// const searchRef = useRef<HTMLInputElement>(null);
 	const { isOpen, onOpen, onClose, onOpenChange } = useDisclosure();
 	const [keyword, setKeyword] = useState("");
 	const router = useRouter();
@@ -42,7 +44,7 @@ export default function Search() {
 					setKeyword("");
 					searchMutation.reset();
 					onOpen();
-					searchRef.current?.focus();
+					// searchRef.current?.focus();
 				}
 			}
 		};
@@ -76,7 +78,7 @@ export default function Search() {
 							</ModalHeader>
 							<ModalBody>
 								<Input
-									ref={searchRef}
+									// ref={searchRef}
 									autoFocus
 									startContent={
 										<FaSearch className="text-lg text-default-400 pointer-events-none flex-shrink-0" />

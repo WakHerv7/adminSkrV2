@@ -2,7 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { formSchema } from "@/validation/FormValidation";
-
+import { FaChevronRight } from "react-icons/fa";
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -13,6 +13,7 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import CButton from "@/components/shared/CButton";
 
 export default function LogiForm() {
   // ...
@@ -63,8 +64,18 @@ export default function LogiForm() {
         <div className="text-right">
           <a href="#" className="inline-block w-[272px] text-sm font-[400]">Mot de passe oublié ?</a>
         </div>
-        {/* <Link to="#" className="text-gray-800 font-semibold text-righttext-sm">Forgotten Password?</Link> */}
-        <Button type="submit" className="w-[272px] mt-[10vh] bg-[#18BC7A] hover:bg-[#FFDB5A] hover:text-[#18BC7A] rounded-full">Connexion</Button>
+        {/* <Link href="#" className="text-gray-800 font-semibold text-righttext-sm">Forgotten Password?</Link> */}
+        <div className={`mt-[10vh]`}>
+          <CButton 
+          text={'Connexion'} 
+          btnStyle={'green'}
+          href={`/`}
+          iconLeft={<FaChevronRight />}
+          width={'100%'}
+          height={"35px"}
+          />
+        </div>
+        {/* <Button type="submit" className="w-[272px] mt-[10vh] bg-[#18BC7A] hover:bg-[#FFDB5A] hover:text-[#18BC7A] rounded-full">Connexion</Button> */}
       </form>
     </Form>
   )

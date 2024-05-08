@@ -37,19 +37,19 @@ const SideBarLinks = [
   },
   {
     title: 'Cartes',
-    path: '/settings',
+    path: '/cards',
     count: null,
     icon: <Cards/>,    
   },
   {
     title: 'Verifications KYC',
-    path: '/settings',
+    path: '/kyc',
     count: 14,
     icon: <Kyc/>,    
   },
   {
     title: 'Gains',
-    path: '/settings',
+    path: '/earnings',
     count: null,
     icon: <Gains/>,    
   },
@@ -61,7 +61,7 @@ const SideBarLinks = [
   },
   {
     title: 'Notifications',
-    path: '/settings',
+    path: '/notifications',
     count: null,
     icon: <Notifications/>,    
   },
@@ -73,7 +73,7 @@ const SideBarLinks = [
   },
   {
     title: 'Logout',
-    path: '/logout',
+    path: '/login',
     count: null,
     icon: <Logout/>,    
   }

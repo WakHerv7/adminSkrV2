@@ -15,10 +15,10 @@ const PieChart = ({ data, size }: {data: any, size?: number}) => {
     responsive: true,
     layout: {
       padding: {
-        top: 20,
+        top: 0,
         left: 10,
         right: 10,
-        bottom: 20
+        bottom: 0
       },
     },
     plugins: {
@@ -29,9 +29,9 @@ const PieChart = ({ data, size }: {data: any, size?: number}) => {
   };
   return (
     <div className={`w-[${size ? size+'px' : '200px'}] 
-    h-[${size ? size+'px' : '200px'}] flex justify-start items-start 
+    h-[${size ? size+'px' : '80px'}] flex justify-start items-start 
     overflow-hidden object-cover`}>
-      <Pie data={data} options={options} />
+      <Pie data={data} options={options}  style={{height:size+'px'}}/>
     </div>
   )
 }

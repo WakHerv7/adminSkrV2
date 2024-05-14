@@ -1,3 +1,83 @@
+import { ScriptableContext } from "chart.js";
+
+export const gradientData1 = {
+  // labels: ['Mon1', 'Mon2', 'Mon3', 'Mon4', 'Mon5', 'Mon6', 'Mon7', 'Mon8', 'Mon9', 'Mon10', 'Mon11', 'Mon12'],
+  labels: ['J1', 'J2', 'J3', 'J4', 'J5', 'J6', 'J7', 'J8', 'J9', 'J10', 
+            'J11', 'J12', 'J13', 'J14', 'J15', 'J16', 'J17', 'J18', 'J19', 'J20',
+            'J21', 'J22', 'J23', 'J24', 'J25', 'J26', 'J27', 'J28', 'J29', 'J30'],
+  datasets: [
+    {
+      label: 'Total Transactions',
+      // data: [410, 300, 200, 400, 400, 300, 210, 100, 300, 200, 120, 100], // Example data for total transactions
+      data: Array.from({length: 30}, () => Math.floor(Math.random() * 100)+80),
+      // backgroundColor: '#18BC7Ac3',
+      borderColor: 'rgba(75, 192, 192, 1)',
+      borderWidth: 1,
+      fill: true,
+      pointStyle: false,
+      backgroundColor: (context: ScriptableContext<"line">) => {
+        const ctx = context.chart.ctx;
+        const gradient = ctx.createLinearGradient(0, 0, 500, 200);
+        gradient.addColorStop(0, "#18BC7A");
+        gradient.addColorStop(1, "#FFDB5A");
+        return gradient;
+      },
+    },
+  ]
+};
+
+export const gradientData2 = {
+  // labels: ['Mon1', 'Mon2', 'Mon3', 'Mon4', 'Mon5', 'Mon6', 'Mon7', 'Mon8', 'Mon9', 'Mon10', 'Mon11', 'Mon12'],
+  labels: ['J1', 'J2', 'J3', 'J4', 'J5', 'J6', 'J7', 'J8', 'J9', 'J10', 
+            'J11', 'J12', 'J13', 'J14', 'J15', 'J16', 'J17', 'J18', 'J19', 'J20',
+            'J21', 'J22', 'J23', 'J24', 'J25', 'J26', 'J27', 'J28', 'J29', 'J30'],
+  datasets: [
+    {
+      label: 'Total Transactions',
+      // data: [410, 300, 200, 400, 400, 300, 210, 100, 300, 200, 120, 100], // Example data for total transactions
+      data: Array.from({length: 30}, () => Math.floor(Math.random() * 100)+80),
+      // backgroundColor: '#18BC7Ac3',
+      borderColor: 'rgba(75, 192, 192, 1)',
+      borderWidth: 1,
+      fill: true,
+      pointStyle: false,
+      backgroundColor: (context: ScriptableContext<"line">) => {
+        const ctx = context.chart.ctx;
+        const gradient = ctx.createLinearGradient(0, 0, 500, 200);
+        gradient.addColorStop(0, "#18BC7A");
+        gradient.addColorStop(1, "#FFDB5A");
+        return gradient;
+      },
+    },
+  ]
+};
+
+export const gradientData3 = {
+  // labels: ['Mon1', 'Mon2', 'Mon3', 'Mon4', 'Mon5', 'Mon6', 'Mon7', 'Mon8', 'Mon9', 'Mon10', 'Mon11', 'Mon12'],
+  labels: ['J1', 'J2', 'J3', 'J4', 'J5', 'J6', 'J7', 'J8', 'J9', 'J10', 
+            'J11', 'J12', 'J13', 'J14', 'J15', 'J16', 'J17', 'J18', 'J19', 'J20',
+            'J21', 'J22', 'J23', 'J24', 'J25', 'J26', 'J27', 'J28', 'J29', 'J30'],
+  datasets: [
+    {
+      label: 'Total Transactions',
+      // data: [410, 300, 200, 400, 400, 300, 210, 100, 300, 200, 120, 100], // Example data for total transactions
+      data: Array.from({length: 30}, () => Math.floor(Math.random() * 100)+80),
+      // backgroundColor: '#18BC7Ac3',
+      borderColor: 'rgba(75, 192, 192, 1)',
+      borderWidth: 1,
+      fill: true,
+      pointStyle: false,
+      backgroundColor: (context: ScriptableContext<"line">) => {
+        const ctx = context.chart.ctx;
+        const gradient = ctx.createLinearGradient(0, 0, 500, 200);
+        gradient.addColorStop(0, "#33E89C");
+        gradient.addColorStop(1, "#0F7980");
+        return gradient;
+      },
+    },
+  ]
+};
+
 export const dualData = {
     labels: ['Mon1', 'Mon2', 'Mon3', 'Mon4', 'Mon5', 'Mon6', 'Mon7', 'Mon8', 'Mon9', 'Mon10', 'Mon11', 'Mon12'],
     datasets: [
@@ -117,6 +197,72 @@ export const pieData2 = {
        borderColor: [
           '#33E89C',
           '#FFDB5A',
+       ],
+       borderWidth: 1
+     }
+  ]
+};
+
+
+export const pieDataTwo = {
+  labels: ['Yellow', 'Brown'],
+  datasets: [
+     {
+       label: '# of Votes',
+      //  data: [9, 10, 17, 5],
+      data: Array.from({length: 2}, () => Math.floor(Math.random() * 301) + 100),
+      backgroundColor: [
+         '#FFDB5A',
+         '#B8A16B',
+       ],
+       borderColor: [
+          '#FFDB5A',
+          '#B8A16B',
+       ],
+       borderWidth: 1
+     }
+  ]
+};
+export const pieDataThree = {
+  labels: ['Yellow', 'Red', 'Brown'],
+  datasets: [
+     {
+       label: '# of Votes',
+      //  data: [9, 10, 17, 5],
+      data: Array.from({length: 3}, () => Math.floor(Math.random() * 301) + 100),
+      backgroundColor: [
+         '#FFDB5A',
+         '#F85D4B',
+         '#B8A16B',
+       ],
+       borderColor: [
+          '#FFDB5A',
+          '#F85D4B',
+          '#B8A16B',
+       ],
+       borderWidth: 1
+     }
+  ]
+};
+
+export const pieDataFour = {
+  labels: ['Yellow', 'Red', 'Brown', 'Green'],
+  datasets: [
+     {
+       label: '# of Votes',
+      //  data: [9, 10, 17, 5],
+      data: Array.from({length: 4}, () => Math.floor(Math.random() * 301) + 100),
+      backgroundColor: [
+         '#FFDB5A',
+         '#F85D4B',
+         '#B8A16B',
+         '#33E89C',
+       ],
+       borderColor: [
+          '#FFDB5A',
+          '#F85D4B',
+          '#B8A16B',
+          '#33E89C',
        ],
        borderWidth: 1
      }

@@ -18,7 +18,7 @@ const Layout: React.FC<LayoutProps> = ({ children, title, backLink }) => {
         </div>
         <div className="flex flex-col w-full">
             <Navbar title={title} backLink={backLink}/>
-            <div className="px-10 pt-3">
+            <div className="px-10 pt-3 pb-10">
                 {children}
             </div>
         </div>

@@ -81,7 +81,7 @@ export default function Home() {
 						<Title title="Évolution des transactions " subtitle="visualisez la courbe d’evolution en nombre de cartes parrainées" />
 						<div className='flex flex-col gap-2'>
 							<div className='flex justify-between items-center gap-8'>
-								<p className='text-xs'>Transactions aujourd'hui</p>
+								<p className='text-xs'>{`Transactions aujourd'hui`}</p>
 								<h1 className='text-sm font-semibold'>12 542 500 Fcfa</h1>
 							</div>
 							<div className='flex justify-between items-center gap-8'>
@@ -135,26 +135,28 @@ export default function Home() {
         <div className='w-full my-[50px] border border-gray-800'/>
         <div className='grid grid-flow-row grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-col-5 w-full gap-5'>
           {Array.from({length: 10}, (_, i) => i).map((item, index) => (
-            <DataCard 
-            title="Recharges de compte"
-            change_per="24%"
-            chartData={{
-              labels: ['Mon1', 'Mon2', 'Mon3', 'Mon4', 'Mon5', 'Mon6', 'Mon7', 'Mon8', 'Mon9', 'Mon10', 'Mon11', 'Mon12'],
-              datasets: [{
-                label: '',
-                // data: [20, 32, 11, 29, 10, 25, 30, 27, 100, 320, 28, 100],
-                data: Array.from({length: 12}, () => Math.floor(Math.random() * 100)),
-                borderColor: index%2 == 0 ? '#FFDB5A' : '#18BC7A',
-                borderWidth: 2,
-                pointStyle: false
-              }]
-            }}
-            data={{
-              today: "12 542 500 Fcfa",
-              total: "262 550 000 Fcfa",
-              average: "550 000 Fcfa"
-            }}
-          />
+            <div key={index}>
+              <DataCard 
+                title="Recharges de compte"
+                change_per="24%"
+                chartData={{
+                  labels: ['Mon1', 'Mon2', 'Mon3', 'Mon4', 'Mon5', 'Mon6', 'Mon7', 'Mon8', 'Mon9', 'Mon10', 'Mon11', 'Mon12'],
+                  datasets: [{
+                    label: '',
+                    // data: [20, 32, 11, 29, 10, 25, 30, 27, 100, 320, 28, 100],
+                    data: Array.from({length: 12}, () => Math.floor(Math.random() * 100)),
+                    borderColor: index%2 == 0 ? '#FFDB5A' : '#18BC7A',
+                    borderWidth: 2,
+                    pointStyle: false
+                  }]
+                }}
+                data={{
+                  today: "12 542 500 Fcfa",
+                  total: "262 550 000 Fcfa",
+                  average: "550 000 Fcfa"
+                }}
+              />
+            </div>
           ))}
         </div>
       </section>

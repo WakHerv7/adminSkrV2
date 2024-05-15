@@ -29,6 +29,7 @@ const CButton = ({
 		| "outlineGreen"
 		| "dark"
 		| "green"
+    | "red"
 		| "yellow"
 		| "lightGreen"
 		| "lightYellow"
@@ -54,7 +55,7 @@ const CButton = ({
 	const iconColor =
 		btnStyle === "lightGreen" || btnStyle === "outlineGreen"
 			? "#18BC7A"
-			: btnStyle === "green" || btnStyle === "dark"
+			: btnStyle === "green" || btnStyle === "red" || btnStyle === "dark"
 			? "#fff"
 			: btnStyle === "lightYellow"
 			? "#FFDB5A"
@@ -79,6 +80,9 @@ const CButton = ({
       text-white`,
 		green: `
       border-[#18BC7A] hover:border-[#18BC7A]/80   bg-[#18BC7A] hover:bg-[#18BC7A]/80
+      text-white`,
+    red: `
+      border-[#F85D4B] hover:border-[#F85D4B]/80   bg-[#F85D4B] hover:bg-[#F85D4B]/80
       text-white`,
 		yellow: `
       border-[#FFDB5A] hover:border-[#FFDB5A]/80   bg-[#FFDB5A] hover:bg-[#FFDB5A]/80

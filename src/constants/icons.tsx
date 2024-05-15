@@ -4,12 +4,16 @@ import { IoEllipsisHorizontalCircleSharp } from "react-icons/io5";
 import { BiTransferAlt } from "react-icons/bi";
 import { MdOutlinePhoneIphone } from "react-icons/md";
 import { MdAttachMoney } from "react-icons/md";
-import { FaRegCalendarCheck } from "react-icons/fa";
+import { FaFolder, FaRegCalendarCheck } from "react-icons/fa";
 import { GrTransaction } from "react-icons/gr";
+import { BsFillBookmarkCheckFill } from "react-icons/bs";
+
 // import { PiHandWithdraw } from "react-icons/pi";
 // import { PiHandDeposit } from "react-icons/pi";
 
 export const checkCircleIcon = <MdCheckCircle size={24} color={"#18BC7A"} />;
+export const folderIcon = <FaFolder size={24} color={"#777"} />;
+export const verifiedIcon = <BsFillBookmarkCheckFill size={20} color={"#777"} />;
 export const ongoingCircleIcon = <MdChangeCircle size={24} color={"#777"} />;
 export const waitCircleIcon = <IoEllipsisHorizontalCircleSharp size={24} color={"#777"} />;
 export const closeCircleIcon = <MdRemoveCircle size={24} color={"#F85D4B"} />;

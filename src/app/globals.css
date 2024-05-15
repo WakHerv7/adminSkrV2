@@ -204,10 +204,11 @@
 .TabsList {
   /* flex-shrink: 0; */
   /* display: flex; */
+  /* display: inline; */
   /* border-bottom: 1px solid #999; */
 }
 .TabsTrigger {
-  font-family: inherit;
+  /* font-family: inherit; */
   /* background-color: white; */
   padding: 0 20px;
   height: 45px;

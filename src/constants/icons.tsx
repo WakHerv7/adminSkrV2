@@ -27,7 +27,9 @@ export const transferIconTotal = <span className="flex gap-2">Total {transferIco
 
 export const mobileMoneyIcon = <span className="relative">
     <MdOutlinePhoneIphone size={24}/>
-    <MdAttachMoney size={16} className={`absolute top-[3px] right-[4px] bg-white`}/>
+    <span style={{position:`absolute`, top:'3px', right:'4px', background:'white'}}>
+        <MdAttachMoney size={16} />
+    </span>
 </span>
 
 export const sekureIcon = <svg width="17" height="18" viewBox="0 0 21 22" fill="none" xmlns="http://www.w3.org/2000/svg">

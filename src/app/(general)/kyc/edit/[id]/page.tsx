@@ -31,8 +31,8 @@ const Edit = ({ params }: { params: { id: string} }) => {
   const form = useForm<z.infer<typeof detailsSchema>>({
     resolver: zodResolver(adminSchema),
     defaultValues: {
-      Email: "abc@@123.xyz",
-      téléphone: "1234567890",
+      email: "abc@@123.xyz",
+      phone: "1234567890",
     },
   });
   

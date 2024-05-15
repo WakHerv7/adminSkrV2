@@ -32,11 +32,11 @@ const CartesCard = ({
       <div className={`px-3 py-3 bg-[#FFDB5A] outline-none border-none shadow-sm 
       flex justify-center items-center rounded-2xl w-full`}>
         <h1 className="text-lg font-bold tracking-wide">
-          <span className="flex items-center gap-2">
+          <span className="flex flex-wrap items-center gap-2">
             {[1,1,1].map((item, idx) => (
-              <span key={idx} className="flex">
+              <span key={idx} className="flex h-5 items-center">
                 {[1,1,1,1].map((si, sidx) => (
-                  <GoDotFill key={sidx} size={12}/>
+                  <GoDotFill key={sidx} size={10}/>
                 ))}
               </span>
             ))}

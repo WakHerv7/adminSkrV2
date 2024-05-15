@@ -2,6 +2,8 @@ export { headerUserAccountData } from "./UserAccountData";
 export { tableUserAccountData } from "./UserAccountData";
 export { headerHomeUserAccountData } from "./HomeUserAccountData";
 export { tableHomeUserAccountData } from "./HomeUserAccountData";
+export { headerKYCData } from "./KYCData";
+export { tableKYCData } from "./KYCData";
 export { headerTransactionData } from "./TransactionData";
 export { tableTransactionData } from "./TransactionData";
 export { dualData, trxData, doughnutData, pieData, pieData2, gradientData1 } from "./graphData";

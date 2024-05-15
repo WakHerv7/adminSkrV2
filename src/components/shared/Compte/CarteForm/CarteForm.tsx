@@ -32,7 +32,7 @@ const CarteForm = () => {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-6">
-        <div className="space-y-4 w-80">
+        <div className="space-y-4 ">
           <FormField
             control={form.control}
             name="Achat_de_carte"
@@ -101,7 +101,7 @@ const CarteForm = () => {
             <FormItem className="flex flex-col items-start justify-between">  
               <FormLabel className="text-xs text-gray-300">Frais de recharge</FormLabel>
               <FormControl>
-                <Input type="text" className="w-80 h-10 text-gray-700 border-none bg-gray-100 rounded-md outline-none px-3" {...field} />
+                <Input type="text" className=" h-10 text-gray-700 border-none bg-gray-100 rounded-md outline-none px-3" {...field} />
               </FormControl>
             </FormItem>
           )}
@@ -113,7 +113,7 @@ const CarteForm = () => {
             <FormItem className="flex flex-col items-start justify-between">
               <FormLabel className="text-xs text-gray-300">Frais de retraits</FormLabel>
               <FormControl>
-                <Input type="text" className="w-80 h-10 text-gray-700 border-none bg-gray-100 rounded-md outline-none px-3" {...field} />
+                <Input type="text" className=" h-10 text-gray-700 border-none bg-gray-100 rounded-md outline-none px-3" {...field} />
               </FormControl>
             </FormItem>
           )}
@@ -125,7 +125,7 @@ const CarteForm = () => {
             <FormItem className="flex flex-col items-start justify-between">
               <FormLabel className="text-xs text-gray-300">Rémunération parrainage</FormLabel>
               <FormControl>
-              <Input type="text" className="w-80 h-10 text-gray-700 border-none bg-gray-100 rounded-md outline-none px-3" {...field} />
+              <Input type="text" className=" h-10 text-gray-700 border-none bg-gray-100 rounded-md outline-none px-3" {...field} />
               </FormControl>
             </FormItem>
           )}
@@ -137,7 +137,7 @@ const CarteForm = () => {
             <FormItem className="flex flex-col items-start justify-between">
               <FormLabel className="text-xs text-gray-300">Rémunération parrainage</FormLabel>
               <FormControl>
-              <Input type="text" className="w-80 h-10 text-gray-700 border-none bg-gray-100 rounded-md outline-none px-3" {...field} />
+              <Input type="text" className=" h-10 text-gray-700 border-none bg-gray-100 rounded-md outline-none px-3" {...field} />
               </FormControl>
             </FormItem>
           )}
@@ -149,21 +149,21 @@ const CarteForm = () => {
             <FormItem className="flex flex-col items-start justify-between">
               <FormLabel className="text-xs text-gray-300">Rémunération parrainage</FormLabel>
               <FormControl>
-              <Input type="text" className="w-80 h-10 text-gray-700 border-none bg-gray-100 rounded-md outline-none px-3" {...field} />
+              <Input type="text" className=" h-10 text-gray-700 border-none bg-gray-100 rounded-md outline-none px-3" {...field} />
               </FormControl>
             </FormItem>
           )}
         />
-        <div className="flex items-center gap-4">
-         <CButton
+        <div className="flex flex-wrap items-center gap-y-4 w-[270px]">
+          <CButton
           type="submit"
           text={"Appliquer les modifications"}
-          btnStyle={"green"}/>
+          btnStyle={"green"}
+          width="100%"/>
           <CButton
           text={"Retablir"}
-          btnStyle={"outlineDark"}/>
-          {/* <Button type="submit" className="flex-1 basis-2/3 bg-faded-green/80 hover:bg-faded-green outline-none border-none rounded-full">Appliquer les modifications</Button>
-          <Button className="flex-1 basis-1/3 border border-black bg-transparent text-black outline-1 rounded-full">Retablir</Button> */}
+          btnStyle={"outlineDark"}
+          width="100%"/>
         </div>
       </form>
     </Form>

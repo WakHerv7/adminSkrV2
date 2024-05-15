@@ -35,7 +35,8 @@ import Flag from "@/components/shared/Flag";
 import CompteForm from "@/components/shared/Compte/CompteForm/CompteForm";
 import CarteForm from "@/components/shared/Compte/CarteForm/CarteForm";
 import TransfertsForm from "@/components/shared/Compte/TransfertsForm/TransfertsForm";
-
+import Title from "@/components/shared/Title";
+import ReactCountryFlag from "react-country-flag";
 
 
 export default function GeneralSettings() {
@@ -50,13 +51,12 @@ export default function GeneralSettings() {
 			<Accordion type="single" defaultValue="item-1" collapsible>
 				<AccordionItem value="item-1">
 					<AccordionTrigger>
-					<div>
-						<h1 className="text-[20px] font-bold">
-						Paramètres du Cameroun<></>
-						</h1>
+					<div className="flex items-center gap-3">
+						<Title title={`Paramètres du Cameroun`}/>
+						<ReactCountryFlag countryCode="CM"/>
 					</div>
 					</AccordionTrigger>
-					<AccordionContent className="flex flex-row justify-between items-start">
+					<AccordionContent className="flex flex-wrap py-5 gap-x-[50px] gap-y-10">
 					<div className="flex flex-col justify-start items-start">
 						<h1 className="text-[15px] font-bold text-gray-900">Compte</h1>
 						<p className="text-xs text-gray-500">cibler un comportement precis des utilisateurs</p>
@@ -82,10 +82,9 @@ export default function GeneralSettings() {
 				</AccordionItem>
 				<AccordionItem value="item-2">
 					<AccordionTrigger>
-					<div>
-						<h1 className="text-[20px] font-bold tracking-tight">
-						Paramètres du Gabon<></>
-						</h1>
+					<div className="flex items-center gap-3">
+						<Title title={`Paramètres du Gabon`}/>
+						<ReactCountryFlag countryCode="GA"/>
 					</div>
 					</AccordionTrigger>
 					<AccordionContent className="flex flex-row justify-between items-start">
@@ -114,10 +113,9 @@ export default function GeneralSettings() {
 				</AccordionItem>
 				<AccordionItem value="item-3">
 					<AccordionTrigger>
-					<div>
-						<h1 className="text-[20px] font-bold tracking-tight">
-						Paramètres du Sénégal<></>
-						</h1>
+					<div className="flex items-center gap-3">
+						<Title title={`Paramètres du Sénégal`}/>
+						<ReactCountryFlag countryCode="SN"/>
 					</div>
 					</AccordionTrigger>
 					<AccordionContent className="flex flex-row justify-between items-start">
@@ -146,10 +144,9 @@ export default function GeneralSettings() {
 				</AccordionItem>
 				<AccordionItem value="item-4">
 					<AccordionTrigger>
-					<div>
-						<h1 className="text-[20px] font-bold tracking-tight">
-						{`Paramètres de Cote d'ivoire`}<></>
-						</h1>
+					<div className="flex items-center gap-3">
+					<Title title={`Paramètres de Cote d'ivoire`}/>
+						<ReactCountryFlag countryCode="CI"/>
 					</div>
 					</AccordionTrigger>
 					<AccordionContent className="flex flex-row justify-between items-start">

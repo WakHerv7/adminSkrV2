@@ -152,8 +152,8 @@ export default function Home() {
             paymentMethod: item.paymentMethod,
 			status: 
                 item.status ?
-                <ActiveYesNo isActive={item.status} activeLabel="Réussi"/>
-                :<ActiveYesNo isActive={item.status} inactiveLabel="Echec"/>
+                <ActiveYesNo isActive={item.status} label="Réussi"/>
+                :<ActiveYesNo isActive={item.status} label="Echec"/>
             ,			
 			date: item.date,
 			actions: <>

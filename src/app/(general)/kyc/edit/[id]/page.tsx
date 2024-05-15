@@ -1,5 +1,4 @@
 "use client"
-import DetailsForm from '@/components/shared/DetailsForm';
 import Layout from '@/components/shared/Layout';
 import Title from '@/components/shared/Title';
 import {

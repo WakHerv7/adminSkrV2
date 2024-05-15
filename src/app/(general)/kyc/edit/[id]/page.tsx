@@ -25,7 +25,7 @@ import { FaCheck } from 'react-icons/fa';
 import CButton from '@/components/shared/CButton';
 
 
-const page = ({ params }: { params: { id: string} }) => {
+const Edit = ({ params }: { params: { id: string} }) => {
   const id = params.id;
 
   const form = useForm<z.infer<typeof detailsSchema>>({
@@ -61,7 +61,7 @@ const page = ({ params }: { params: { id: string} }) => {
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-gray-900 text-sm font-semibold tracking-tight">Type de Pièce d'identité</FormLabel>
+                    <FormLabel className="text-gray-900 text-sm font-semibold tracking-tight">{`Type de Pièce d'identité`}</FormLabel>
                     <FormControl>
                       <Input className="px-6 text-gray-900 font-normal bg-gray-200" {...field} />
                     </FormControl>
@@ -73,7 +73,7 @@ const page = ({ params }: { params: { id: string} }) => {
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-gray-900 text-sm font-semibold tracking-tight">Numéro unique de Pièce d'identité</FormLabel>
+                    <FormLabel className="text-gray-900 text-sm font-semibold tracking-tight">{`Numéro unique de Pièce d'identité`}</FormLabel>
                     <FormControl>
                       <Input className="px-6 text-gray-900 font-normal bg-gray-200" {...field} />
                     </FormControl>
@@ -84,7 +84,7 @@ const page = ({ params }: { params: { id: string} }) => {
               
               <div className="flex justify-between items-center gap-3 mb-5">
                 <figure>
-                  <figcaption className="text-gray-900 text-sm font-semibold mb-2">Photo pièce d'identité (recto)</figcaption>
+                  <figcaption className="text-gray-900 text-sm font-semibold mb-2">{`Photo pièce d'identité (recto)`}</figcaption>
                   <Image
                     src="/assets/group1.png"
                     alt="group1"
@@ -93,7 +93,7 @@ const page = ({ params }: { params: { id: string} }) => {
                   />
                 </figure>
                 <figure>
-                  <figcaption className="text-gray-900 text-sm font-semibold mb-2">Photo pièce d'identité (recto)</figcaption>
+                  <figcaption className="text-gray-900 text-sm font-semibold mb-2">{`Photo pièce d'identité (verso)`}</figcaption>
                   <Image
                     src="/assets/group3.png"
                     alt="group3"
@@ -102,7 +102,7 @@ const page = ({ params }: { params: { id: string} }) => {
                   />
                 </figure>
                 <figure>
-                  <figcaption className="text-gray-900 text-sm font-semibold mb-2">Photo pièce d'identité (recto)</figcaption>
+                  <figcaption className="text-gray-900 text-sm font-semibold mb-2">{`Selfie avec pièce d'identité`}</figcaption>
                   <Image
                     src="/assets/group2.png"
                     alt="group2"
@@ -236,4 +236,4 @@ const page = ({ params }: { params: { id: string} }) => {
   )
 }
 
-export default page
+export default Edit

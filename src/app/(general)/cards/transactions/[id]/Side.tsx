@@ -22,7 +22,7 @@ const cardOne = {
 export default function Side() {
 
   return (
-    <div className="w-64 flex flex-col gap-y-[25px]">
+    <div className="w-[300px] flex flex-col gap-y-[25px]  pr-5 border-r-1">
         
         <CartesCard
           key={cardOne.id}

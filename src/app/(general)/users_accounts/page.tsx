@@ -41,7 +41,7 @@ import {
 import { waitCircleIcon,
     checkCircleIcon,
     ongoingCircleIcon,
-    closeCircleIcon,
+    haltCircleIcon,
  } from "@/constants/icons";
 
 
@@ -67,7 +67,7 @@ const infoData: TDataList[] = [
                 value:{text:"1399", fw:"bold", color:"#18BC7A"}
             },
             {
-                label:{text:closeCircleIcon, tooltip:"Bloqués", fw:"", color:"#444"},
+                label:{text:haltCircleIcon, tooltip:"Bloqués", fw:"", color:"#444"},
                 value:{text:"57", fw:"bold", color:"#F85D4B"}
             },
         ]
@@ -93,7 +93,7 @@ const infoData: TDataList[] = [
                 value:{text:"443", fw:"bold", color:"#18BC7A", fs:'14px'}
             },
             {
-                label:{text:closeCircleIcon, tooltip:"Bloqués", fw:"", color:"#444", fs:'11px'},
+                label:{text:haltCircleIcon, tooltip:"Bloqués", fw:"", color:"#444", fs:'11px'},
                 value:{text:"57", fw:"bold", color:"#F85D4B", fs:'14px'}
             },
         ]

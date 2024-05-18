@@ -48,7 +48,7 @@ import ActiveYesNo from "@/components/shared/ActiveYesNo";
 import {
 	checkCircleIcon,
 	ongoingCircleIcon,
-	closeCircleIcon,
+	haltCircleIcon,
 	transferIcon,
 	calendarIcon,
 	transferIconToday,
@@ -62,41 +62,15 @@ import {
 	transferIconSekureTotal,
 } from "@/constants/Index";
 import InfoCard, { TDataList } from "@/components/cards/InfoCard";
+import { cardDepositIconToday, cardDepositIconTotal, cardWithdrawalIconToday, cardWithdrawalIconTotal, closeCircleIcon, haltCircleIconGray, lockedIcon, paymentIconToday } from "@/constants/icons";
 
 const infoData: TDataList[] = [
 	[
 		[
 			{
 				label: {
-					text: transferIconToday,
-					tooltip: "Transferts aujourd'hui",
-					fw: "bold",
-					color: "#444",
-				},
-				value: { text: "1 558 450 XAF", fw: "bold", color: "#444" },
-			},
-		],
-		[
-			{
-				label: {
-					text: transferIconAvg,
-					tooltip: "Moyenne transferts",
-					color: "#444",
-				},
-				value: {
-					text: "1 855 950 XAF / jour",
-					fw: "bold",
-					color: "#444",
-				},
-			},
-		],
-	],
-	[
-		[
-			{
-				label: {
-					text: transferIconTotal,
-					tooltip: "Total transferts",
+					text: "Solde cartes",
+					tooltip: "Solde cartes",
 					fw: "bold",
 					color: "#444",
 				},
@@ -107,7 +81,7 @@ const infoData: TDataList[] = [
 			{
 				label: {
 					text: checkCircleIcon,
-					tooltip: "Réussis",
+					tooltip: "Actives",
 					fw: "",
 					color: "#444",
 					fs: "11px",
@@ -117,13 +91,13 @@ const infoData: TDataList[] = [
 					fw: "bold",
 					color: "#18BC7A",
 					fs: "14px",
-					tooltip: "Réussis",
+					tooltip: "Actives",
 				},
 			},
 			{
 				label: {
-					text: ongoingCircleIcon,
-					tooltip: "En cours",
+					text: haltCircleIconGray,
+					tooltip: "Bloquées",
 					fw: "",
 					color: "#444",
 					fs: "11px",
@@ -133,13 +107,13 @@ const infoData: TDataList[] = [
 					fw: "bold",
 					color: "#888",
 					fs: "14px",
-					tooltip: "En cours",
+					tooltip: "Bloquées",
 				},
 			},
 			{
 				label: {
 					text: closeCircleIcon,
-					tooltip: "Bloqués",
+					tooltip: "Supprimées",
 					fw: "",
 					color: "#444",
 					fs: "11px",
@@ -149,7 +123,7 @@ const infoData: TDataList[] = [
 					fw: "bold",
 					color: "#F85D4B",
 					fs: "14px",
-					tooltip: "Bloqués",
+					tooltip: "Supprimées",
 				},
 			},
 		],
@@ -158,8 +132,62 @@ const infoData: TDataList[] = [
 		[
 			{
 				label: {
-					text: transferIconMomoToday,
-					tooltip: "Transferts vers Mobile money aujourd'hui",
+					text: cardDepositIconToday,
+					tooltip: "Recharges cartes aujourd'hui",
+					fw: "bold",
+					color: "#444",
+				},
+				value: { text: "158 450 XAF", fw: "bold", color: "#444" },
+			},
+		],
+		[
+			{
+				label: {
+					text: cardDepositIconTotal,
+					tooltip: "Total Recharges cartes",
+					color: "#444",
+				},
+				value: {
+					text: "21 855 950 XAF",
+					fw: "bold",
+					color: "#444",
+				},
+			},
+		],
+	],
+	[
+		[
+			{
+				label: {
+					text: cardWithdrawalIconToday,
+					tooltip: "Retraits cartes aujourd'hui",
+					fw: "bold",
+					color: "#444",
+				},
+				value: { text: "235 300 XAF", fw: "bold", color: "#444" },
+			},
+		],
+		[
+			{
+				label: {
+					text: cardWithdrawalIconTotal,
+					tooltip: "Total Retraits cartes",
+					color: "#444",
+				},
+				value: {
+					text: "35 235 300 XAF",
+					fw: "bold",
+					color: "#444",
+				},
+			},
+		],
+	],
+	[
+		[
+			{
+				label: {
+					text: paymentIconToday,
+					tooltip: "Paiements aujourd'hui",
 					fw: "bold",
 					color: "#444",
 				},
@@ -169,31 +197,8 @@ const infoData: TDataList[] = [
 		[
 			{
 				label: {
-					text: transferIconMomoTotal,
-					tooltip: "Total transferts vers Mobile money",
-					color: "#444",
-				},
-				value: { text: "15 855 950 XAF", fw: "bold", color: "#444" },
-			},
-		],
-	],
-	[
-		[
-			{
-				label: {
-					text: transferIconSekureToday,
-					tooltip: "Transferts vers Sekure aujourd'hui",
-					fw: "bold",
-					color: "#444",
-				},
-				value: { text: "2 558 450 XAF", fw: "bold", color: "#444" },
-			},
-		],
-		[
-			{
-				label: {
-					text: transferIconSekureTotal,
-					tooltip: "Total transferts vers Sekure",
+					text: "Total Paiements",
+					tooltip: "Total Paiements",
 					fw: "",
 					color: "#444",
 				},
@@ -505,7 +510,7 @@ export default function Home() {
 					<div className="border-b-1">
 					<TabsList className="TabsList">
 					<TabsTrigger className="TabsTrigger" value="01">Liste des cartes</TabsTrigger>
-					<TabsTrigger className="TabsTrigger" value="02">transactions de cartes</TabsTrigger>
+					<TabsTrigger className="TabsTrigger" value="02">Transactions de cartes</TabsTrigger>
 					<TabsTrigger className="TabsTrigger" value="03">Achats de cartes</TabsTrigger>
 					<TabsTrigger className="TabsTrigger" value="04">Paiements de cartes</TabsTrigger>
 					

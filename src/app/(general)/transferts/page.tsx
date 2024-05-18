@@ -42,7 +42,7 @@ import {
 import {
     checkCircleIcon,
     ongoingCircleIcon,
-    closeCircleIcon,
+    haltCircleIcon,
     transferIcon,
     calendarIcon,
     transferIconToday,
@@ -96,7 +96,7 @@ const infoData: TDataList[] = [
                 value:{text:"577", fw:"bold", color:"#888", fs:'14px', tooltip:"En cours",}
             },
             {
-                label:{text:closeCircleIcon, tooltip:"Bloqués", fw:"", color:"#444", fs:'11px'},
+                label:{text:haltCircleIcon, tooltip:"Bloqués", fw:"", color:"#444", fs:'11px'},
                 value:{text:"780", fw:"bold", color:"#F85D4B", fs:'14px', tooltip:"Bloqués",}
             },
         ]

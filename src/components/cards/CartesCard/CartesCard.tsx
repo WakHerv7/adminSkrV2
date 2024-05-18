@@ -83,8 +83,10 @@ const CartesCard = ({
       </div>
       {expanded ?
       <>
-        <h1 className="text-sm font-semibold tracking-tight">Nombre de paiements</h1>
-        <h1 className="text-2xl text-[#18BC7A] font-semibold ">{nbPayments}</h1>
+        <div>
+        <div className="text-sm font-semibold">Nombre de paiements</div>
+        <div className="text-xl text-[#18BC7A] font-semibold ">{nbPayments}</div>
+        </div>
         <div className="flex items-center gap-3 w-full my-2">
           <p title="Actives" className=" flex items-center gap-3 text-sm font-normal">
             {/* Actives  */}
@@ -102,40 +104,57 @@ const CartesCard = ({
             Supprimées 
             <span className=" text-[#F85D4B] ml-1 font-bold">3</span></p> */}
         </div>
-        <h1 className="text-sm font-semibold ">Solde Carte</h1>
-        <h1 className="text-2xl text-[#18BC7A] font-semibold mb-3">{cardBalance} XAF</h1>
-        <h1 className="text-sm font-semibold ">Total Paiements</h1>
-        <h1 className="text-2xl text-[#18BC7A] font-semibold mb-3">{totalBalance} XAF</h1>
-        <h1 className="text-sm font-semibold ">Moyenne par semaine</h1>
-        <h1 className="text-2xl text-[#18BC7A] font-semibold mb-3">{average} XAF</h1>
+        <div>
+          <h1 className="text-sm font-semibold ">Solde Carte</h1>
+          <h1 className="text-xl text-[#18BC7A] font-semibold mb-3">{cardBalance} XAF</h1>
+        </div>
+        <div>
+          <h1 className="text-sm font-semibold ">Total Paiements</h1>
+          <h1 className="text-xl text-[#18BC7A] font-semibold mb-3">{totalBalance} XAF</h1>
+        </div>
+        <div>
+          <h1 className="text-sm font-semibold ">Moyenne par semaine</h1>
+          <h1 className="text-xl text-[#18BC7A] font-semibold mb-3">{average} XAF</h1>
+        </div>
       </>
       :<></>}
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-2 gap-3 w-full">
+          <div className="col-span-2">
           <CButton
             text={'Recharger'}
             href={`#`}
             btnStyle={'dark'}
             icon={<FourDots />}
-                      
+            width={'100%'}
           />
+          </div>
+          <div className="col-span-2">
           <CButton
             text={'Retirer'}
             href={`#`}
             btnStyle={'dark'}
             icon={<FourDots />}                    
+            width={'100%'}
           />
+          </div>
+          <div className="col-span-2">
           <CButton
             text={'Bloquer'}
             href={`#`}
             btnStyle={'dark'}
             icon={<FourDots />}                    
+            width={'100%'}
           />
+          </div>
+          <div className="col-span-2">
           <CButton
             text={'Supprimer'}
             href={`#`}
             btnStyle={'dark'}
             icon={<FourDots />}                    
+            width={'100%'}
           />
+          </div>
           <div className="col-span-2">
           {!expanded ?
             <CButton

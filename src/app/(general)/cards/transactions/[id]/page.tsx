@@ -8,7 +8,7 @@ export default function Page() {
     <Layout 
     title="Details Carte"
     backLink='/cards'>
-        <section className="px-4 flex flex-between items-start gap-10 mb-6">
+        <section className="flex flex-between items-start gap-5 mb-6">
         <Side/>
         <Main/>
         </section>

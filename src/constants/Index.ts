@@ -12,7 +12,7 @@ export {
 	checkCircleIcon,
 	ongoingCircleIcon,
 	waitCircleIcon,
-	closeCircleIcon,
+	haltCircleIcon,
 	transferIcon,
 	calendarIcon,
 	transferIconToday,

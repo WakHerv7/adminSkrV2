@@ -4,6 +4,7 @@ import Link from "next/link";
 
 const CButton = ({
 	text,
+	toolTip,
 	color,
 	height,
 	width,
@@ -24,6 +25,7 @@ const CButton = ({
 	iconPosition,
 }: {
 	text: string;
+	toolTip?: string;
 	btnStyle:
 		| "outlineDark"
 		| "outlineGreen"
@@ -104,6 +106,7 @@ const CButton = ({
 		<>
 			{href ? (
 				<Link
+					title={toolTip}
 					href={href}
 					className={btnClassZero + " " + btnStyles[btnStyle]}
 					style={{
@@ -127,6 +130,7 @@ const CButton = ({
 			) : (
 				<>
 					<button
+						title={toolTip}	
 						type={type ? type : "button"}
 						className={
 							btnClassZero + " relative " + btnStyles[btnStyle]

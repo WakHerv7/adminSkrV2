@@ -17,7 +17,7 @@ import  KYCAccepted from "./components/Tabs/KYCAccepted";
 import  KYCRejected from "./components/Tabs/KYCRejected";
 import  KYCPending from "./components/Tabs/KYCPending";
 import InfoCard, { TDataList } from "@/components/cards/InfoCard";
-import { checkCircleIcon, closeCircleIcon, folderIcon, ongoingCircleIcon, verifiedIcon, waitCircleIcon } from "@/constants/icons";
+import { checkCircleIcon, haltCircleIcon, folderIcon, ongoingCircleIcon, verifiedIcon, waitCircleIcon } from "@/constants/icons";
 
 
 const infoData: TDataList[] = [
@@ -46,7 +46,7 @@ const infoData: TDataList[] = [
                 value:{text:"65", fw:"bold", color:"#18BC7A", fs:'14px', tooltip:"KYC Approuvés",}
             },
             {
-                label:{text:closeCircleIcon, tooltip:"KYC Rejetés", fw:"", color:"#444", fs:'11px'},
+                label:{text:haltCircleIcon, tooltip:"KYC Rejetés", fw:"", color:"#444", fs:'11px'},
                 value:{text:"6", fw:"bold", color:"#F85D4B", fs:'14px', tooltip:"KYC Rejetés",}
             },
             {
@@ -80,7 +80,7 @@ const infoData: TDataList[] = [
               value:{text:"2500", fw:"bold", color:"#18BC7A", fs:'14px', tooltip:"KYC Approuvés",}
           },
           {
-              label:{text:closeCircleIcon, tooltip:"KYC Rejetés", fw:"", color:"#444", fs:'11px'},
+              label:{text:haltCircleIcon, tooltip:"KYC Rejetés", fw:"", color:"#444", fs:'11px'},
               value:{text:"281", fw:"bold", color:"#F85D4B", fs:'14px', tooltip:"KYC Rejetés",}
           },
           {

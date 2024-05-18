@@ -6,6 +6,8 @@ import Link from "next/link";
 import CButton from "@/components/shared/CButton";
 import { FourDots } from "@/components/shared/icons";
 import { GoDotFill } from "react-icons/go";
+import { MdCheckCircle } from "react-icons/md";
+import { IoIosCloseCircle } from "react-icons/io";
 
 interface ICartesCard {
   cardNumber: string;
@@ -15,6 +17,14 @@ interface ICartesCard {
   solde: string;
   status: string;
   activateDate: string;
+  title?: string;
+  expanded?: boolean;
+  nbPayments?: string;
+  nbPaymentsSuccess?: string;
+  nbPaymentsFailed?: string;
+  cardBalance?: string;
+  totalBalance?: string;
+  average?: string;
 }
 
 const CartesCard = ({
@@ -24,11 +34,19 @@ const CartesCard = ({
   date,
   solde,
   status,
-  activateDate
+  activateDate,
+  title,
+  expanded,
+  nbPayments,
+  nbPaymentsSuccess,
+  nbPaymentsFailed,
+  cardBalance,
+  totalBalance,
+  average,
 }: ICartesCard) => {
   return (
     <div className="flex flex-col justify-start items-start gap-3">
-      <h1 className="text-base font-semibold tracking-tight">Carte 1</h1>
+      <h1 className="text-base font-semibold tracking-tight">{title ?? 'Carte 1'}</h1>
       <div className={`px-3 py-3 bg-[#FFDB5A] outline-none border-none shadow-sm 
       flex justify-center items-center rounded-2xl w-full`}>
         <h1 className="text-lg font-bold tracking-wide">
@@ -63,6 +81,35 @@ const CartesCard = ({
         </div>
         <br />
       </div>
+      {expanded ?
+      <>
+        <h1 className="text-sm font-semibold tracking-tight">Nombre de paiements</h1>
+        <h1 className="text-2xl text-[#18BC7A] font-semibold ">{nbPayments}</h1>
+        <div className="flex items-center gap-3 w-full my-2">
+          <p title="Actives" className=" flex items-center gap-3 text-sm font-normal">
+            {/* Actives  */}
+            <MdCheckCircle size={22} color="#18BC7A"/>
+            <span className="ml-1 font-bold">{nbPaymentsSuccess}</span>
+          </p>
+          <p title="Echouées" className=" flex items-center gap-3 text-sm font-normal">
+            <IoIosCloseCircle size={22} color="#F85D4B"/>
+            <span className="ml-1 font-bold">{nbPaymentsFailed}</span>
+          </p>
+          {/* <p className="text-xs font-normal">
+            Bloquées 
+            <span className=" text-[#444] ml-1 font-bold">2</span></p>
+          <p className="text-xs font-normal">
+            Supprimées 
+            <span className=" text-[#F85D4B] ml-1 font-bold">3</span></p> */}
+        </div>
+        <h1 className="text-sm font-semibold ">Solde Carte</h1>
+        <h1 className="text-2xl text-[#18BC7A] font-semibold mb-3">{cardBalance} XAF</h1>
+        <h1 className="text-sm font-semibold ">Total Paiements</h1>
+        <h1 className="text-2xl text-[#18BC7A] font-semibold mb-3">{totalBalance} XAF</h1>
+        <h1 className="text-sm font-semibold ">Moyenne par semaine</h1>
+        <h1 className="text-2xl text-[#18BC7A] font-semibold mb-3">{average} XAF</h1>
+      </>
+      :<></>}
       <div className="grid grid-cols-2 gap-3">
           <CButton
             text={'Recharger'}
@@ -90,13 +137,17 @@ const CartesCard = ({
             icon={<FourDots />}                    
           />
           <div className="col-span-2">
-          <CButton
-            text={'Voir transactions'}
-            href={`#`}
-            btnStyle={'dark'}
-            icon={<FourDots />}
-            width={'100%'}            
-          />
+          {!expanded ?
+            <CButton
+              text={'Voir transactions'}
+              href={`#`}
+              btnStyle={'dark'}
+              icon={<FourDots />}
+              width={'100%'}            
+            />
+          :
+          <></>}
+          
           </div>
         {/* {[1, 2, 3, 4].map((_, idx) => (
           <Button key={idx} id={idx.toString()} type="button" className="text-sm text-gray-300 rounded-full w-[109px]" asChild>

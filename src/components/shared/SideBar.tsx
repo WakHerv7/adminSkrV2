@@ -49,7 +49,7 @@ const SideBarLinks = [
   },
   {
     title: 'Gains',
-    path: '/earnings',
+    path: '/profit',
     count: null,
     icon: <Gains/>,    
   },

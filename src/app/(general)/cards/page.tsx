@@ -62,7 +62,7 @@ import {
 	transferIconSekureTotal,
 } from "@/constants/Index";
 import InfoCard, { TDataList } from "@/components/cards/InfoCard";
-import { cardDepositIconToday, cardDepositIconTotal, cardWithdrawalIconToday, cardWithdrawalIconTotal, closeCircleIcon, haltCircleIconGray, lockedIcon, paymentIconToday } from "@/constants/icons";
+import { cardDepositIconToday, cardDepositIconTotal, cardWithdrawalIconToday, cardWithdrawalIconTotal, closeCircleIcon, haltCircleIconGray, lockedIcon, paymentIconToday, paymentIconTotal } from "@/constants/icons";
 
 const infoData: TDataList[] = [
 	[
@@ -197,7 +197,7 @@ const infoData: TDataList[] = [
 		[
 			{
 				label: {
-					text: "Total Paiements",
+					text: paymentIconTotal,
 					tooltip: "Total Paiements",
 					fw: "",
 					color: "#444",

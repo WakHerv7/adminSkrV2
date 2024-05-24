@@ -2,6 +2,8 @@ export { headerUserAccountData } from "./UserAccountData";
 export { tableUserAccountData } from "./UserAccountData";
 export { headerHomeUserAccountData } from "./HomeUserAccountData";
 export { tableHomeUserAccountData } from "./HomeUserAccountData";
+export { headerProfitData } from "./ProfitData";
+export { tableProfitData } from "./ProfitData";
 export { headerKYCData } from "./KYCData";
 export { tableKYCData } from "./KYCData";
 export { headerTransactionData } from "./TransactionData";

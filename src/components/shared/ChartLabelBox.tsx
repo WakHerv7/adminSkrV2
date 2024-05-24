@@ -1,8 +1,17 @@
-const ChartLabelBox = ({ title, rate }: { title: string; rate: string }) => {
+const ChartLabelBox = (
+  { title, rate, size, bgColor, textColor }: { 
+    size?: string; 
+    bgColor?: string;
+    textColor?: string;
+    title: string; 
+    rate: string;
+  }) => {
   return (
-    <div className="my-3 px-3 py-2 bg-[#ECECEC] rounded-md flex justify-around items-center gap-2 min-w-[164px]">
-      <span className="text-[12px] font-normal">{title}</span>
-      <span className="text-[12px] font-semibold">{rate}</span>
+    <div 
+    style={{background:bgColor ?? '#ECECEC', color: textColor ?? '#000'}}
+    className="my-3 px-3 py-2 rounded-md flex justify-around items-center gap-2 min-w-[164px]">
+      <span style={{fontSize:size ?? '12px'}} className="font-normal">{title}</span>
+      <span style={{fontSize:size ?? '12px'}} className="font-semibold">{rate}</span>
     </div>
   )
 }

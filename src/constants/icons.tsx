@@ -8,6 +8,7 @@ import { FaFolder, FaLock, FaRegCalendarCheck } from "react-icons/fa";
 import { GrTransaction } from "react-icons/gr";
 import { BsFillBookmarkCheckFill } from "react-icons/bs";
 import { FaRegCreditCard } from "react-icons/fa6";
+import { TbSum } from "react-icons/tb";
 // import { PiHandWithdraw } from "react-icons/pi";
 // import { PiHandDeposit } from "react-icons/pi";
 
@@ -22,14 +23,15 @@ export const haltCircleIconGray = <MdRemoveCircle size={24} color={"#777"} />;
 export const closeCircleIcon = <IoIosCloseCircle size={24} color={"#F85D4B"} />;
 export const calendarIcon = <FaRegCalendarCheck size={20} color={"#444"} />;
 export const creditCardIcon = <FaRegCreditCard size={20} color={"#444"} />;
+export const totalIcon = <TbSum size={20} color={"#444"} />;
 
 
 
 
 export const transferIcon = <BiTransferAlt size={24} color={"#444"} />;
-export const transferIconToday = <span className="flex gap-2">{transferIcon} {calendarIcon}</span>;  // aujourd'hui
-export const transferIconAvg = <span className="flex gap-2">Moyenne {transferIcon}</span>;
-export const transferIconTotal = <span className="flex gap-2">Total {transferIcon}</span>;
+export const transferIconToday = <span className="flex gap-1">{transferIcon} {calendarIcon}</span>;  // aujourd'hui
+export const transferIconAvg = <span className="flex gap-1">Moy. {transferIcon}</span>;
+export const transferIconTotal = <span className="flex gap-1">{totalIcon} {transferIcon}</span>;
 
 export const mobileMoneyIcon = <span className="relative">
     <MdOutlinePhoneIphone size={24}/>
@@ -44,11 +46,11 @@ export const sekureIcon = <svg width="17" height="18" viewBox="0 0 21 22" fill="
 <path d="M12.2232 10.6731C12.2232 10.2755 12.0663 9.89442 11.7925 9.61321C11.5161 9.33226 11.1402 9.17429 10.7519 9.17429H9.57923C9.18837 9.17429 8.81496 9.33226 8.53862 9.61321C8.26228 9.89442 8.10791 10.2755 8.10791 10.6731V11.8659C8.10791 12.2632 8.26228 12.6446 8.53862 12.9256C8.81496 13.2068 9.18837 13.3647 9.57923 13.3647H10.7519C11.1402 13.3647 11.5161 13.2068 11.7925 12.9256C12.0663 12.6446 12.2232 12.2632 12.2232 11.8659V10.6731Z" fill="#FFDB5A"/>
 </svg>
 
-export const transferIconMomoToday = <span className="flex gap-2">{transferIcon} vers {mobileMoneyIcon} {calendarIcon}</span>;
-export const transferIconMomoTotal = <span className="flex gap-2">Total {transferIcon} vers {mobileMoneyIcon}</span>;
+export const transferIconMomoToday = <span className="flex gap-1">{transferIcon} vers {mobileMoneyIcon} {calendarIcon}</span>;
+export const transferIconMomoTotal = <span className="flex gap-1">{totalIcon} {transferIcon} vers {mobileMoneyIcon}</span>;
 
-export const transferIconSekureToday = <span className="flex gap-2">{transferIcon} vers {sekureIcon} {calendarIcon}</span>;
-export const transferIconSekureTotal = <span className="flex gap-2">Total {transferIcon} vers {sekureIcon}</span>;
+export const transferIconSekureToday = <span className="flex gap-1">{transferIcon} vers {sekureIcon} {calendarIcon}</span>;
+export const transferIconSekureTotal = <span className="flex gap-1">{totalIcon} {transferIcon} vers {sekureIcon}</span>;
 
 
 
@@ -59,16 +61,17 @@ export const transactionIcon = <GrTransaction size={20} color={"#444"} />;
 // export const depositIcon = <PiHandWithdraw size={24} color={"#444"} />;
 // export const withdrawalIcon = <PiHandDeposit size={24} color={"#444"} />;
 
-export const transactionIconToday = <span className="flex gap-2">{transactionIcon} {calendarIcon}</span>;  // aujourd'hui
-export const transactionIconAvg = <span className="flex gap-2">Moyenne {transactionIcon}</span>;
-export const transactionIconTotal = <span className="flex gap-2">Total {transactionIcon}</span>;
-export const depositIconToday = <span className="flex gap-2">Recharges {calendarIcon}</span>;  // aujourd'hui
-export const withdrawalIconToday = <span className="flex gap-2">Retraits {calendarIcon}</span>;  // aujourd'hui
+export const transactionIconToday = <span className="flex gap-1">{transactionIcon} {calendarIcon}</span>;  // aujourd'hui
+export const transactionIconAvg = <span className="flex gap-1">Moy. {transactionIcon}</span>;
+export const transactionIconTotal = <span className="flex gap-1">{totalIcon} {transactionIcon}</span>;
+export const depositIconToday = <span className="flex gap-1">Recharges {calendarIcon}</span>;  // aujourd'hui
+export const withdrawalIconToday = <span className="flex gap-1">Retraits {calendarIcon}</span>;  // aujourd'hui
 
-export const cardDepositIconToday = <span className="flex gap-2">Recharges {creditCardIcon} {calendarIcon}</span>;  // aujourd'hui
-export const cardWithdrawalIconToday = <span className="flex gap-2">Retraits {creditCardIcon} {calendarIcon}</span>;
-export const cardDepositIconTotal = <span className="flex gap-2">Total Recharges {creditCardIcon}</span>;  // aujourd'hui
-export const cardWithdrawalIconTotal = <span className="flex gap-2">Total Retraits {creditCardIcon}</span>;
+export const cardDepositIconToday = <span className="flex gap-1">Recharges {creditCardIcon} {calendarIcon}</span>;  // aujourd'hui
+export const cardWithdrawalIconToday = <span className="flex gap-1">Retraits {creditCardIcon} {calendarIcon}</span>;
+export const cardDepositIconTotal = <span className="flex gap-1">{totalIcon} Recharges</span>;  // aujourd'hui
+export const cardWithdrawalIconTotal = <span className="flex gap-1">{totalIcon} Retraits</span>;
 
-export const paymentIconToday = <span className="flex gap-2">Paiements {calendarIcon}</span>;
+export const paymentIconToday = <span className="flex gap-1">Paiements {calendarIcon}</span>;
+export const paymentIconTotal = <span className="flex gap-1">{totalIcon} Paiements</span>;
 

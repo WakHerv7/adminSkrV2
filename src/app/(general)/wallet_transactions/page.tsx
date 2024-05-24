@@ -60,6 +60,7 @@ import {
     depositIconToday,
     withdrawalIconToday,
     } from '@/constants/Index';
+import { cardDepositIconTotal, cardWithdrawalIconTotal } from "@/constants/icons";
 
 const infoData: TDataList[] = [
     [
@@ -82,7 +83,7 @@ const infoData: TDataList[] = [
         [{
             label:{
                 text: transactionIconTotal,
-                tooltip:"Total transactions", 
+                tooltip: "Total transactions", 
                 fw:"bold", color:"#444"},
             value:{text:"9 850 675 XAF", fw:"bold", color:"#444"}
         }],
@@ -107,7 +108,9 @@ const infoData: TDataList[] = [
             value:{text:"2 558 450 XAF", fw:"bold", color:"#444"}
         }],
         [{
-            label:{text:"Total recharges", fw:"", color:"#444"},
+            label:{
+                text: cardDepositIconTotal, //"Total recharges", 
+                fw:"", color:"#444"},
             value:{text:"15 855 950 XAF", fw:"bold", color:"#444"}
         }]
     ],
@@ -117,7 +120,9 @@ const infoData: TDataList[] = [
             value:{text:"2 558 450 XAF", fw:"bold", color:"#444"}
         }],
         [{
-            label:{text:"Total retraits", fw:"", color:"#444"},
+            label:{
+                text: cardWithdrawalIconTotal, //"Total retraits", 
+                fw:"", color:"#444"},
             value:{text:"15 855 950 XAF", fw:"bold", color:"#444"}
         }]
     ],

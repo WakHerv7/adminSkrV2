@@ -78,6 +78,43 @@ export const gradientData3 = {
   ]
 };
 
+
+export const gradientDualData = {
+  labels: ['Mon1', 'Mon2', 'Mon3', 'Mon4', 'Mon5', 'Mon6', 'Mon7', 'Mon8', 'Mon9', 'Mon10', 'Mon11', 'Mon12'],
+  datasets: [
+    {
+      label: 'Recharges',
+      data: Array.from({length: 30}, () => Math.floor(Math.random() * 100)+80),
+      borderColor: 'rgba(75, 192, 192, 1)',
+      borderWidth: 1,
+      fill: true,
+      pointStyle: false,
+      backgroundColor: (context: ScriptableContext<"line">) => {
+        const ctx = context.chart.ctx;
+        const gradient = ctx.createLinearGradient(0, 0, 500, 200);
+        gradient.addColorStop(0, "#18BC7Add");
+        gradient.addColorStop(1, "#FFDB5Add");
+        return gradient;
+      },
+    },
+    {
+      label: 'Retraits',
+      data: Array.from({length: 30}, () => Math.floor(Math.random() * 100)+80),
+      borderColor: 'rgba(75, 192, 192, 1)',
+      borderWidth: 1,
+      fill: true,
+      pointStyle: false,
+      backgroundColor: (context: ScriptableContext<"line">) => {
+        const ctx = context.chart.ctx;
+        const gradient = ctx.createLinearGradient(0, 0, 500, 200);
+        gradient.addColorStop(0, "#0F7980dd");
+        gradient.addColorStop(1, "#33E89Cdd");
+        return gradient;
+      },
+    }
+  ]
+};
+
 export const dualData = {
     labels: ['Mon1', 'Mon2', 'Mon3', 'Mon4', 'Mon5', 'Mon6', 'Mon7', 'Mon8', 'Mon9', 'Mon10', 'Mon11', 'Mon12'],
     datasets: [
@@ -101,6 +138,8 @@ export const dualData = {
       }
     ]
 };
+
+
   
 export const trxData = {
     labels: ['J1', 'J2', 'J3', 'J4', 'J5', 'J6', 'J7', 'J8', 'J9', 'J10', 
@@ -268,3 +307,94 @@ export const pieDataFour = {
      }
   ]
 };
+
+
+
+export const pieDataSix = {
+  labels: [
+    '#33E89C',
+    '#FFDB5A',
+    '#FD8A49',
+    '#6200EE',
+    '#5BCEFF',
+    '#F85D4B',],
+  datasets: [
+     {
+       label: '# of Votes',
+      //  data: [9, 10, 17, 5],
+      data: Array.from({length: 6}, () => Math.floor(Math.random() * 301) + 100),
+      backgroundColor: [
+        '#33E89C',
+        '#FFDB5A',
+        '#FD8A49',
+        '#6200EE',
+        '#5BCEFF',
+        '#F85D4B',
+       ],
+       borderColor: [
+        '#33E89C',
+        '#FFDB5A',
+        '#FD8A49',
+        '#6200EE',
+        '#5BCEFF',
+        '#F85D4B',
+       ],
+       borderWidth: 1
+     }
+  ]
+};
+
+
+
+export const pieDataNine = {
+  labels: [
+    '#33E89C',
+    '#FFDB5A',
+    '#FD8A49',
+    '#6200EE',
+    '#5BCEFF',
+    '#F85D4B',
+    '#D18E6F',
+    '#FC9F92',
+    '#D0D06F',],
+  datasets: [
+     {
+       label: '# of Votes',
+      //  data: [9, 10, 17, 5],
+      data: Array.from({length: 9}, () => Math.floor(Math.random() * 301) + 100),
+      backgroundColor: [
+        '#33E89C',
+        '#FFDB5A',
+        '#FD8A49',
+        '#6200EE',
+        '#5BCEFF',
+        '#F85D4B',
+        '#D18E6F',
+        '#FC9F92',
+        '#D0D06F',
+       ],
+       borderColor: [
+        '#33E89C',
+        '#FFDB5A',
+        '#FD8A49',
+        '#6200EE',
+        '#5BCEFF',
+        '#F85D4B',
+        '#D18E6F',
+        '#FC9F92',
+        '#D0D06F',
+       ],
+       borderWidth: 1
+     }
+  ]
+};
+
+
+
+
+
+
+
+
+
+

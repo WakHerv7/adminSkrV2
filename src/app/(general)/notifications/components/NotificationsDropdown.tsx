@@ -8,7 +8,7 @@ import SelectComponent from "@/components/shared/SelectComponent";
 
 const NotificationsDropdown = () => {
 	return (
-		<div className="w-[356px]">
+		<div className="w-full">
 			<div className="flex justify-between items-center">
 				<h1 className="text-base font-bold leading-6">Cible</h1>
 				<CButton text="importer un csv" btnStyle="green" />

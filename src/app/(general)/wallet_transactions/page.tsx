@@ -61,6 +61,7 @@ import {
     withdrawalIconToday,
     } from '@/constants/Index';
 import { cardDepositIconTotal, cardWithdrawalIconTotal } from "@/constants/icons";
+import InfoCardGrid from "@/components/cards/InfoCardGrid";
 
 const infoData: TDataList[] = [
     [
@@ -168,13 +169,8 @@ export default function Home() {
 		title={"Transactions wallet"}
 		>
             <section className='mt-2'>
-                <div className='mb-10 grid lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-1' style={{gap:'20px'}}>
-                    {infoData.map((data, index) => (
-                        <InfoCard key={index} data={data} />
-                    ))}
-                </div>
-
-                <div 
+                <InfoCardGrid infoData={infoData}/>
+                {/* <div 
                 style={{width:'calc(100vw - 350px)', overflowX:'auto'}}
                 className={`relative flex flex-row w-full items-start mt-6 gap-16`}>
                     <div className='flex flex-col justify-between items-start gap-2'>
@@ -220,7 +216,6 @@ export default function Home() {
                     <div>
                         <div className="relative  h-80 overflow-hidden">
                             <Title title={"Traffic de transactions par pays"} />
-                            {/* <h1 className='text-md lg:text-lg font-semibold text-black text-left '>Traffic de paiements</h1> */}
                             <Doughnut data={doughnutData} />
                             <div className='grid grid-cols-2 gap-x-10 gap-3'>
                                 <LegendItem  label={`Cameroun`} color={`#33E89C`} value={`46%`}/>
@@ -236,9 +231,7 @@ export default function Home() {
                         <div>
                             <Title title={"Opérateurs"} />
                             <div className='flex justify-between items-center gap-2 flex-1'>
-                                <div className='flex flex-col justify-start items-start gap-1 w-[120px]'>
-                                    {/* <Title title={"Etat des comptes créés"} /> */}
-                                    {/* <h1 className='text-[14px] font-semibold w-full'>Etat des comptes créés</h1> */}
+                                <div className='flex flex-col justify-start items-start gap-1 w-[120px]'>                                    
                                     <LegendItem  label={`Orange`} color={`#33E89C`} value={`46%`}/>
                                     <LegendItem  label={`MTN`} color={`#FFDB5A`} value={`46%`}/>
                                     <LegendItem  label={`Airtel`} color={`#FD8A49`} value={`46%`}/>
@@ -258,7 +251,7 @@ export default function Home() {
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> */}
                 
 
                 <div className="my-[50px]">

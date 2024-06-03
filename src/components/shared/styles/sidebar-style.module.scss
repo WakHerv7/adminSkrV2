@@ -1,0 +1,50 @@
+
+.sidebar-container {
+    position: relative;
+    width: 250px;
+    height: 100vh;
+    background: 'white';
+    
+
+    // @media only screen and (max-width: 860px) {
+    //     height: 90px;
+    // }
+}
+.sidebar-container,
+.sidebar-container > div {
+    transition: all ease-in .3s;
+}
+
+.sidebar-toggle {
+    position: absolute;
+    bottom: 50px;
+    right: -10px;
+    height: 30px;
+    width: 30px;
+    border-radius: 50%;
+    background: #fff;
+    border: 1px solid #ccc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+    cursor: pointer;
+}
+.sidebar-toggle-input:not(:checked) + label .chevronLeft {
+  display: none;
+}
+.sidebar-toggle-input:not(:checked) + label .chevronRight {
+  display: block;
+}
+.sidebar-toggle-input:checked + label .chevronLeft {
+  display: block;
+}
+.sidebar-toggle-input:checked + label .chevronRight {
+  display: none;
+}
+
+// .sidebar-toggle-input:not(:checked) ~ .sidebar-container,
+// .sidebar-toggle-input:not(:checked) ~ .sidebar-container > div {
+//     width: 80px !important;
+//     overflow-x: hidden;
+// }

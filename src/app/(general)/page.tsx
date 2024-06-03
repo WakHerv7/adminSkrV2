@@ -183,7 +183,7 @@ export default function Home() {
       </section>
 
 
-      <section>
+      {/* <section>
         <div className='w-full my-[50px] border border-gray-800'/>
         <div className='grid grid-cols-2 gap-x-10 w-full mt-6'>
           <div className='flex flex-col gap-2 overflow-hidden'>
@@ -305,7 +305,7 @@ export default function Home() {
           </div>
 
         </div>
-      </section>
+      </section> */}
 
 
       <section>

@@ -63,6 +63,7 @@ import {
 } from "@/constants/Index";
 import InfoCard, { TDataList } from "@/components/cards/InfoCard";
 import { cardDepositIconToday, cardDepositIconTotal, cardWithdrawalIconToday, cardWithdrawalIconTotal, closeCircleIcon, haltCircleIconGray, lockedIcon, paymentIconToday, paymentIconTotal } from "@/constants/icons";
+import InfoCardGrid from "@/components/cards/InfoCardGrid";
 
 const infoData: TDataList[] = [
 	[
@@ -256,21 +257,22 @@ export default function Home() {
 	return (
 		<Layout title="Cartes">
 			<section className="w-full">
-				<div
+				<InfoCardGrid infoData={infoData}/>
+				{/* <div
 					className="mb-10 grid lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-1"
 					style={{ gap: "20px" }}
 				>
 					{infoData.map((data, index) => (
 						<InfoCard key={index} data={data} />
 					))}
-				</div>
+				</div> */}
 			</section>
 
 			<section>
 				{/* <div className='w-full my-[50px] border border-gray-800'/> */}
 				<div className="grid grid-cols-2 gap-x-10 w-full mt-6">
 					<div className="flex flex-col gap-2 overflow-hidden">
-						<div className="flex justify-between items-center">
+						{/* <div className="flex justify-between items-center">
 							<Title title={"Évolution des achats des cartes"} />
 							<CustomDropdown
 								title={"Par jour"}
@@ -304,8 +306,10 @@ export default function Home() {
 								]}
 							/>
 						</div>
-						<AreaChart data={gradientData2} />
-						<div className="grid grid-cols-2 gap-10 overflow-hidden  mt-10">
+						<AreaChart data={gradientData2} /> */}
+
+
+						{/* <div className="grid grid-cols-2 gap-10 overflow-hidden  mt-10">
 							<div>
 								<div className="relative  overflow-hidden">
 									<Title title={"Traffic de paiements"} />
@@ -373,11 +377,11 @@ export default function Home() {
 									</div>
 								</div>
 							</div>
-						</div>
+						</div> */}
 					</div>
 
 					<div className="flex flex-col gap-2 overflow-hidden">
-						<div className="flex justify-between items-center">
+						{/* <div className="flex justify-between items-center">
 							<Title
 								title={"Évolution des montants de paiement"}
 							/>
@@ -413,8 +417,10 @@ export default function Home() {
 								]}
 							/>
 						</div>
-						<AreaChart data={gradientData3} />
-						<div className="grid grid-cols-2 gap-10 overflow-hidden  mt-10">
+						<AreaChart data={gradientData3} /> */}
+
+
+						{/* <div className="grid grid-cols-2 gap-10 overflow-hidden  mt-10">
 							
 							<div className="flex flex-col gap-20">
 							<div>
@@ -473,8 +479,7 @@ export default function Home() {
 
 							<div>
 								<div className="relative ">
-									<Title title={"Origine des paiements"} />
-									{/* <h1 className='text-md lg:text-lg font-semibold text-black text-left '>Traffic de paiements</h1> */}
+									<Title title={"Origine des paiements"} />									
 									<Doughnut data={doughnutData} />
 									<div className='grid grid-cols-2 gap-x-10 gap-3'>
 										<LegendItem  label={`Cameroun`} color={`#33E89C`} value={`46%`}/>
@@ -486,7 +491,7 @@ export default function Home() {
 									</div>
 								</div>
 							</div>
-						</div>
+						</div> */}
 					</div>
 				</div>
 			</section>

@@ -26,10 +26,10 @@ interface InfoCardProps {
 
 const InfoCard: React.FC<InfoCardProps> = ({data}) => {
   return (
-    <div className='ring-1 ring-[#444] w-full px-2 py-4 rounded-md flex flex-col'>
+    <div className='ring-1 ring-[#444] px-2 py-4 rounded-md flex flex-col'>
       
       {data.map((line, index1) => (
-        <div key={index1} className={`flex justify-between items-center mx-1`} 
+        <div key={index1} className={`flex flex-wrap justify-between items-center mx-1`} 
         style={{
           // display: 'flex', 
           // gridTemplateColumns: `repeat(${line.length}, 1fr)` ,

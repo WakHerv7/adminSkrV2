@@ -57,10 +57,10 @@ export default function Profit() {
 	
 	return (
 		<Layout
-			title="Accueil et visualisation globale"
+			title="Gains"
 		>
 
-		<section>			
+		{/* <section>			
 			<div className='grid grid-flow-row grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-col-5 w-full gap-5'>
 			{Array.from({length: 10}, (_, i) => i).map((item, index) => (
 				<div key={index}>
@@ -87,9 +87,9 @@ export default function Profit() {
 				</div>
 			))}
 			</div>
-		</section>
+		</section> */}
 
-		<section className="mt-20  items-start gap-10 w-full">
+		<section className="items-start gap-10 w-full">
 			<Title title="Évolution des gains"/>
 			<Tabs defaultValue="Details" className="w-full mt-2">
 				<div className="border-b-1">

@@ -69,12 +69,14 @@ const Notification = () => {
 
   return (
     <div className='w-full'>
-      <div className='flex items-start gap-4 mt-4'>
-        <div>
+      <div className='grid grid-cols-12 items-start gap-4 mt-4'>
+        <div className='col-span-9'>
           <Title title='Creer une campagne' subtitle='liste en temps réel des dernieres transactions effectuées avec les cartes' />
           <NotificationForm />
         </div>
+        <div className='col-span-3'>
         <NotificationsDropdown />
+        </div>
       </div>
       <div className='mt-7'>
         <Title title='Dernieres campagnes' subtitle='liste en temps réel des dernieres transactions effectuées avec les cartes' />

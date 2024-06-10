@@ -11,7 +11,7 @@ export default function index() {
 
   const rearrangedTableData = data.map((item, index) => {
 		const rearrangedItem = {
-			id: index+1,
+			serial: index+1,
 			name: item.name,			
 			country: item.country,
 			phone: item.phone,

@@ -1,11 +1,23 @@
-import { IGenericRow } from "@/components/AdminTable/Table";
+import { IGenericRow, ITableHeader } from "@/components/AdminTable/Table";
 
 
-export const headerCardData: string[] = [
-  "S/N", "Type", "Matricule", 
-  "Numero", "Titulaire", "Solde carte", "Total paiements", "Statut", 
-  "Date de création", ""
-]
+// export const headerCardData: string[] = [
+//   "S/N", "Type", "Matricule", 
+//   "Numero", "Titulaire", "Solde carte", "Total paiements", "Statut", 
+//   "Date de création", ""
+// ]
+export const headerCardData: ITableHeader = {
+  "serial": "S/N",
+  "type": "Type",
+  "regNumber": "Matricule",
+  "cardNumber": "Numero",
+  "name": "Titulaire",
+  "cardAmount": "Solde carte",
+  "totalPayments": "Total paiements",
+  "status": "Statut",
+  "date": "Date de création",
+  "edit": "",
+};
 export const tableCardData: IGenericRow[] = [
   {
     type: 'V',

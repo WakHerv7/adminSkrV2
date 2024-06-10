@@ -6,11 +6,19 @@ import CustomTable from '@/components/shared/CustomTable'
 import ActiveYesNo from '@/components/shared/ActiveYesNo'
 import CButton from '@/components/shared/CButton'
 import { FourDots } from '@/components/shared/icons'
-import { IGenericRow } from '@/components/AdminTable/Table'
+import { IGenericRow, ITableHeader } from '@/components/AdminTable/Table'
 
-const headerData: string[] = [
-  "S/N", "Nom", "Email","Statut", "Accès", "Date de création", ""
-]
+const headerData: ITableHeader =
+{
+	"serial": "S/N",
+	"name": "Nom",
+	"email": "Email",
+	"status": "Statut",
+	"access": "Accès",
+	"date": "Date de création",
+	"edit": "",
+}
+
 const tableData: IGenericRow[] = [
   {
     name: 'John Doe',
@@ -41,7 +49,7 @@ const tableData: IGenericRow[] = [
 const Notification = () => {
   const rearrangedTableData = tableData.map((item, index) => {
 		const rearrangedItem = {
-			index: index+1,
+			serial: index+1,
 			name: item.name,			
 			email: item.email,
 			status: <ActiveYesNo isActive={item.status}/>,

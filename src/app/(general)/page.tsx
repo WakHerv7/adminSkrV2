@@ -28,17 +28,17 @@ export default function Home() {
 	
     const rearrangedTableData = tableData.map((item, index) => {
       const rearrangedItem = {
-        index: index+1,
+        serial: index+1,
         name: item.name,			
         country: item.country,
         phone: item.phone,
         email: item.email,        
-        soldeCompte: item.solde,
+        solde: item.solde,
         nbCartes: index%3 + 1,
-        soldeCarte: item.solde,
         totalTrx: item.totalTrx,
         avgTrx: item.avgTrx,
         status: <ActiveYesNo isActive={item.status}/>,			
+        locked: <ActiveYesNo isActive={item.locked}/>,
         date: item.date,
         // actions: <>
         // <div className='flex gap-5'>

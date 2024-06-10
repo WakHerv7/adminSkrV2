@@ -10,11 +10,14 @@ import { BsArrowLeft } from "react-icons/bs";
 import { useScrollPosition, useScrollXPosition, useScrollYPosition } from 'react-use-scroll-position';
 import variables from '@/variables.module.scss'
 import cstyle from './styles/navbar-style.module.scss';
+import Modal from "./Modal/Modal";
 type Props = {
     title: string | undefined;
     backLink?: string;
     isExpanded: boolean;
 };
+
+let scrollPositionY = 0;
 
 export default function Navbar(props:Props) {
     const { title, backLink, isExpanded } = props;
@@ -24,14 +27,15 @@ export default function Navbar(props:Props) {
       
     
     // Use the useScrollPosition hook to get the current scroll position
-    const scrollPositionY = useScrollYPosition();
+    scrollPositionY = useScrollYPosition();
 
   return (
     <div className={`${cstyle['navbar-container']}`}>
         <div 
-        style={{width: isExpanded ? 'calc(100% - 250px)' : 'calc(100% - 120px)', zIndex:'1000'}}
-        className={`fixed bg-white flex justify-between items-center h-fit px-10 py-5 
-        ${classNames(scrollPositionY > 0? 'shadow-md' : '')}`}>
+        style={{width: isExpanded ? 'calc(100% - 250px)' : 'calc(100% - 80px)', zIndex:'1000', 
+            boxShadow:`${scrollPositionY > 0 ? '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)' : ''}`
+        }}
+        className={`fixed bg-white flex justify-between items-center h-fit px-10 py-5`}>
             <div className="relative flex justify-start items-center gap-3">
             {backLink ?
             <Link href={backLink} className="absolute top-1 left-[-30px]">
@@ -69,6 +73,9 @@ export default function Navbar(props:Props) {
             /> */}
 
             <div className="flex justify-between items-center gap-[15px]">
+                {/* <Link href="?modal=true">
+                    <button type="button" className="bg-blue-500 text-white p-2">Open Modal</button>
+                </Link> */}
                 {/* <div className="relative w-[30px] h-[30px] flex justify-center items-center rounded-full bg-[#F4EFE3]">
                     <IoIosNotificationsOutline color="#18BC7A" size={22}  />
                     <div className='absolute bottom-[-8px] right-[-8px] w-[18px] h-[18px] bg-[#18BC7A] rounded-full 
@@ -111,6 +118,7 @@ export default function Navbar(props:Props) {
             </div> */}
             </div>
         </div>
+        {/* <Modal/>  */}
     </div>
   )
 }

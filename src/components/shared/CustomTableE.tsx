@@ -1,8 +1,8 @@
 "use client";
+
 import React, { useEffect, useState } from 'react';
-import AdminTable, { IGenericRow, ITableHeader } from '@/components/AdminTable/Table';
+import AdminTable, { IGenericRow } from '@/components/AdminTable/Table';
 import SearchBar from '@/components/shared/SearchBar';
-import Link from 'next/link';
 import { BsFileEarmarkExcel } from 'react-icons/bs';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import { IoCopyOutline, IoPrintOutline } from 'react-icons/io5';
@@ -10,14 +10,14 @@ import { HiOutlineFilter } from 'react-icons/hi';
 import CustomDropdown from './CustomDropdown';
 import { RxDotsHorizontal } from 'react-icons/rx';
 import CButton from './CButton';
-
+import { THeaderData } from '@/app/(general)/administration/page';
 
 
 interface CustomDropdownProps {
   btn?: React.ReactNode;
   filter?: boolean;
   threeButtons?: boolean;
-  headerData: ITableHeader;
+  headerData: THeaderData[];
   tableData: IGenericRow[];
 }
 
@@ -52,11 +52,10 @@ const CustomTable: React.FC<CustomDropdownProps> = ({headerData, tableData, btn,
     }, 1000);
   }
 
-
   return (
     <>
     <div className='flex justify-between items-center'>
-      <SearchBar  searchTerm={search} onChange={handleSearch}  />
+      <SearchBar searchTerm={search} onChange={handleSearch} />
       <div className='flex items-center gap-5 ml-[100px]'>        
        
        {btn}
@@ -98,7 +97,7 @@ const CustomTable: React.FC<CustomDropdownProps> = ({headerData, tableData, btn,
           hasDropdownIcon={false}
           icon= {<RxDotsHorizontal/>}
           items={[
-            <div key={'1'} className='flex justify-between gap-2'>
+            <div key={Math.random()} className='flex justify-between gap-2'>
             <IoCopyOutline size={15} color={'#18BC7A'} />
             <span className='text-sm text-[#18BC7A]'>
               Copy
@@ -124,26 +123,37 @@ const CustomTable: React.FC<CustomDropdownProps> = ({headerData, tableData, btn,
       </div>
     </div>
     <div className='mt-6 w-full'>
-      <AdminTable searchTerm={search} headerData={headerData} data={tableData || []} />
+      <AdminTable searchTerm={search} headerData={headerData} data={currentUsers || []} />
     </div>
 
-    {/* <div className='py-10 text-sm flex justify-end items-center'>
-        <div className='flex items-center gap-3'>
-            <span>Aller à la page</span>
-            <Link href=""><FaChevronLeft/></Link>
-            <div className="py-2 px-2 w-[70px] bg-gray-200 rounded-2xl text-center flex justify-center">
-              <input
-                defaultValue={'01'}
-                type="number"
-                min={'0'}
-                className="w-full bg-gray-200 border-none outline-none text-center"
-                placeholder="Enter a number"
-              />
-            </div>
-            <Link href=""><FaChevronRight/></Link>
-            <span>sur 254</span>
-        </div>
+    {/* <div className="py-2 px-2 w-[70px] bg-gray-200 rounded-2xl text-center flex justify-center">
+      <input
+        defaultValue={'01'}
+        type="number"
+        min={'0'}
+        className="w-full bg-gray-200 border-none outline-none text-center"
+        placeholder="Enter a number"
+      />
     </div> */}
+
+    <div className='py-10 text-sm flex justify-between items-center'>
+      {data &&
+        <p className='hidden md:inline-block'>page {currentPage} of {Math.ceil(data.length / usersPerPage)}</p>
+      }
+      <div className='flex items-center gap-3'>
+        <span>Aller à la page</span>
+        <div className='w-full md:w-1/5 flex flex-row justify-between'>
+        {data &&
+          Array.from({ length: Math.ceil(data?.length / usersPerPage) }).map((_, i) => (
+            <button key={i} onClick={() => paginate(i + 1)} className="w-2/3 p-2 border border-slate-100 rounded-md hover:bg-blue-100">
+          {i === 0 ? <FaChevronLeft/> : <FaChevronRight/>}
+          </button>
+        ))
+      }
+        </div>
+        <span>sur 254</span>
+      </div>
+    </div>
     </>
   )
 }

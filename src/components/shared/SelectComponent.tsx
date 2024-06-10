@@ -10,11 +10,11 @@ import {
 
 const SelectComponent = () => {
   return (
-    <Select>
+    <Select style={{zIndex:'100'}}>
       <SelectTrigger className="w-full bg-gray-100">
         <SelectValue placeholder="Inactif depuis plus d'un mois " />
       </SelectTrigger>
-      <SelectContent>
+      <SelectContent style={{zIndex:'100'}}>
         <SelectItem value="light">Light</SelectItem>
         <SelectItem value="dark">Dark</SelectItem>
         <SelectItem value="system">System</SelectItem>

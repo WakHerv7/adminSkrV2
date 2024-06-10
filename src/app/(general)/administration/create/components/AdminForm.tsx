@@ -97,7 +97,7 @@ export default function AdminForm({ data }: { data: IData }) {
                 />
             </div>
             {/* <Link href="#" className="text-gray-800 font-semibold text-righttext-sm">Forgotten Password?</Link> */}
-            <div className='pt-[20px]'>
+            {/* <div className='pt-[20px]'>
                 <h1 className="text-lg font-bold">{`Niveau d'accès`}</h1>
                 <p className="text-sm text-gray-600">{`Choisir les niveaux d'accès`}</p>            
                 <section className="grid grid-cols-2 mt-4 w-[100%]">
@@ -111,12 +111,6 @@ export default function AdminForm({ data }: { data: IData }) {
                                         <FaCircle className='checkboxContentTransparent' color="transparent" size={12} />
                                         <FaCircle className='checkboxContentGreen' color="#18BC7A" size={12} />
                                     </div>
-                                    
-
-                                    {/* <div className="dot absolute left-1 top-[1px] bg-[#18BC7A] w-[28px] h-[28px] 
-                                    rounded-full transition flex justify-center items-center">
-                                        <span className="w-[14px] h-[14px] rounded-[5px] border border-solid border-4 border-white"></span>
-                                    </div> */}
                                 </div>
                                 <div className='pl-3 py-4 text-sm'>
                                         {item}
@@ -132,7 +126,7 @@ export default function AdminForm({ data }: { data: IData }) {
                     Annuler
                     </Button>                    
                 </div>
-            </div>
+            </div> */}
           </form>
         </Form>
 

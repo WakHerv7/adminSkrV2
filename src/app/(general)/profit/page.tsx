@@ -34,7 +34,7 @@ export default function Profit() {
 	
     const rearrangedTableData = tableData.map((item, index) => {
       const rearrangedItem = {
-        index: index+1,
+        serial: index+1,
 		type: item.type,
 		reference: item.reference,
 		amount: item.amount,
@@ -119,7 +119,7 @@ export default function Profit() {
       	</section>
       
 
-      <section>
+      {/* <section>
         <div className='w-full my-[50px] border border-gray-800'/>
         <div className="">
             <div className="mb-5">
@@ -135,7 +135,7 @@ export default function Profit() {
 			filter
             />
         </div>
-      </section>
+      </section> */}
 		</Layout>
 	);
 }

@@ -1,11 +1,26 @@
-import { IGenericRow } from "@/components/AdminTable/Table";
+import { IGenericRow, ITableHeader } from "@/components/AdminTable/Table";
 
-export const headerTransactionData: string[] = [
-  "S/N", "Type", "Nom", "Pays", 
-  "Telephone", "ID Transaction", "Montant", 
-  "Mode paiement", "Statut",
-   "Date de création", ""
-]
+// export const headerTransactionData: string[] = [
+//   "S/N", "Type", "Nom", "Pays", 
+//   "Telephone", "ID Transaction", "Montant", 
+//   "Mode paiement", "Statut",
+//    "Date de création", ""
+// ]
+
+export const headerTransactionData: ITableHeader = {
+  "serial": "S/N",
+  "type": "Type",
+  "name": "Nom",
+  "country": "Pays",
+  "phone": "Telephone",
+  "idTrx": "ID Transaction",
+  "amount": "Montant",
+  "paymentMethod": "Mode paiement",
+  "status": "Statut",
+  "date": "Date de création",
+  "edit": ""
+};
+
 export const tableTransactionData: IGenericRow[] = [
 {
   type: 'Recharge',

@@ -1,11 +1,22 @@
-import { IGenericRow } from "@/components/AdminTable/Table";
+import { IGenericRow, ITableHeader } from "@/components/AdminTable/Table";
 
 
-export const headerKYCData: string[] = [
-  "S/N", "Nom", "Pays", 
-  "Numero", "Email", "Statut", 
-  "Date de création", ""
-]
+// export const headerKYCData: string[] = [
+//   "S/N", "Nom", "Pays", 
+//   "Numero", "Email", "Statut", 
+//   "Date de création", ""
+// ]
+export const headerKYCData: ITableHeader = {
+  "serial": "S/N",
+  // "id": "ID",
+  "name": "Nom",
+  "country": "Pays",
+  "phone": "Numero",
+  "email": "Email",
+  "status": "Statut",
+  "date": "Date de création",
+  "edit": "",
+};
 export const tableKYCData: IGenericRow[] = [
   {
     id:1,

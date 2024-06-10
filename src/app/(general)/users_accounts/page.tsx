@@ -44,6 +44,7 @@ import { waitCircleIcon,
     haltCircleIcon,
  } from "@/constants/icons";
 import InfoCardGrid from "@/components/cards/InfoCardGrid";
+import Modal from "@/components/shared/Modal/Modal";
 
 
 const infoData: TDataList[] = [
@@ -102,124 +103,12 @@ const infoData: TDataList[] = [
 ];
 
 
-// const headerData: string[] = [
-//     "S/N", "Nom", "Pays", 
-//     "Telephone", "Email", "Solde Cpt.", 
-//     "Total Trans.", "Moy. Trans.", "Statut",
-//      "Date de création", ""
-// ]
-// const tableData: IGenericRow[] = [
-//   {
-//     name: 'John Doe',
-//     country: 'Cameroun',
-//     phone: '+237 688 777 999',
-//     email: 'abc123@xyz.com',
-//     solde: '2 455 000F',
-//     totalTrx: '44 250 000F',
-//     avgTrx: '250 000F',
-//     status: true,
-//     locked: false,
-//     date: '12/03/2024',
-//     edit: '#',
-//   },
-//   {
-//     name: 'John Doe',
-//     country: 'Cameroun',
-//     phone: '+237 688 777 999',
-//     email: 'abc123@xyz.com',
-//     solde: '2 455 000F',
-//     totalTrx: '44 250 000F',
-//     avgTrx: '250 000F',
-//     status: true,
-//     locked: false,
-//     date: '12/03/2024',
-//     edit: '#',
-//   },
-//   {
-//     name: 'John Doe',
-//     country: 'Cameroun',
-//     phone: '+237 688 777 999',
-//     email: 'abc123@xyz.com',
-//     solde: '2 455 000F',
-//     totalTrx: '44 250 000F',
-//     avgTrx: '250 000F',
-//     status: true,
-//     locked: false,
-//     date: '12/03/2024',
-//     edit: '#',
-//   },
-//   {
-//     name: 'John Doe',
-//     country: 'Cameroun',
-//     phone: '+237 688 777 999',
-//     email: 'abc123@xyz.com',
-//     solde: '2 455 000F',
-//     totalTrx: '44 250 000F',
-//     avgTrx: '250 000F',
-//     status: false,
-//     locked: true,    
-//     date: '12/03/2024',
-//     edit: '#',
-//   },
-//   {
-//     name: 'John Doe',
-//     country: 'Cameroun',
-//     phone: '+237 688 777 999',
-//     email: 'abc123@xyz.com',
-//     solde: '2 455 000F',
-//     totalTrx: '44 250 000F',
-//     avgTrx: '250 000F',
-//     status: false,
-//     locked: true,    
-//     date: '12/03/2024',
-//     edit: '#',
-//   },
-//   {
-//     name: 'John Doe',
-//     country: 'Cameroun',
-//     phone: '+237 688 777 999',
-//     email: 'abc123@xyz.com',
-//     solde: '2 455 000F',
-//     totalTrx: '44 250 000F',
-//     avgTrx: '250 000F',
-//     status: true,
-//     locked: false,
-//     date: '12/03/2024',
-//     edit: '#',
-//   },
-//   {
-//     name: 'John Doe',
-//     country: 'Cameroun',
-//     phone: '+237 688 777 999',
-//     email: 'abc123@xyz.com',
-//     solde: '2 455 000F',
-//     totalTrx: '44 250 000F',
-//     avgTrx: '250 000F',
-//     status: true,
-//     locked: false,
-//     date: '12/03/2024',
-//     edit: '#',
-//   },
-//   {
-//     name: 'John Doe',
-//     country: 'Cameroun',
-//     phone: '+237 688 777 999',
-//     email: 'abc123@xyz.com',
-//     solde: '2 455 000F',
-//     totalTrx: '44 250 000F',
-//     avgTrx: '250 000F',
-//     status: true,
-//     locked: false,
-//     date: '12/03/2024',
-//     edit: '#',
-//   },
-// ];
 
 export default function Home() {
 
 	const rearrangedTableData = tableData.map((item, index) => {
 		const rearrangedItem = {
-			index: index+1,
+			serial: index+1,
 			name: item.name,			
             country: item.country,
             phone: item.phone,
@@ -228,8 +117,9 @@ export default function Home() {
             totalTrx: item.totalTrx,
             avgTrx: item.avgTrx,
 			status: <ActiveYesNo isActive={item.status}/>,			
+            locked: <ActiveYesNo isActive={item.locked}/>,			
 			date: item.date,
-			actions: <>
+			actionst: <>
 			<div className='flex gap-5'>
              <CButton
 			  text={'Manager'}
@@ -237,11 +127,13 @@ export default function Home() {
 			  btnStyle={'dark'}
 			  icon={<FourDots />}              
 			  />
+              
               {item.locked ?
               <CButton 
 			  text={'Debloquer'} 
 			  btnStyle={'lightYellow'}
-			  icon={<FaLock />} 
+			  icon={<FaLock />}
+              width={'100%'}
 			  />
               :
               <CButton 

@@ -20,7 +20,7 @@ const Transactions = () => {
 
   const rearrangedTableData = tableUserAccountData.map((item, index) => {
 		const rearrangedItem = {
-			index: index+1,
+			serial: index+1,
 			name: item.name,			
             country: item.country,
             phone: item.phone,

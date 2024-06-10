@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import Navbar from "./Navbar";
 import SideBar from "./SideBar";
+import Modal from "./Modal/Modal";
 // import Footer from "./Footer";
 
 interface LayoutProps {
@@ -17,7 +18,7 @@ const Layout: React.FC<LayoutProps> = ({ children, title, backLink }) => {
         <div className="relative">
           <SideBar isExpanded={isExpanded} setIsExpanded={setIsExpanded}/>
         </div>
-        <div className="flex flex-col w-full" style={{width: isExpanded ? 'calc(100vw - 300px)' : 'calc(100vw - 150px)', transition:'all ease-in .3s'}}>
+        <div className="flex flex-col w-full" style={{width: isExpanded ? 'calc(100vw - 300px)' : 'calc(100vw - 120px)', transition:'all ease-in .3s'}}>
             <div className="relative w-full">
               <Navbar title={title} backLink={backLink} isExpanded={isExpanded}/>
             </div>
@@ -25,7 +26,7 @@ const Layout: React.FC<LayoutProps> = ({ children, title, backLink }) => {
                 {children}
             </div>
         </div>
-            
+        {/* <Modal/>    */}
     </main>
   );
 };

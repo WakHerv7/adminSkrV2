@@ -8,6 +8,7 @@ type TText = {
   tooltip?: string;
 }
 type TDataItem = {
+  key?: string;
   label: TText;
   value: TText;
 };
@@ -46,24 +47,6 @@ const InfoCard: React.FC<InfoCardProps> = ({data}) => {
           ))}
         </div>
       ))}
-
-
-      {/* <div className='flex gap- justify-between items-center'>
-        <h1 className='text-gray-900 text-[10px] font-bold'>
-          Transferts aujourd'hui
-        </h1>
-        <h1 className='text-gray-900 text-[10px] font-bold'>
-          {data.reuse}F
-        </h1>
-      </div>
-      <div className='flex gap-1 justify-between items-center'>
-        <h1 className='text-gray-900 text-[10px] font-normal'>
-          Mayenne de transferts
-        </h1>
-        <h1 className='text-gray-900 text-[10px] font-bold'>
-          {data.encurs} F/jour
-        </h1>
-      </div> */}
     </div>
   )
 }

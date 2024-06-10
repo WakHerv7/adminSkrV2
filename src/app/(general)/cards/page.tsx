@@ -212,7 +212,7 @@ const infoData: TDataList[] = [
 export default function Home() {
 	const rearrangedTableData = tableData.map((item, index) => {
 		const rearrangedItem = {
-			index: index + 1,
+			serial: index + 1,
 			name: item.name,
 			country: item.country,
 			phone: item.phone,

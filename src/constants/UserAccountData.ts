@@ -1,14 +1,30 @@
-import { IGenericRow } from "@/components/AdminTable/Table";
+import { IGenericRow, ITableHeader } from "@/components/AdminTable/Table";
 
-export const headerUserAccountData: string[] = [
-    "S/N", "Nom", "Pays", 
-    "Telephone", "Email", "Solde Cpt.", 
-    "Total Trans.", "Moy. Trans.", "Statut",
-     "Date de création", ""
-  ]
+// export const headerUserAccountData: string[] = [
+//     "S/N", "Nom", "Pays", 
+//     "Telephone", "Email", "Solde Cpt.", 
+//     "Total Trans.", "Moy. Trans.", "Statut",
+//      "Date de création", ""
+//   ]
+
+export const headerUserAccountData: ITableHeader = {
+  "serial": "S/N",
+  "name": "Nom",
+  "country": "Pays",
+  "phone": "Telephone",
+  "email": "Email",
+  "solde": "Solde Cpt.",
+  "totalTrx": "Total Trans.",
+  "avgTrx": "Moy. Trans.",
+  "status": "Statut",
+  "locked": "Bloqué",
+  "date": "Date de création",
+  "edit": ""
+};
+
 export const tableUserAccountData: IGenericRow[] = [
   {
-    name: 'John Doe',
+    name: 'John2 Doe',
     country: 'Cameroun',
     phone: '+237 688 777 999',
     email: 'abc123@xyz.com',

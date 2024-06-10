@@ -17,15 +17,23 @@ import Layout from "@/components/shared/Layout";
 import CustomDropdown from "@/components/shared/CustomDropdown";
 import Link from "next/link";
 import ButtonFilled from "@/components/shared/ButtonFilled";
-import { IGenericRow } from '@/components/AdminTable/Table';
+import { IGenericRow, ITableHeader } from '@/components/AdminTable/Table';
 import ActiveYesNo from "@/components/shared/ActiveYesNo";
 import ButtonOutlined from "@/components/shared/ButtonOutlined";
 import { FourDots } from "@/components/shared/icons";
 import { isString } from "@/utils/utils";
 import CButton from "@/components/shared/CButton";
-const headerData: string[] = [
-    "S/N", "Nom", "Email","Statut", "Accès", "Date de création", ""
-]
+const headerData: ITableHeader =
+{
+	"serial": "S/N",
+	"name": "Nom",
+	"email": "Email",
+	"status": "Statut",
+	"access": "Accès",
+	"date": "Date de création",
+	"edit": "",
+}
+
 const tableData: IGenericRow[] = [
   {
     name: 'John Doe',
@@ -57,7 +65,7 @@ export default function Home() {
 
 	const rearrangedTableData = tableData.map((item, index) => {
 		const rearrangedItem = {
-			index: index+1,
+			serial: index+1,
 			name: item.name,			
 			email: item.email,
 			status: <ActiveYesNo isActive={item.status}/>,

@@ -62,6 +62,8 @@ import {
     } from '@/constants/Index';
 import { cardDepositIconTotal, cardWithdrawalIconTotal } from "@/constants/icons";
 import InfoCardGrid from "@/components/cards/InfoCardGrid";
+import TransactionModal from "./components/TransactionModal";
+import Modal from "@/components/shared/Modal/Modal";
 
 const infoData: TDataList[] = [
     [
@@ -135,7 +137,7 @@ export default function Home() {
 
 	const rearrangedTableData = tableData.map((item:any, index:any) => {
 		const rearrangedItem = {
-			index: index+1,
+			serial: index+1,
 			type: item.type,
             name: item.name,			
             country: item.country,
@@ -153,10 +155,11 @@ export default function Home() {
 			<div className='flex gap-5'>
              <CButton
 			  text={'Details'}
-			  href={item.edit}
+			  href={`?transaction${index+1}=true`}
 			  btnStyle={'dark'}
 			  icon={<FourDots />}              
 			  />
+              <Modal index={index+1} name={'transaction'} modalContent={<TransactionModal item={item}/>}/>
 			  </div>
 			</>
 		};

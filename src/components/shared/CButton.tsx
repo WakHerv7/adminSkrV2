@@ -111,6 +111,7 @@ const CButton = ({
 					className={btnClassZero + " " + btnStyles[btnStyle]}
 					style={{
 						// padding: `${px ?? '0'} ${py ?? '0'}`,
+						whiteSpace:`${textWrap ? "normal" : "nowrap"}`,
 						height: `${height ?? ""}`,
 						width: `${width ?? ""}`,
 					}}
@@ -137,6 +138,7 @@ const CButton = ({
 						}
 						style={{
 							// padding: `${px ?? '0'} ${py ?? '0'}`,
+							whiteSpace:`${textWrap ? "normal" : "nowrap"}`,
 							height: `${height ?? ""}`,
 							width: `${width ?? ""}`,
 						}}

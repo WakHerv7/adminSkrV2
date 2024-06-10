@@ -12,7 +12,7 @@ import {
 export default function Main() {
   const rearrangedTableData = tableData.map((item:any, index:any) => {
 		const rearrangedItem = {
-			index: index+1,
+			serial: index+1,
 			type: item.type,
             name: item.name,			
             country: item.country,

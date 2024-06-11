@@ -118,10 +118,13 @@ import { IoCopyOutline } from 'react-icons/io5';
 interface TransferModalProps {
     item: object,
 }
+interface ItmInterface {
+    [key: string]: any;
+}
 export default function TransferModal({item}:TransferModalProps) {
     const pathname = usePathname();
     
-    const itemData = (itm: object, infoData: TDataList[]): TDataList[] => {
+    const itemData = (itm: ItmInterface, infoData: TDataList[]): TDataList[] => {
         // Assuming TDataList is an array of arrays or a similar structure that supports forEach
         let modifiedInfoData: TDataList[] = JSON.parse(JSON.stringify(infoData)); // Shallow copy
         Object.keys(itm).forEach((key, itmIndex) => {

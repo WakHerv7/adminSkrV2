@@ -3,7 +3,7 @@ import { Button } from '../ui/button'
 import { FourDots } from '../shared/icons';
 import Link from 'next/link';
 import ButtonOutlined from '../shared/ButtonOutlined';
-import React from 'react';
+import React, {useState} from 'react';
 import { BiTransferAlt } from 'react-icons/bi';
 import { FaChevronLeft, FaChevronRight, FaSortDown, FaSortUp } from "react-icons/fa";
 export interface ITableHeader {
@@ -93,10 +93,10 @@ const filterData = (data: any[], searchTerm: string): any[] => {
 const AdminTable: React.FC<Props> = ({ searchTerm, data, headerData }) => {
   if (!data ||!headerData) return null;
 
-  const [sort, setSort] = React.useState<ISortState>({ keyToSort: 'serial', order: 'asc'});
-  const [itemsPerPage, setItemsPerPage] = React.useState<number>(5);
-  const [currentPage, setCurrentPage] = React.useState<number>(1);
-  const [itemsRange, setItemsRange] = React.useState<IMinMaxState>({ min: 1, max: currentPage * itemsPerPage});
+  const [sort, setSort] = useState<ISortState>({ keyToSort: 'serial', order: 'asc'});
+  const [itemsPerPage, setItemsPerPage] = useState<number>(5);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [itemsRange, setItemsRange] = useState<IMinMaxState>({ min: 1, max: currentPage * itemsPerPage});
 
   const handleHeaderClick = (headerKey: string | number) => {
     const { keyToSort, order } = sort;

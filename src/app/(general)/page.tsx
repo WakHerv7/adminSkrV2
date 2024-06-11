@@ -22,7 +22,16 @@ import {
   tableHomeUserAccountData as tableData } from "@/constants/Index";
 import ActiveYesNo from "@/components/shared/ActiveYesNo";
 
-
+const dataCardsData = [
+  {title:'Recharges de comptes'},
+  {title:'Retraits de comptes'},
+  {title:'Transferts entre comptes'},
+  {title:'Transferts Mobile Money'},
+  {title:'Recharges de cartes'},
+  {title:'Retraits de cartes'},
+  {title:'Création de cartes'},
+  {title:'Comptes créés'},
+];
 
 export default function Home() {
 	
@@ -40,32 +49,6 @@ export default function Home() {
         status: <ActiveYesNo isActive={item.status}/>,			
         locked: <ActiveYesNo isActive={item.locked}/>,
         date: item.date,
-        // actions: <>
-        // <div className='flex gap-5'>
-        //       <CButton
-        //   text={'Manager'}
-        //   href={`users_accounts/manage/${index+1}`}
-        //   btnStyle={'dark'}
-        //   icon={<FourDots />}              
-        //   />
-        //         {item.locked ?
-        //         <CButton 
-        //   text={'Debloquer'} 
-        //   btnStyle={'lightYellow'}
-        //   icon={<FaLock />} 
-        //   />
-        //         :
-        //         <CButton 
-        //   text={'Bloquer'} 
-        //   btnStyle={'yellow'}
-        //   icon={<FaLock />}
-        //         width={'100%'}
-        //   />
-                // }
-          
-                
-        //   </div>
-        // </>
       };
       item = rearrangedItem;
       return item;
@@ -134,10 +117,12 @@ export default function Home() {
       <section>
         <div className='w-full my-[50px] border border-gray-800'/>
         <div className='grid grid-flow-row grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-col-5 w-full gap-5'>
-          {Array.from({length: 10}, (_, i) => i).map((item, index) => (
+          {
+          // Array.from({length: 10}, (_, i) => i)
+          dataCardsData.map((item, index) => (
             <div key={index}>
               <DataCard 
-                title="Recharges de compte"
+                title={item.title}
                 change_per="24%"
                 chartData={{
                   labels: ['Mon1', 'Mon2', 'Mon3', 'Mon4', 'Mon5', 'Mon6', 'Mon7', 'Mon8', 'Mon9', 'Mon10', 'Mon11', 'Mon12'],

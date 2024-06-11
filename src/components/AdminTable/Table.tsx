@@ -91,13 +91,11 @@ const filterData = (data: any[], searchTerm: string): any[] => {
 
 
 const AdminTable: React.FC<Props> = ({ searchTerm, data, headerData }) => {
-  if (!data ||!headerData) return null;
-
   const [sort, setSort] = useState<ISortState>({ keyToSort: 'serial', order: 'asc'});
   const [itemsPerPage, setItemsPerPage] = useState<number>(5);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [itemsRange, setItemsRange] = useState<IMinMaxState>({ min: 1, max: currentPage * itemsPerPage});
-
+  
   const handleHeaderClick = (headerKey: string | number) => {
     const { keyToSort, order } = sort;
     // Toggle the sorting order based on the current keyToSort and order

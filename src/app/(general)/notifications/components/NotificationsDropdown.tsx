@@ -4,7 +4,6 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@radix-ui/react-label";
 import { DropdownMenu } from "@nextui-org/react";
 import CustomDropdown from "@/components/shared/CustomDropdown";
-import SelectComponent from "@/components/shared/SelectComponent";
 import {Select, SelectItem} from "@nextui-org/select";
 import { FaCircle } from "react-icons/fa";
 import '../styles/style.css';

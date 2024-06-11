@@ -76,7 +76,7 @@ const filterData = (data: any[], searchTerm: string): any[] => {
     let found = false;
     Object.values(item).some(value => {
       if (typeof value === "object") {
-        const val = React.cloneElement(value).props.isActive ? 'Actif' : 'Inactif';
+        const val = React.cloneElement(value as React.ReactElement<any>).props.isActive ? 'Actif' : 'Inactif';
         if (val.toLowerCase().includes(searchTerm.toLowerCase())) {
             found = true;
         }

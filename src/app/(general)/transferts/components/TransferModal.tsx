@@ -155,7 +155,7 @@ export default function TransferModal({item}:TransferModalProps) {
         </div>
         <div className={`${cstyle['dualGrid']}`}>
             {itemData(item, infoData).map((data, index) => (
-                <div className={``}>
+                <div key={index} className={``}>
                 {data.map((line, index1) => (
                     <div key={index1} className={`flex flex-wrap justify-between items-center mx-1`}>
                     {line.map((item, index2) => (

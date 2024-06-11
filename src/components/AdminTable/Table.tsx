@@ -18,8 +18,8 @@ export interface ISortState {
   order: 'asc' | 'desc';
 }
 export interface IMinMaxState {
-  min?: number;
-  max?: number;
+  min: number;
+  max: number;
 }
 type Props = {
   searchTerm?: string;
@@ -51,8 +51,9 @@ const getSortedData = (arrayToSort: any[], sort:ISortState): any[] => {
     // Handle JSX elements
     if (typeof a[sort.keyToSort] === "object" && typeof b[sort.keyToSort] === "object") {
       // Extract the underlying value using React.cloneElement to avoid unintended side effects
-      const aValue = React.cloneElement(a[sort.keyToSort]).props.isActive ? 'Actif' : 'Inactif';
-      const bValue = React.cloneElement(b[sort.keyToSort]).props.isActive ? 'Actif' : 'Inactif';
+      const aValue = React.cloneElement(a[sort.keyToSort] as React.ReactElement<any>).props.isActive ? 'Actif' : 'Inactif';
+      const bValue = React.cloneElement(b[sort.keyToSort] as React.ReactElement<any>).props.isActive ? 'Actif' : 'Inactif';
+
       return (aValue > bValue ? 1 : -1) * sortOrder;
     }
 
@@ -107,10 +108,10 @@ const AdminTable: React.FC<Props> = ({ searchTerm, data, headerData }) => {
 // const getSortedData = (arrayToSort: any[], sort: { keyToSort: string, order: 'asc' | 'desc' }): any[] => {
   
   const sortedData = getSortedData(data, sort);
-  const filteredData = filterData(sortedData, searchTerm.toLowerCase() || '');
+  const filteredData = filterData(sortedData, searchTerm?.toLowerCase() || '');
   const totalPages = Math.ceil(filteredData.length / itemsPerPage); // Calculate total pages
 
-  const handlePageChange = (e, page) => {
+  const handlePageChange = (e:any, page:number) => {
     e.preventDefault();
     if (page > 0 && page <= totalPages) {
       setCurrentPage(page);
@@ -125,7 +126,7 @@ const AdminTable: React.FC<Props> = ({ searchTerm, data, headerData }) => {
     }
   };
 
-  const handleKeyPress = (e) => {
+  const handleKeyPress = (e:any) => {
     if (e.key === 'Enter' || e.key === ' ') {
       const pageNumber = parseInt(e.target.value);
       if (pageNumber > 0 && pageNumber <= totalPages) {
@@ -139,7 +140,7 @@ const AdminTable: React.FC<Props> = ({ searchTerm, data, headerData }) => {
   //   (currentPage - 1) * itemsPerPage + filteredData.length
   // );
   
-  const paginatedData = filteredData.slice(itemsRange.min-1, itemsRange.max);
+  const paginatedData = filteredData.slice(itemsRange.min - 1, itemsRange.max);
 
   return (
     <div>

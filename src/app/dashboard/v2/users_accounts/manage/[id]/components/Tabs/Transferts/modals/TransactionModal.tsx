@@ -70,8 +70,26 @@ import { categoryType, getCategoryMode, getCategoryModeV2, getCategoryTypeV2 } f
             value:{text:"", color:"#444"}
         }],
         [{
-            key: '_id',
+            key: 'trx_ref',
             label:{text: 'ID Transaction', fw:"bold", color:"#444"},
+            value:{text:"", color:"#444"}
+        }],
+        [{
+            key: 'recipientName',
+            visible:true,
+            label:{text: 'Nom destinataire', fw:"bold", color:"#444"},
+            value:{text:"", color:"#444"}
+        }],        
+        [{
+            key: 'recipientPhone',
+            visible:true,
+            label:{text: 'Téléphone destinataire', fw:"bold", color:"#444"},
+            value:{text:"", color:"#444"}
+        }],
+        [{
+            key: 'recipientCountry',
+            visible:true,
+            label:{text: 'Pays destinataire', fw:"bold", color:"#444"},
             value:{text:"", color:"#444"}
         }],
         [{
@@ -170,11 +188,12 @@ import { categoryType, getCategoryMode, getCategoryModeV2, getCategoryTypeV2 } f
 interface TransferModalProps {
     item: object,
     customer:any,
+    recipient?:any,
 }
 interface ItmInterface {
     [key: string]: any;
 }
-export default function TransactionModal({item, customer}:TransferModalProps) {
+export default function TransactionModal({item, customer, recipient}:TransferModalProps) {
     const pathname = usePathname();
     
     const itemData = (itm: ItmInterface, infoData: TDataList[], customer:any): TDataList[] => {
@@ -188,6 +207,9 @@ export default function TransactionModal({item, customer}:TransferModalProps) {
         itm2.merchant_name = '';
         itm2.merchant_country = '';
         itm2.merchant_city = '';
+        itm2.recipientName = '';
+        itm2.recipientPhone = '';
+        itm2.recipientCountry = '';
         Object.keys(itm2).forEach((key, itmIndex) => {
             modifiedInfoData.forEach((data, dataIndex) => {
                 data.forEach((line, lineIndex) => {
@@ -210,6 +232,18 @@ export default function TransactionModal({item, customer}:TransferModalProps) {
                             }
                             else if (key.toString() === 'phone') {
                                 x.value.text = customer.phone;
+                            }
+                            else if (key.toString() === 'recipientName') {
+                                x.value.text = `${recipient?.last_name} ${recipient?.first_name}`;
+                                if(itm.category !== 'transfer' || itm.type !== 'transfer') x.visible = false;
+                            }
+                            else if (key.toString() === 'recipientPhone') {
+                                x.value.text = recipient?.phone;
+                                if(itm.category !== 'transfer' || itm.type !== 'transfer') x.visible = false;
+                            }
+                            else if (key.toString() === 'recipientCountry') {
+                                x.value.text = recipient?.country;
+                                if(itm.category !== 'transfer' || itm.type !== 'transfer') x.visible = false;
                             }
                             else if (key.toString() === 'merchant_name') {
                                 x.value.text = itm.merchant?.name ?? '';

@@ -17,8 +17,8 @@ import { FaCheckCircle } from "react-icons/fa";
 import { IoEllipsisHorizontalCircleSharp } from "react-icons/io5";
 import { useSelector } from 'react-redux';
 import { selectCurrentCustomerTransfers } from '@/redux/slices/customer';
-// import TransactionModal from "./modals/TransactionModal";
-import TransactionModal from "@/app/dashboard/v1/wallet_transactions/components/TransactionModal";
+import TransactionModal from "./modals/TransactionModal";
+// import TransactionModal from "@/app/dashboard/v2/wallet_transactions/components/TransactionModal";
 import Modal from "@/components/shared/Modal/Modal";
 import { headerTransferData as headerData} from '@/constants/Index';
 import { categoryType, categoryMode, getCategoryMode, getCategoryTypeV2 } from '@/utils/graphs';
@@ -49,7 +49,7 @@ const Transferts = ({search, setSearch}:Props) => {
                 recipient: item.recipientDetails?.phone,
                 countryRec: item.recipientDetails?.country,
                 idTrx: item._id,
-                amount: item.amount?.toLocaleString('fr-FR') ?? 0,
+                amount: item.amount_xaf?.toLocaleString('fr-FR') ?? 0,
                 // method: item.method,
                 // mode: //item.mode, //item.paymentMethod,
                 //     getCategoryMode(item.category, item.type, item.mode).mode == 'CREDIT'?

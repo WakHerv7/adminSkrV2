@@ -10,7 +10,7 @@ interface ModalProps {
 }
 function Modal({index, name, item, modalContent}:ModalProps) {
     const searchParams = useSearchParams();
-    const modal = searchParams.get(`${name}${index}`);
+    const modal = searchParams.get(`${name}${index ?? ''}`);
     const pathname = usePathname();
 
     return (

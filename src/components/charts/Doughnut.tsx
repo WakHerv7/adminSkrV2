@@ -41,7 +41,8 @@ const Doughnut = ({ data }: IDoughnutData) => {
 
   return (
     <div className="w-full h-52">
-      <DoughnutChart data={data} options={options} updateMode="resize" redraw/>
+      <DoughnutChart data={data} options={options} updateMode="resize" />
+      {/* redraw */}
     </div>
   )
 }

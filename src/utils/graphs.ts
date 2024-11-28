@@ -1,0 +1,367 @@
+import { ScriptableContext } from "chart.js";
+import { getFormattedDateTime } from "./DateFormat";
+
+interface CategoryModeItemProps {
+  [key: string]: string | undefined; // Index signature
+}
+interface CategoryModeProps {
+  [key: string]: CategoryModeItemProps;
+}
+
+export const categoryMode:CategoryModeProps = {
+  carte:{
+    'CREDIT': "Crédit carte",
+    'DEBIT': "Débit carte",
+  },
+  solde:{
+    'CREDIT': "Crédit compte",
+    'DEBIT': "Débit compte",
+  },
+  parrain:{
+    'CREDIT': "Crédit parrain",
+    'DEBIT': "Débit parrain",
+  },
+}
+
+export const getCategoryMode = (category:string, type:string, mode:string) => {
+  if(category ==='carte'){
+    if(type === 'recharge' && mode=== 'DEBIT'){
+      return {mode:'CREDIT', text:"Crédit carte"}
+    }
+    else if(type === 'retrait' && mode=== 'CREDIT'){
+      return {mode:'DEBIT', text:"Débit carte"}
+    } else {
+      return {mode:mode, text:categoryMode?.[category]?.[mode]};
+    }
+  }
+  else {
+    return {mode:mode, text:categoryMode?.[category]?.[mode]};
+  }
+}
+
+export const getCategoryModeV2 = (category:string, type:string, mode:string) => {
+  if(category ==='card'){
+    if(type === 'topup' && mode=== 'DEBIT'){
+      return {mode:'CREDIT', text:"Crédit carte"}
+    }
+    else if(type === 'withdrawal' && mode=== 'CREDIT'){
+      return {mode:'DEBIT', text:"Débit carte"}
+    } else {
+      return {mode:mode, text:categoryMode?.[category]?.[mode]};
+    }
+  }
+  else {
+    return {mode:mode, text:categoryMode?.[category]?.[mode]};
+  }
+}
+
+
+interface CategoryTypeItemProps {
+  'retrait'?: string;
+  'recharge'?: string;
+  'transfert'?: string;
+  'parrainage'?: string;
+  'achat'?: string;
+  'authorization'?: string;
+  'decline'?: string;
+  'reversal'?: string;
+  'refund'?: string;
+  'termination'?: string;
+  'debitechec'?: string;
+  'bank'?: string;
+  [key: string]: string | undefined; // Index signature
+}
+interface CategoryTypeProps {
+  carte: CategoryTypeItemProps;
+  solde: CategoryTypeItemProps;
+  transfert: CategoryTypeItemProps;
+  [key: string]: CategoryTypeItemProps;
+}
+
+export const categoryType:CategoryTypeProps = {
+  carte:{
+    'retrait': "Retrait de carte",
+    'recharge': "Recharge de carte",
+    'achat': "Achat de carte",
+    'authorization': "Paiement accepté",
+    'decline': "Paiement refusé",
+    'reversal': "Remboursement dans la carte",
+    'refund': "Demande de remboursement",
+    'termination': "Carte terminée/ désactivée",
+    'debitechec': "Frais d’échec de paiement",
+  },
+  solde:{
+    'retrait': "Retrait de compte",
+    'recharge': "Recharge de compte",
+    'parrainage': "Reversement dans le solde parrainage",
+  },
+  transfert:{
+    'transfert': "Transfert vers compte sekure",
+    'bank': "Transfert vers compte bancaire",
+  },
+  parrain:{
+    'retrait': "Retrait de compte de parrainage",
+    'recharge': "Recharge de compte  de parrainage",
+    'parrainage': "Reversement dans le solde parrainage",
+  },
+}
+
+
+interface ICategoryType {
+  [key: string]: any;
+}
+export const categoryTypeV2: ICategoryType = {
+  card: {
+    withdrawal: 'Retrait de carte',
+    topup: 'Recharge de carte',
+    purchase: 'Achat de carte',
+    authorization: 'Paiement accepté',
+    decline: 'Paiement refusé',
+    reversal: 'Remboursement dans la carte',
+    refund: 'Demande de remboursement ',
+    termination: 'Carte terminée/ désactivée',
+    faildebit: 'Frais d’échec de paiement',
+  },
+  wallet: {
+    withdrawal: 'Retrait de compte',
+    topup: 'Recharge de compte',
+    sponsorship: 'Reversement dans le solde parrainage',
+  },
+  sponsorship: {
+    withdrawal: 'Retrait solde parrainage',
+    topup: 'Depot solde parrainage',
+  },
+  transfer: {
+    transfer: 'Transfert vers compte sekure',
+    bank: 'Transfert vers compte bancaire Nigeria', // "Transfert vers compte bancaire"
+  },
+};
+
+/** =========================================================== */
+export function getCategoryTypeV2(inputCategory: string, inputType: string) {
+  if (categoryTypeV2?.[inputCategory]?.[inputType]) {
+    return categoryTypeV2?.[inputCategory]?.[inputType];
+  }
+
+  return `${inputCategory}-${inputType}`; // Return null if no match is found
+}
+
+/** =========================================================== */
+export const getTransactionTrendGraphData = ({trxData, dual}:{trxData:any, dual?:boolean}) => {
+    let labels:string[] = [];
+    let data:number[] = [];
+    let data1:number[] = [];
+    let data2:number[] = [];
+    const trxs = trxData?.transactions ?? [];
+    trxs?.map((item:any, index:any) => {
+        labels.push(`${getFormattedDateTime(item.createdAt, '', 'fr')}`);
+        data.push(item.amount);
+        if(dual) {
+          if (item.type === 'decline') {
+            data1.push(0);
+            data2.push(item.amount);
+          } else {
+            data1.push(item.amount);
+            data2.push(0);
+          }
+        }
+    });
+    const chartOptions = {
+      tooltip: {
+        callbacks: {
+          label: (context:any) => {
+            const dataPoint = context.dataset.data[context.dataIndex];
+            console.log();
+            
+            // ${context.dataset.label}            
+            return `(${categoryType[trxs[context.dataIndex]?.category]?.[trxs[context.dataIndex]?.type] ?? trxs[context.dataIndex]?.type+', '+trxs[context.dataIndex]?.category}) : ${dataPoint}`;
+          },
+        },        
+      },
+      animation: {
+        duration: 0, // Disables animation
+      },
+    };
+    let transactionTrendsGraphData = {
+      labels: labels,
+      datasets: [
+        {
+          label: 'Montant',            
+          data: dual ? data1 : data, 
+          // backgroundColor: '#18BC7Ac3',
+          borderColor: 'rgba(75, 192, 192, 1)',
+          borderWidth: 1,
+          fill: true,
+          pointStyle: false,
+          backgroundColor: (context: ScriptableContext<"line">) => {
+            const ctx = context.chart.ctx;
+            const gradient = ctx.createLinearGradient(0, 0, 500, 200);
+            gradient.addColorStop(0, "#18BC7A");
+            gradient.addColorStop(1, "#FFDB5A");
+            return gradient;
+          },
+        },
+        
+      ],
+    };
+    
+    if(dual) {
+      const dataset2 = {
+        label: 'Montant',
+        data: data2,
+        borderColor: '#D80F0Faa',
+        backgroundColor: (context: ScriptableContext<"line">) => {
+          const ctx = context.chart.ctx;
+          const gradient = ctx.createLinearGradient(0, 0, 500, 200);
+          gradient.addColorStop(0, "#D80F0Faa");
+          gradient.addColorStop(1, "#D80F0Faa");
+          return gradient;
+        },
+        borderWidth: 1,
+        fill: true,
+        pointStyle: false,
+      }
+      transactionTrendsGraphData.datasets.push(dataset2);
+    }
+
+      return {transactionTrendsGraphData, chartOptions};
+}
+
+
+const backgroundColor = [
+  '#FFDB5A',
+  '#F85D4B',
+  '#6200EE',
+  '#FD8A49',
+  '#33E89C',
+  '#5BCEFF',
+];
+
+function generateRandomHSLColor() {
+  const randomHue = Math.floor(Math.random() * 361); // Random hue between 0 and 360
+  const randomSaturation = Math.floor(Math.random() * 101); // Random saturation between 0 and 100
+  const randomLightness = Math.floor(Math.random() * 101); // Random lightness between 0 and 100
+
+  return `hsl(${randomHue}, ${randomSaturation}%, ${randomLightness}%)`;
+}
+
+export const getTransactionPerCountryGraphData = (trxData:any, title:string) => {
+  let labels:string[] = [];
+  let data:number[] = [];
+  trxData.forEach((item:any, index:any) => {
+    labels.push(item.country);
+    data.push(item.totalAmount); // Removed template literals as it's unnecessary
+    item.color = index < backgroundColor.length ? backgroundColor[index] : generateRandomHSLColor();
+  });
+  const doughnutData = {
+    labels: labels, // ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+    datasets: [
+      {
+        label: title ?? '',
+        data: data, //Array.from({length: 6}, () => Math.floor(Math.random() * 301) + 100),
+        backgroundColor: [
+          '#FFDB5A',
+          '#F85D4B',
+          // '#6200EE',
+          // '#FD8A49',
+          // '#33E89C',
+          // '#5BCEFF',
+        ],
+        hoverOffset: 4,
+      },
+    ],
+  };
+
+  return {transactionPerCountryGraphData:doughnutData, transactionPerCountryData:trxData};
+}
+
+
+export const getUserPaymentsGraphData = (trxData:any, title?:string) => {
+  let labels:string[] = [];
+  let data:number[] = [];
+  let trx = trxData;
+  trx = trx.map((item:any, index:any) => {
+    const newItem = { ...item }; 
+    labels.push(newItem.merchant?.name);
+    data.push(newItem?.totalAmount);
+    newItem.color = index < backgroundColor.length ? backgroundColor[index] : generateRandomHSLColor();
+    return newItem;
+  });
+  const doughnutData = {
+    labels: labels, // ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+    datasets: [
+      {
+        label: title ?? '',
+        data: data, //Array.from({length: 6}, () => Math.floor(Math.random() * 301) + 100),
+        backgroundColor: backgroundColor.slice(0, trx.length),
+        // [
+        //   '#FFDB5A',
+        //   '#F85D4B',
+        //   // '#6200EE',
+        //   // '#FD8A49',
+        //   // '#33E89C',
+        //   // '#5BCEFF',
+        // ],
+        hoverOffset: 4,
+      },
+    ],
+  };
+  console.log("userPaymentsData TRX: ", trx);
+  console.log("userPaymentsData TRXDATA: ", trxData);
+  
+return {userPaymentsGraphData:doughnutData, userPaymentsData:trx};
+}
+
+
+export const getTransactionPerCategoryTypeGraphData = (trxData:any, index:number) => {
+  let labels:string[] = [];
+  let data:number[] = [];
+  trxData.map((item:any, index:any) => {
+      labels.push(getFormattedDateTime(item.createdAt, '', 'fr'));
+      data.push(item.amount);
+  });
+  const dataData = {
+    labels: labels, //['Mon1', 'Mon2', 'Mon3', 'Mon4', 'Mon5', 'Mon6', 'Mon7', 'Mon8', 'Mon9', 'Mon10', 'Mon11', 'Mon12'],
+    datasets: [{
+      label: '',
+      // data: [20, 32, 11, 29, 10, 25, 30, 27, 100, 320, 28, 100],
+      data: data, //Array.from({length: 12}, () => Math.floor(Math.random() * 100)),
+      borderColor: index%2 == 0 ? '#FFDB5A' : '#18BC7A',
+      borderWidth: 2,
+      pointStyle: false
+    }]
+  };
+
+  return dataData;
+}
+
+
+export const getGraphData = (trxData:any, index:number) => {
+  let labels:string[] = [];
+  let data:number[] = [];
+  trxData?.result?.map((item:any, index:any) => {
+      labels.push(getFormattedDateTime(item.createdAt, 'date', 'fr'));
+      data.push(item.count);
+  });
+  const dataData = {
+    labels: labels, //['Mon1', 'Mon2', 'Mon3', 'Mon4', 'Mon5', 'Mon6', 'Mon7', 'Mon8', 'Mon9', 'Mon10', 'Mon11', 'Mon12'],
+    datasets: [{
+      label: '',
+      // data: [20, 32, 11, 29, 10, 25, 30, 27, 100, 320, 28, 100],
+      data: data, //Array.from({length: 12}, () => Math.floor(Math.random() * 100)),
+      borderColor: index%2 == 0 ? '#FFDB5A' : '#18BC7A',
+      borderWidth: 2,
+      pointStyle: false
+    }]
+  };
+
+  return {dataData, trxData};
+}
+
+
+
+
+
+
+
+

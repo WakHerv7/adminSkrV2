@@ -9,11 +9,13 @@ import { GrTransaction } from "react-icons/gr";
 import { BsFillBookmarkCheckFill } from "react-icons/bs";
 import { FaRegCreditCard } from "react-icons/fa6";
 import { TbSum } from "react-icons/tb";
+import { AiOutlineStop } from "react-icons/ai";
 // import { PiHandWithdraw } from "react-icons/pi";
 // import { PiHandDeposit } from "react-icons/pi";
 
 export const checkCircleIcon = <MdCheckCircle size={24} color={"#18BC7A"} />;
 export const folderIcon = <FaFolder size={24} color={"#777"} />;
+export const stopIcon = <AiOutlineStop size={24} color={"#777"}/>;
 export const lockedIcon = <FaLock size={20} color={"#777"} />;
 export const verifiedIcon = <BsFillBookmarkCheckFill size={20} color={"#777"} />;
 export const ongoingCircleIcon = <MdChangeCircle size={24} color={"#777"} />;

@@ -3,10 +3,14 @@ import { Button } from '../ui/button'
 import LabelWithBadge from './LabelWithBadge';
 
 const ActiveYesNo = ({ 
-  isActive, label, color, textColor, className
+  isActive, colorActive, colorInactive, label, labelActive, labelInactive, color, textColor, className
 }: {   
   isActive: boolean | React.ReactNode,  
   label?: string,
+  labelActive?: string,
+  colorActive?:string,
+  labelInactive?: string,
+  colorInactive?: string,
   color?: string,
   textColor?: string,
   className?: string,
@@ -15,15 +19,15 @@ const ActiveYesNo = ({
     <>
     {isActive ? 
     <LabelWithBadge 
-    label={label ?? 'Actif'}
-    badgeColor={color ?? '#18BC7A'}
+    label={label ?? labelActive ?? 'Actif'}
+    badgeColor={color ?? colorActive ?? '#18BC7A'}
     className={className}
     textColor={textColor ?? '#444'}
     />
     :
     <LabelWithBadge 
-    label={label ?? 'Inactif'}
-    badgeColor={color ?? '#444'}
+    label={label ?? labelInactive ?? 'Inactif'}
+    badgeColor={color ?? colorInactive ?? '#444'}
     className={className}
     textColor={textColor ?? '#444'}
     />

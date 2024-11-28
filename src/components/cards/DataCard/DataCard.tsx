@@ -60,9 +60,9 @@ const DataCard = ({
     <div className={`p-4 border outline-1 rounded-xl ${width ? 'max-w-['+width+'px]' : ''}`}> {/* max-w-[270px] */}
       <div className='flex justify-between items-start'>
         <h1 className='text-xs font-semibold'>{title}</h1>
-        <div className='px-4 py-2 border border-gray-300 rounded-full flex gap-3'>
+        {/* <div className='px-4 py-2 border border-gray-300 rounded-full flex gap-3'>
           <span className='text-xs text-gray-800'>{change_per}</span><FaArrowDown />
-        </div>
+        </div> */}
       </div>
       <div className='w-full mb-4'>
         <Line data={chartData} height={100} options={chartOptions} />

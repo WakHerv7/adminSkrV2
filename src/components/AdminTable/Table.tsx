@@ -3,7 +3,7 @@ import { Button } from '../ui/button'
 import { FourDots } from '../shared/icons';
 import Link from 'next/link';
 import ButtonOutlined from '../shared/ButtonOutlined';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import { BiTransferAlt } from 'react-icons/bi';
 import { FaChevronLeft, FaChevronRight, FaSortDown, FaSortUp } from "react-icons/fa";
 export interface ITableHeader {
@@ -25,6 +25,7 @@ type Props = {
   searchTerm?: string;
   data: IGenericRow[];
   headerData: ITableHeader;
+  isLoading?:boolean;
 };
 
 const getSortedData = (arrayToSort: any[], sort:ISortState): any[] => {
@@ -48,19 +49,25 @@ const getSortedData = (arrayToSort: any[], sort:ISortState): any[] => {
   }
 
   return arrayToSort.sort((a, b) => {
-    // Handle JSX elements
-    if (typeof a[sort.keyToSort] === "object" && typeof b[sort.keyToSort] === "object") {
-      // Extract the underlying value using React.cloneElement to avoid unintended side effects
-      const aValue = React.cloneElement(a[sort.keyToSort] as React.ReactElement<any>).props.isActive ? 'Actif' : 'Inactif';
-      const bValue = React.cloneElement(b[sort.keyToSort] as React.ReactElement<any>).props.isActive ? 'Actif' : 'Inactif';
+    if( a[sort.keyToSort]&& b[sort.keyToSort] ) {
+      // Handle JSX elements
+      if (typeof a[sort.keyToSort] === "object" && typeof b[sort.keyToSort] === "object") {
+        // Extract the underlying value using React.cloneElement to avoid unintended side effects
+        console.log(sort.keyToSort);
+        console.log(a[sort.keyToSort]);
+        console.log(b[sort.keyToSort]);
+        
+        const aValue = React.cloneElement(a[sort.keyToSort] as React.ReactElement<any>).props.isActive ? 'Actif' : 'Inactif';
+        const bValue = React.cloneElement(b[sort.keyToSort] as React.ReactElement<any>).props.isActive ? 'Actif' : 'Inactif';
 
-      return (aValue > bValue ? 1 : -1) * sortOrder;
-    }
+        return (aValue > bValue ? 1 : -1) * sortOrder;
+      }
 
-    // Handle other data types (string comparison with numeric sorting)
-    if (typeof a[sort.keyToSort] === 'string' && typeof b[sort.keyToSort] === 'string') {
-      return String(a[sort.keyToSort]).localeCompare(String(b[sort.keyToSort]), undefined, { numeric: true }) * sortOrder;
-    }
+      // Handle other data types (string comparison with numeric sorting)
+      if (typeof a[sort.keyToSort] === 'string' && typeof b[sort.keyToSort] === 'string') {
+        return String(a[sort.keyToSort]).localeCompare(String(b[sort.keyToSort]), undefined, { numeric: true }) * sortOrder;
+      }
+    }    
 
     // Generic comparison for other data types
     return (a[sort.keyToSort] > b[sort.keyToSort] ? 1 : -1) * sortOrder;
@@ -68,34 +75,44 @@ const getSortedData = (arrayToSort: any[], sort:ISortState): any[] => {
 };
 
 const filterData = (data: any[], searchTerm: string): any[] => {
-  if (!searchTerm) {
-    return data; // Return all items if no search term
-  }
+  return data;
+  // if (!searchTerm) {
+  //   return data; // Return all items if no search term
+  // }
 
-  return data.filter(item => {
-    let found = false;
-    Object.values(item).some(value => {
-      if (typeof value === "object") {
-        const val = React.cloneElement(value as React.ReactElement<any>).props.isActive ? 'Actif' : 'Inactif';
-        if (val.toLowerCase().includes(searchTerm.toLowerCase())) {
-            found = true;
-        }
-      } else if (typeof value === "string") {
-        if (value.toLowerCase().includes(searchTerm.toLowerCase())) {
-          found = true;
-        }
-      }
-    });
-    return found;
-  });
+  // return data.filter(item => {
+  //   let found = false;
+  //   Object.values(item).some(value => {
+  //     if(value){
+  //       if (typeof value === "object") {
+  //         const val = React.cloneElement(value as React.ReactElement<any>).props.isActive ? 'Actif' : 'Inactif';
+  //         if (val.toLowerCase().includes(searchTerm.toLowerCase())) {
+  //             found = true;
+  //         }
+  //       } else if (typeof value === "string") {
+  //         if (value.toLowerCase().includes(searchTerm.toLowerCase())) {
+  //           found = true;
+  //         }
+  //       }
+  //     }
+  //   });
+  //   return found;
+  // });
 };
 
 
-const AdminTable: React.FC<Props> = ({ searchTerm, data, headerData }) => {
+const AdminTable: React.FC<Props> = ({ searchTerm, data, headerData, isLoading }) => {
   const [sort, setSort] = useState<ISortState>({ keyToSort: 'serial', order: 'asc'});
-  const [itemsPerPage, setItemsPerPage] = useState<number>(5);
+  const [itemsPerPage, setItemsPerPage] = useState<number>(10);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [itemsRange, setItemsRange] = useState<IMinMaxState>({ min: 1, max: currentPage * itemsPerPage});
+  
+  const [sortedData, setSortedData] = useState<any[]>([]);
+  const [filteredData, setFilteredData] = useState<any[]>([]);
+  const [paginatedData, setPaginatedData] = useState<any[]>([]);  
+  const [totalPages, setTotalPages] = useState<number>(0);
+  
+  
   
   const handleHeaderClick = (headerKey: string | number) => {
     const { keyToSort, order } = sort;
@@ -106,10 +123,32 @@ const AdminTable: React.FC<Props> = ({ searchTerm, data, headerData }) => {
   };
 
 // const getSortedData = (arrayToSort: any[], sort: { keyToSort: string, order: 'asc' | 'desc' }): any[] => {
+
+useEffect(() => {
+  setSortedData(getSortedData(data, sort));  
+}, [data])
+useEffect(() => {
+  setFilteredData(filterData(sortedData, searchTerm?.toLowerCase() || ''));
+}, [sortedData])
+useEffect(() => {
+  setTotalPages(Math.ceil(filteredData.length / itemsPerPage)); // Calculate total pages
+  setPaginatedData(filteredData.slice(itemsRange.min - 1, itemsRange.max));
+}, [filteredData, itemsPerPage, itemsRange])
+// useEffect(() => {
+//     // console.log("data-data-data : ", data);
+//     setSortedData(getSortedData(data, sort));
+//     setFilteredData(filterData(sortedData, searchTerm?.toLowerCase() || ''));
+//     setTotalPages(Math.ceil(filteredData.length / itemsPerPage)); // Calculate total pages
+//     setPaginatedData(filteredData.slice(itemsRange.min - 1, itemsRange.max));
+//     // console.log("data-data-data : ", data);
+//     // console.log("sortedData-sortedData : ", sortedData);
+//     // console.log("filteredData-filteredData : ", filteredData);
+//     // console.log("paginatedData-paginatedData : ", paginatedData);
+    
+// }, [data])
   
-  const sortedData = getSortedData(data, sort);
-  const filteredData = filterData(sortedData, searchTerm?.toLowerCase() || '');
-  const totalPages = Math.ceil(filteredData.length / itemsPerPage); // Calculate total pages
+  
+  
 
   const handlePageChange = (e:any, page:number) => {
     e.preventDefault();
@@ -140,7 +179,7 @@ const AdminTable: React.FC<Props> = ({ searchTerm, data, headerData }) => {
   //   (currentPage - 1) * itemsPerPage + filteredData.length
   // );
   
-  const paginatedData = filteredData.slice(itemsRange.min - 1, itemsRange.max);
+  
 
   return (
     <div>
@@ -187,7 +226,7 @@ const AdminTable: React.FC<Props> = ({ searchTerm, data, headerData }) => {
         ) : (
           <tr style={{position:'relative'}}>
             <td colSpan={Object.keys(headerData)?.length} style={{display: 'table-cell', margin:'auto', paddingLeft:'50%'}} className=''>
-            Aucun resultat
+            {isLoading ? '': data.length>0 ? `${data.length} resultats en attente ...` :`Aucun resultat`}
             </td>
           </tr>
         )}
@@ -196,6 +235,9 @@ const AdminTable: React.FC<Props> = ({ searchTerm, data, headerData }) => {
         {/* Footer content can be dynamic as well */}
       </tfoot>
     </table>
+    <div className='py-10 flex w-full justify-center items-center'>
+      {isLoading ? <div className={'loadingSpinner'}></div> : <></>}
+    </div>
     </div>
     <div className='py-10 text-sm flex justify-between items-center'>
       

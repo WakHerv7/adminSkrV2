@@ -16,6 +16,7 @@ export const headerUserAccountData: ITableHeader = {
   "solde": "Solde Cpt.",
   "totalTrx": "Total Trans.",
   "avgTrx": "Moy. Trans.",
+  "kyc": "KYC",
   "status": "Statut",
   "locked": "Bloqué",
   "date": "Date de création",

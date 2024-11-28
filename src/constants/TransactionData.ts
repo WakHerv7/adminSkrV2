@@ -6,16 +6,79 @@ import { IGenericRow, ITableHeader } from "@/components/AdminTable/Table";
 //   "Mode paiement", "Statut",
 //    "Date de création", ""
 // ]
+export const headerTransferData: ITableHeader = {
+  "serial": "S/N",
+  "type": "Type",
+  "expeditor": "Expediteur",
+  "countryExp": "Pays Exp.",
+  "recipient": "Destinataire",
+  "countryRec": "Pays Dest.",
+  "idTrx": "ID Transaction",
+  "amount": "Montant (XAF)",
+  // "method": "Methode",
+  // "mode": "Mode",
+  "status": "Statut",
+  "date": "Date de création",
+  "edit": ""
+};
+
+export const headerCardTransactionData: ITableHeader = {
+  "serial": "S/N",
+  "type": "Type",
+  "name": "Marchand",
+  "card": "Carte",
+  "country": "Pays",
+  "phone": "Telephone",
+  "idTrx": "ID Transaction",
+  "amount": "Montant (XAF)",
+  "method": "Methode",
+  "mode": "Mode",
+  "status": "Statut",
+  "date": "Date de création",
+  "edit": ""
+};
+
+export const headerCardTransactionData2: ITableHeader = {
+  "serial": "S/N",
+  "type": "Type",
+  "name": "Marchand",
+  // "card": "Carte",
+  // "country": "Pays",
+  // "phone": "Telephone",
+  // "idTrx": "ID Transaction",
+  "amount": "Montant (XAF)",
+  "method": "Methode",
+  "mode": "Mode",
+  "status": "Statut",
+  "date": "Date de création",
+  "edit": ""
+};
 
 export const headerTransactionData: ITableHeader = {
   "serial": "S/N",
   "type": "Type",
-  "name": "Nom",
+  "name": "Marchand",
   "country": "Pays",
   "phone": "Telephone",
   "idTrx": "ID Transaction",
-  "amount": "Montant",
-  "paymentMethod": "Mode paiement",
+  "amount": "Montant (XAF)",
+  "method": "Methode",
+  "mode": "Mode",
+  "status": "Statut",
+  "date": "Date de création",
+  "edit": ""
+};
+export const headerTransactionDataV2: ITableHeader = {
+  "serial": "S/N",
+  "type": "Type",
+  "name": "Marchand",
+  "country": "Pays",
+  "phone": "Telephone",
+  "idTrx": "ID Transaction",
+  "oldNew": "A/N",
+  "amount": "Montant (XAF)",
+  "method": "Methode",
+  "mode": "Mode",
   "status": "Statut",
   "date": "Date de création",
   "edit": ""

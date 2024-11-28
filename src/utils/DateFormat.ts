@@ -1,26 +1,144 @@
-export const getFormattedDate = (entry: Date) => {
+export const getFormattedDate = (entry: Date, lang?:string, isText?:boolean) => {
   if (typeof entry === "string") {
     entry = new Date(entry);
   }
-  const year = entry.getFullYear();
-  const month = `0${entry.getMonth() + 1}`.slice(-2);
-  const day = `0${entry.getDate()}`.slice(-2);
-  return `${day}/${month}/${year}`;
+  if(entry) {
+    // Adjust the date to the day before if necessary
+    let adjustedEntry = new Date(entry.getTime());
+    
+
+    // Check if the time is midnight (00:00)
+    if (adjustedEntry.getHours() === 0) {
+      // Set the time to 23:59 (11:00 PM) if it's midnight
+      adjustedEntry.setHours(23);
+      adjustedEntry.setDate(adjustedEntry.getDate() - 1);
+    }
+
+    const year = adjustedEntry.getFullYear();
+    const month = `0${adjustedEntry.getMonth() + 1}`.slice(-2); // Note: getMonth() returns 0-11, hence the +1
+    const day = `0${adjustedEntry.getDate()}`.slice(-2);
+
+    // const year = entry.getFullYear();
+    // const month = `0${entry.getMonth() + 1}`.slice(-2);
+    // const day = `0${entry.getDate()}`.slice(-2);
+
+    return lang == 'fr' ? `${day}/${month}/${year}` : `${day}/${month}/${year}`; 
+  }
+  return '';
 };
-export const getInputFormattedDate = (entry: Date) => {
+
+export const getTextFormattedDate = (entry: Date | string, lang?: string, withHours?:boolean): string => {
+  let adjustedEntry: Date;
+
+  // Handle input type
+  if (typeof entry === "string") {
+    entry = new Date(entry);
+  }
+
+  // Adjust the date to the day before if necessary
+  adjustedEntry = new Date(entry.getTime());
+
+  // Check if the time is midnight (00:00) and adjust if needed
+  if (adjustedEntry.getHours() === 0) {
+    adjustedEntry.setHours(23);
+    adjustedEntry.setDate(adjustedEntry.getDate() - 1);
+  }
+
+  // Format the date using toLocaleDateString
+  let options:Intl.DateTimeFormatOptions;
+  
+  if(withHours) {
+    options = { 
+      year: "numeric", 
+      month: "short", 
+      day: "numeric",
+      hour:'2-digit',
+      minute: '2-digit'
+    };
+  } else {
+    options = { 
+      year: "numeric", 
+      month: "short", 
+      day: "numeric"
+    };
+  }
+  
+
+  const formattedDate = adjustedEntry.toLocaleDateString('fr-FR', options);
+
+  return formattedDate;
+};
+
+
+export const getInputFormattedDate = (entry: Date, lang?:string) => {
   const year = entry.getFullYear();
   const month = `0${entry.getMonth() + 1}`.slice(-2);
   const day = `0${entry.getDate()}`.slice(-2);
+  return lang == 'fr' ? `${day}-${month}-${year}` : `${year}-${month}-${day}`;
+};
+
+export const getNextUIDatePickerValueStr = (inputYear:number, inputMonth:number, inputDay:number) => {
+  const year = inputYear;
+  const month = `0${inputMonth}`.slice(-2);
+  const day = `0${inputDay}`.slice(-2);
   return `${year}-${month}-${day}`;
 };
 
 export const getFormattedTime = (entry: Date) => {
-  const hours = `0${entry.getHours()}`.slice(-2);
-  const minutes = `0${entry.getMinutes()}`.slice(-2);
-  if (isNaN(parseInt(hours)) || isNaN(parseInt(minutes))) {
-    return "";
+  if (typeof entry === "string") {
+    // console.log("getFormattedTime : ", entry);
+    entry = new Date(entry);
   }
-  return `${hours}:${minutes}`;
+  if(entry) {
+    let gmtOffset = entry.getTimezoneOffset()/60; 
+    let hours = entry.getHours() + gmtOffset;
+    hours = hours < 0 ? 24 + hours : hours; // Adjust for negative hours
+    hours = hours > 23 ? hours - 24 : hours; // Adjust for hours exceeding 23
+    const minutes = `0${entry.getMinutes()}`.slice(-2);
+    if (isNaN(parseInt(`${hours}`)) || isNaN(parseInt(minutes))) {
+      return "";
+    }
+    return `${Number(hours)}:${minutes}`;
+  }
+
+  return "";
+  
+};
+
+function extractDateAndTime(dateTimeString:string) {
+  const date = new Date(dateTimeString);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0'); // Adding 1 to month as getMonth returns zero-based value
+  const day = String(date.getDate()).padStart(2, '0');
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+
+  const formattedDateTime = `${day}/${month}/${year}  ${hours}:${minutes}`;
+  return formattedDateTime;
+}
+
+export const getFormattedDateTime = (entry: Date, format?:string, lang?:string) => {
+  let year0="";
+  if (typeof entry === "string") {
+    // const x = new Date(entry);
+    year0 = String(entry).slice(0,1);
+  }
+  
+  if (year0 === "0") {
+    return "-/-";
+  } 
+  else 
+  {
+    if (format =='date') {
+      return getFormattedDate(entry,lang);
+    } 
+    else if (format =='time'){
+      return getFormattedTime(entry);
+    }
+    else {
+      return `${getFormattedDate(entry,lang)}  ${getFormattedTime(entry)}`;
+    }
+  } 
 };
 
 const getWeekNumber = (entry: Date) => {

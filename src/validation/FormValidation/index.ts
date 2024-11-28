@@ -1,12 +1,12 @@
 import { z } from "zod"
 
-export const formSchema = z.object({
-  email: z.string().min(10, {
-    message: 'Email must be at least 10 characters long'
-  }),
-  password: z.string().min(8, {
-    message: 'Password must be at least 8 characters long'
-  }),
+export const loginSchema = z.object({
+  email: z.string(
+    {message:'Entrez un email valide'}
+  ).email({message:'Entrez un email valide'}),
+  password: z.string(
+    {message:'Entrez un mot de passe'}
+  ),
 });
 
 export const adminSchema = z.object({
@@ -47,7 +47,49 @@ export const detailsSchema = z.object({
   name: z.string(),
   email : z.string(),
   country: z.string(),
-  gender: z.string(),
+  // gender: z.string(),
   phone: z.string(),
-  city: z.string(),
+  country_code: z.string(),
+  city: z.string(),  
+  address: z.string(),
+  birthday: z.string(),
+  age: z.string(),
+  job: z.string(),
+  sex: z.string(),
+  income: z.string(),
+  idExpDate: z.string(),
+  codeParrain: z.string(),
+  codeParrainage: z.string(),
+  deviceModel: z.string(),
+  deviceID: z.string(),
+  idNumber: z.string(),
+  idPaper: z.string(),
+  tags:z.array(z.string()),
+  additionalPhoneNumbers:z.array(z.string()),
+})
+
+export const detailsSchemaV2 = z.object({
+  first_name: z.string(),
+  last_name: z.string(),
+  email : z.string(),
+  country: z.string(),
+  // gender: z.string(),
+  phone: z.string(),
+  country_code: z.string(),
+  city: z.string(),  
+  address: z.string(),
+  birthday: z.string(),
+  age: z.string(),
+  job: z.string(),
+  sex: z.string(),
+  income: z.string(),
+  idExpDate: z.string(),
+  codeParrain: z.string(),
+  codeParrainage: z.string(),
+  deviceModel: z.string(),
+  deviceID: z.string(),
+  idNumber: z.string(),
+  idPaper: z.string(),
+  tags:z.array(z.string()),
+  additionalPhoneNumbers:z.array(z.string()),
 })

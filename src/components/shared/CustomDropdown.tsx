@@ -4,6 +4,7 @@ import { BsDot } from 'react-icons/bs'
 import { FaChevronDown } from 'react-icons/fa'
 
 interface CustomDropdownProps {
+    btnChild?:React.ReactElement;
     title?: string;
     cstyle: string;
     iconSize?: number;
@@ -12,7 +13,7 @@ interface CustomDropdownProps {
     items: React.ReactElement[];
 }
 
-const CustomDropdown: React.FC<CustomDropdownProps> = ({ title, cstyle, iconSize, icon, items, hasDropdownIcon=true }) => {
+const CustomDropdown: React.FC<CustomDropdownProps> = ({ title, btnChild, cstyle, iconSize, icon, items, hasDropdownIcon=true }) => {
     let color = '';
     if (cstyle === 'green') {
        color = '#fff';
@@ -38,13 +39,20 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({ title, cstyle, iconSize
                 'border border-solid border-[#444]'
                 :''
              } `}>          
-                {title ? <span className={`text-sm text-[${color}]`}>
+                {btnChild ?
+                <>{btnChild}</>
+                :
+                <>
+                {title ? 
+                <span className={`text-sm text-[${color}]`}>
                     {title}
                 </span> : <></>}
                 {iconElement}
                 {hasDropdownIcon ?
                 <FaChevronDown size={15} color={color} />
                 :<></>}
+                </>
+                }
             </div>
 
             {/* <div className="inline-flex w-full justify-center rounded-md bg-black/20 px-4 py-2 text-sm font-medium text-white hover:bg-black/30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/75">
@@ -77,7 +85,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({ title, cstyle, iconSize
                 {items?.map((item, index) =>  {
                     return (
                         <Menu.Item key={index}>
-                            <div className={`min-h-[30px] py-1 px-2 cursor-pointer flex items-center 
+                            <div className={`min-h-[30px] w-full py-1 px-2 cursor-pointer flex items-center 
                             ${cstyle == 'green' || cstyle == 'light-green' ?
                                 'hover:bg-[#18BC7A]/20'
                                 :'hover:bg-[#444]/20'

@@ -1,29 +1,8 @@
 import React from "react";
 import { Button } from "../ui/button";
 import Link from "next/link";
-
-const CButton = ({
-	text,
-	toolTip,
-	color,
-	height,
-	width,
-	icon,
-	iconLeft,
-	href,
-	px,
-	py,
-	hoverBgColor,
-	iconSize,
-	fontWeight,
-	type,
-	textColor,
-	hoverTextColor,
-	textWrap,
-	mode,
-	btnStyle,
-	iconPosition,
-}: {
+export interface ButtonProps 
+	extends React.ButtonHTMLAttributes<HTMLButtonElement>{
 	text: string;
 	toolTip?: string;
 	btnStyle:
@@ -53,6 +32,31 @@ const CButton = ({
 	fontWeight?: "normal" | "semibold" | "bold";
 	icon?: React.ReactNode;
 	iconLeft?: React.ReactNode;
+}
+
+
+const CButton = React.forwardRef<HTMLButtonElement, ButtonProps>(({
+	text,
+	toolTip,
+	color,
+	height,
+	width,
+	icon,
+	iconLeft,
+	href,
+	px,
+	py,
+	hoverBgColor,
+	iconSize,
+	fontWeight,
+	type,
+	textColor,
+	hoverTextColor,
+	textWrap,
+	mode,
+	btnStyle,
+	iconPosition,
+	...props
 }) => {
 	const iconColor =
 		btnStyle === "lightGreen" || btnStyle === "outlineGreen"
@@ -142,6 +146,8 @@ const CButton = ({
 							height: `${height ?? ""}`,
 							width: `${width ?? ""}`,
 						}}
+						{...props}
+						// onClick={(e)=>{	if(onClick){onClick()}}}
 					>
 						{iconPosition == "end" ? (
 							<>
@@ -160,5 +166,7 @@ const CButton = ({
 			)}
 		</>
 	);
-};
+});
+
+CButton.displayName = 'CButton';
 export default CButton;

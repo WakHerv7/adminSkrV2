@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { formSchema } from "@/validation/FormValidation";
+import { loginSchema } from "@/validation/FormValidation";
 import { FaChevronRight } from "react-icons/fa";
 import { Button } from "@/components/ui/button"
 import {
@@ -14,24 +14,73 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import CButton from "@/components/shared/CButton";
+import { AuthService } from "@/api/services/auth";
+import { useMutation } from "react-query";
+import { HashLoader } from "react-spinners";
+import toast from "react-hot-toast";
+import { useDispatch } from "react-redux";
+import { setCredentials } from "@/redux/slices/auth";
+import { useRouter } from "next/navigation";
+import classNames from "classnames";
+import urls from "@/config/urls"
+
+const handleLogin = async (data: z.infer<typeof loginSchema>) => {
+  const response = await AuthService.login(data); 
+  if (!response.ok) {
+    const responseBody = await response.json();
+    // console.error(response); 
+    if (response.status === 403) {
+      throw new Error(responseBody.message);
+    } else {
+      throw new Error("Echec authentification. Veuillez indiquer votre email et votre mot de passe !");
+    }      
+  }
+  const responseJson = await response.json();
+  return responseJson;  
+};
 
 export default function LogiForm() {
-  // ...
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const previousUrl = window.sessionStorage.getItem('previousUrl');
+  const router = useRouter();
+  const dispatch = useDispatch();
+  const form = useForm<z.infer<typeof loginSchema>>({
+    resolver: zodResolver(loginSchema),
     defaultValues: {
       email: "",
       password: "", 
     },
   });
 
-  const onSubmit = (data: z.infer<typeof formSchema>) => {
-    console.log(data);
-  };
+  
+
+  const mutation = useMutation({
+		mutationFn: handleLogin,
+		onError: (err:any) => {
+      console.error("Login onError : ", err.message);
+      toast.error(err.message);		
+		},
+		onSuccess: (data) => {
+      console.log("Login onSuccess : ", data);      
+      const token = data.token;
+      const getSekureApiToken = data.getSekureApiToken;
+      const user = data.data.user;
+      localStorage.setItem('sktoken', token);
+      toast.success("Login successful! Redirecting..."); 
+      dispatch(setCredentials({ token, getSekureApiToken, user}));
+			router.push(previousUrl || urls.dashboard);
+		},
+	});
+
+	const onSubmit = (data: any) => {
+		mutation.mutate(data);
+	};
+	const onError = (err: any) => {
+		console.error("any", err);
+	};
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)}>
+      <form onSubmit={form.handleSubmit(onSubmit, onError)}>
         <div className="space-y-[20px]">
             <FormField
             control={form.control}
@@ -40,9 +89,9 @@ export default function LogiForm() {
                 <FormItem>
                 <FormLabel className="text-gray-900 text-sm tracking-tight">Adresse email</FormLabel>
                 <FormControl>
-                    <Input className="px-6 w-[272px] text-gray-900 font-thin bg-[#F4EFE3]" {...field} />
+                    <Input className="px-6 w-[272px] bg-[#F4EFE3]" {...field} />
                 </FormControl>
-                <FormMessage />
+                <FormMessage className="text-red-400"/>
                 </FormItem>
             )}
             />
@@ -53,9 +102,9 @@ export default function LogiForm() {
                 <FormItem>
                 <FormLabel className="text-gray-900 text-sm font-[500] tracking-tight">Mot de passe</FormLabel>
                 <FormControl>
-                    <Input className="px-6 w-full text-gray-900 font-thin bg-[#F4EFE3]" {...field} />
+                    <Input type="password" className="px-6 w-full bg-[#F4EFE3]" {...field} />
                 </FormControl>
-                <FormMessage />
+                <FormMessage className="text-red-400"/>
                 </FormItem>
             )}
             />
@@ -69,14 +118,30 @@ export default function LogiForm() {
           <CButton 
           text={'Connexion'} 
           btnStyle={'green'}
-          href={`/`}
+          type={"submit"}
+          // href={`/`}
           iconLeft={<FaChevronRight />}
           width={'100%'}
           height={"35px"}
           />
         </div>
+        <div
+					className={classNames(
+						"transition-all invisible z-20 bg-blue-900/30 opacity-0 absolute top-0 left-0 h-full w-full flex items-center justify-center",
+						{
+							"!opacity-100 !visible z-20": mutation.isLoading,
+						}
+					)}
+				>
+					<HashLoader
+						className="shrink-0"
+						size={50}
+						color="#18BC7A"
+					/>
+				</div>
         {/* <Button type="submit" className="w-[272px] mt-[10vh] bg-[#18BC7A] hover:bg-[#FFDB5A] hover:text-[#18BC7A] rounded-full">Connexion</Button> */}
       </form>
     </Form>
   )
 }
+

@@ -9,6 +9,7 @@ type TText = {
 }
 type TDataItem = {
   key?: string;
+  visible?: boolean;
   label: TText;
   value: TText;
 };

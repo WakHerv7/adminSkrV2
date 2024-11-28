@@ -17,10 +17,11 @@ export const headerHomeUserAccountData: ITableHeader = {
   "nbCartes": 'Nbre Cartes',
   "totalTrx": "Total Trans.",
   "avgTrx": "Moy. Trans.",
+  "kyc": "KYC",
   "status": "Statut",
   "locked": "Bloqué",
   "date": "Date de création",
-  "edit": ""
+  "actions": ""
 };
 export const tableHomeUserAccountData: IGenericRow[] = [
   {

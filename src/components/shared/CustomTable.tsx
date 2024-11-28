@@ -10,19 +10,29 @@ import { HiOutlineFilter } from 'react-icons/hi';
 import CustomDropdown from './CustomDropdown';
 import { RxDotsHorizontal } from 'react-icons/rx';
 import CButton from './CButton';
+import { useDispatch, useSelector } from 'react-redux';
+import { setSearchTerm, selectSearchTerm } from '@/redux/slices/search';
 
 
 
 interface CustomDropdownProps {
   btn?: React.ReactNode;
   filter?: boolean;
+  isLoading?: boolean;
   threeButtons?: boolean;
   headerData: ITableHeader;
   tableData: IGenericRow[];
+  search?:string; 
+	setSearch?:(data?:any)=>void;
 }
 
-const CustomTable: React.FC<CustomDropdownProps> = ({headerData, tableData, btn, filter, threeButtons}) =>  {
-  const [search, setSearch] = useState('');
+const CustomTable: React.FC<CustomDropdownProps> = ({
+  search, setSearch,
+  headerData, 
+  tableData, 
+  btn, filter, isLoading, threeButtons}) =>  {
+  const dispatch = useDispatch();
+  const searchTerm:string = useSelector(selectSearchTerm);
   const [currentPage, setCurrentPage] = useState(1);
   const [usersPerPage] = useState(5);
   const [data, setData] = React.useState<IGenericRow[]>(); // Add type annotation for data and change initial state value to an empty object
@@ -45,18 +55,14 @@ const CustomTable: React.FC<CustomDropdownProps> = ({headerData, tableData, btn,
     setCurrentPage(pageNumber);
   }
 
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    e.preventDefault();
-    setTimeout(() => {
-      setSearch(e.target.value);
-    }, 1000);
-  }
-
-
   return (
     <>
     <div className='flex justify-between items-center'>
-      <SearchBar  searchTerm={search} onChange={handleSearch}  />
+      <SearchBar
+      search={search}
+      setSearch={setSearch}
+      searchTerm={searchTerm}
+      />
       <div className='flex items-center gap-5 ml-[100px]'>        
        
        {btn}
@@ -124,7 +130,7 @@ const CustomTable: React.FC<CustomDropdownProps> = ({headerData, tableData, btn,
       </div>
     </div>
     <div className='mt-6 w-full'>
-      <AdminTable searchTerm={search} headerData={headerData} data={tableData || []} />
+      <AdminTable searchTerm={searchTerm} isLoading={isLoading} headerData={headerData} data={tableData || []} />
     </div>
 
     {/* <div className='py-10 text-sm flex justify-end items-center'>

@@ -6,6 +6,7 @@ import { IGenericRow, ITableHeader } from "@/components/AdminTable/Table";
 //   "Numero", "Email", "Statut", 
 //   "Date de création", ""
 // ]
+
 export const headerKYCData: ITableHeader = {
   "serial": "S/N",
   // "id": "ID",
@@ -17,6 +18,20 @@ export const headerKYCData: ITableHeader = {
   "date": "Date de création",
   "edit": "",
 };
+
+export const headerKYCDataV2: ITableHeader = {
+  "serial": "S/N",
+  // "id": "ID",
+  "name": "Nom",
+  "country": "Pays",
+  "phone": "Numero",
+  "email": "Email",
+  "oldNew": "A/N",
+  "status": "Statut KYC",
+  "date": "Date de création",
+  "edit": "",
+};
+
 export const tableKYCData: IGenericRow[] = [
   {
     id:1,

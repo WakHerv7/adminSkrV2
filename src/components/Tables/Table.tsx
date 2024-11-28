@@ -3,7 +3,7 @@ import { columns, Transferts } from "./Column"
 import { DataTable } from "./DataTable"
 import { data } from '@/constants/Index';
 
-export default async function TableComponent() {
+export default function TableComponent() {
   const [tableData, setTableData] = useState<Transferts[]>(data);
 
   return (

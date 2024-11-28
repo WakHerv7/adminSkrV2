@@ -33,10 +33,12 @@ type TLegend = {
 
 const AreaChart = ({
 	data,
+	options,
 	legend,
 	width,
 }: {
 	data: any;
+	options?: any;
 	legend?: TLegend[];
 	width?: number;
 }) => {
@@ -53,7 +55,9 @@ const AreaChart = ({
 			legend: {
 				display: false,
 			},
+			tooltip:options?.tooltip ?? {},			
 		},
+		animation: options?.animation ?? {},
 		scales: {
 			x: {
 				ticks: {
@@ -94,7 +98,7 @@ const AreaChart = ({
 					))}
 			</div>
 			{/* )} */}
-			<Line data={data} height={250} width={width ?? 680} options={chartOptions} />
+			<Line data={data} height={250} width={width ?? 680} redraw={false} options={chartOptions} />
 		</div>
 	);
 };

@@ -83,6 +83,19 @@ export const headerTransactionDataV2: ITableHeader = {
   "date": "Date de création",
   "edit": ""
 };
+export const headerChnPaymentDataV2: ITableHeader = {
+  "serial": "S/N",
+  "type": "Type",
+  "platform": "Plateforme",
+  "country": "Pays",
+  "phone": "Telephone",
+  "idTrx": "ID Transaction",
+  "oldNew": "A/N",
+  "amount": "Montant (XAF)",
+  "status": "Statut",
+  "date": "Date de création",
+  "edit": ""
+};
 
 export const tableTransactionData: IGenericRow[] = [
 {

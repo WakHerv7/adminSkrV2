@@ -93,3 +93,22 @@ export const detailsSchemaV2 = z.object({
   tags:z.array(z.string()),
   additionalPhoneNumbers:z.array(z.string()),
 })
+
+
+export const chnpaymentSchema = z.object({
+  platform_name: z.string(),
+  amount_xaf: z.number(),
+  amount_with_fee_xaf: z.number(),
+  amount_usd : z.number(),
+  fee_xaf: z.number().optional(),
+  delivery_address: z.string().optional(),
+  platform_profile_id: z.string().optional(),
+  provider_payment_link: z.string().optional(),
+  proof: z.string().optional(),
+  product_link: z.string().optional(),
+  user_name: z.string().optional(),
+  user_phone: z.string().optional(),
+  user_email: z.string().optional(),
+  user_country: z.string().optional(),
+  user_city: z.string().optional(),
+})

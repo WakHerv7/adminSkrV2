@@ -32,7 +32,7 @@ const getGabonBalance = async ({queryKey}:any) => {
     const response = await GabonService.get_gabon_balance({token});
     const responseJson = await response.json();
     if (!response.ok) {
-      throw new Error(responseJson.message || 'Failed to get users statistics'); 
+      throw new Error(responseJson.message || 'Failed to get Gabon Balance'); 
     }  
     return responseJson.data; 
   } else {

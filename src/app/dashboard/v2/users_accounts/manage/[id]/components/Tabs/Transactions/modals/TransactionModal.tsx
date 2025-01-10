@@ -146,7 +146,7 @@ import { categoryType, getCategoryMode, getCategoryModeV2, getCategoryTypeV2 } f
         [{
             key: 'reason',
             label:{text: 'Motif', fw:"bold", color:"#444"},
-            value:{text:"", color:"#444"}
+            value:{text:"", color:"#444", maxWidth:'200px', whiteSpace:'wrap'}
         }],
         [{
             key: 'author',
@@ -349,7 +349,7 @@ export default function TransactionModal({item, customer}:TransferModalProps) {
                             <span title={item.label.tooltip ?? ''} style={{fontSize: item.label.fs ?? '14px', color:item.label.color ?? '#444'}} className={`font-${item.label.fw ?? 'normal'}`}>
                                 {item.label.text}
                             </span>
-                            <span title={item.value.tooltip ?? ''} style={{fontSize: item.value.fs ?? '14px', color:item.value.color ?? '#444'}} className={`font-${item.value.fw ?? 'normal'}`}>
+                            <span title={item.value.tooltip ?? ''} style={{maxWidth:item.value.maxWidth ?? 'unset', whiteSpace:item.value.whiteSpace ?? 'unset', fontSize: item.value.fs ?? '14px', color:item.value.color ?? '#444'}} className={`font-${item.value.fw ?? 'normal'}`}>
                                 {item.value.text}
                             </span>
                         </div>

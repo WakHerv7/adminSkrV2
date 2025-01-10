@@ -44,6 +44,7 @@ export const formSchema = z.object({
     reason: z.string(
         {message:'Entrez un motif'}
     ),
+    description: z.string().optional(),
 });
 
     
@@ -51,11 +52,16 @@ const handleTransaction = async (queryData:any) => {
     const {currentUserId, customerId, label, body} = queryData;
     // console.log("handleTransaction : ", {currentUserId, customerId, label, body});
     // return {currentUserId, customerId, label, body}
+    const reason = body.description ? `${body.reason} : ${body.description}` : body.reason
     const response = await TransactionService.manage_user_account_transactions({
         userId:currentUserId,
         customerId:customerId,
         label:label,
-        body:body
+        body:{
+            author: body.author,
+            amount: body.amount,
+            reason: reason,
+        }
     }); 
     if (!response.ok) {
         const responseBody = await response.json();
@@ -111,6 +117,8 @@ const persons: Person[] = [
 ] 
 const motifsCourant:string[] = [
     'Correction solde courant',
+    'Reversement solde v1',
+    'Reversement solde carte terminée v1',
     'Mise a Zero solde courant',    
     'Recharge solde courant',
     'Retrait solde courant',
@@ -339,6 +347,19 @@ export default function RechargeAccountBalanceModalForm({customer}:TransferModal
                             onChange={(_, data) => field.onChange(data)}
                             renderInput={(params) => <TextField {...params}/>}
                         />
+                    </FormControl>
+                    <FormMessage className="text-red-400"/>
+                    </FormItem>
+                )}
+                />
+                <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                    <FormItem>
+                    <FormLabel className="text-gray-900 text-sm font-[500] tracking-tight">Details du motif</FormLabel>                    
+                    <FormControl>
+                    <Textarea className="px-2 w-full bg-[#F4EFE3]" {...field} />
                     </FormControl>
                     <FormMessage className="text-red-400"/>
                     </FormItem>

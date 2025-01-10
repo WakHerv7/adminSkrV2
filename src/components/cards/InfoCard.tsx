@@ -6,6 +6,8 @@ type TText = {
   color?: string;
   fs?: string;
   tooltip?: string;
+  whiteSpace?: string;
+  maxWidth?: string;
 }
 type TDataItem = {
   key?: string;

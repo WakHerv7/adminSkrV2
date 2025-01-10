@@ -55,6 +55,10 @@ const URLConfig = {
     //   Login
     login: '/login',
 
+    payment_services: {
+        ...payment_services(),
+    },
+
     // Admin Module
     // ADMIN: {
     // ...APPURLS.admin(URL_PREFIX.ADMIN),
@@ -137,3 +141,9 @@ function generalSettings(prefix:string='') {
     }
 }
 
+function payment_services(prefix:string='') {
+    const PATH = `${dashboardRootUrlV2}/payment_services`;        
+    return {
+        root:PATH,                    
+    }
+}

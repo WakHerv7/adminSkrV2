@@ -3,18 +3,27 @@ export const BASE_URL = `https://adminskrapi.fly.dev/api/v1`;
 export const GETSEKURE_API_URL = `https://api.getsekure.com/api/v1`; 
 
 // export const API_V2_BASE_URL = `http://localhost:3000/api/v2/admin`;
-export const API_V2_BASE_URL = `https://apigetsekure.com/api/v2/admin`;
+// export const API_V2_BASE_URL = `https://apigetsekure.com/api/v2/admin`;
+export const API_V2_PROD_BASE_URL = `https://apigetsekure.com/api/v2/admin`;
+export const API_V2_BASE_URL = `https://skr-api-v2.fly.dev/api/v2/admin`;
 
 
-export const BASE_URL_AUTH = `${BASE_URL}/admin/auth`;
+
+// export const BASE_URL_AUTH = `${BASE_URL}/admin/auth`;
+// export const authUrls = {
+//   LOGIN_USER: `${BASE_URL_AUTH}/login`,
+//   LOGOUT_USER: `${BASE_URL_AUTH}/logout`,
+//   // REGISTER_USER: `${BASE_URL}/signup`,  
+// };
+
+/** ======================================================== */
+export const BASE_URL_AUTH = `${API_V2_BASE_URL}/auth`;
 export const authUrls = {
   LOGIN_USER: `${BASE_URL_AUTH}/login`,
   LOGOUT_USER: `${BASE_URL_AUTH}/logout`,
-  // REGISTER_USER: `${BASE_URL}/signup`,
-  
+  // REGISTER_USER: `${BASE_URL}/signup`,  
 };
 
-/** ======================================================== */
 export const V2_BASE_URL_CUSTOMER = `${API_V2_BASE_URL}/customers`;
 export const customerUrlsV2 = {  
   GET_CUSTOMERS: `${V2_BASE_URL_CUSTOMER}`,
@@ -44,10 +53,16 @@ export const transactionUrlsV2 = {
 
   // GET_COUNTRIES_TRANSACTIONS: `${BASE_URL_TRANSACTION}/countries`,
   // GET_CATEGORY_TYPE_TRANSACTIONS: `${BASE_URL_TRANSACTION}/categorytype`,
-  // GET_LAST_10_TRANSACTIONS: `${BASE_URL_TRANSACTION}/last10`,
-  
-  
+  // GET_LAST_10_TRANSACTIONS: `${BASE_URL_TRANSACTION}/last10`,  
 };
+  /** ------------------------------------ */
+  export const V2_BASE_URL_CHNPAYMENT = `${API_V2_BASE_URL}/chnpayment`;
+  export const chnpaymentUrlsV2 = {  
+    GET_ALL_CHNPAYMENTS: `${V2_BASE_URL_CHNPAYMENT}`,
+    GET_ONE_CHNPAYMENT: (id:any) => `${V2_BASE_URL_CHNPAYMENT}/transaction/${id}`,
+    UPDATE_CHNPAYMENT: (id:any) => `${V2_BASE_URL_CHNPAYMENT}/status/${id}`,
+    UPDATE_CHNPAYMENT_PROOF: (id:any) => `${V2_BASE_URL_CHNPAYMENT}/proof/${id}`,
+  };
 /** ======================================================== */
 
 export const BASE_URL_USER = `${BASE_URL}/admin/users`;
@@ -109,10 +124,10 @@ export const notificationUrls = {
 };
 
 
-export const BASE_URL_GABON = `${GETSEKURE_API_URL}/transactions`;
+export const BASE_URL_GABON = `${API_V2_PROD_BASE_URL}/gabon`;
 export const gabonUrls = {  
-  GET_GABON_BALANCE: `${BASE_URL_GABON}/checkGbBalance`,
-  GABON_PAYOUT: `${BASE_URL_GABON}/payoutgb`,
+  GET_GABON_BALANCE: `${BASE_URL_GABON}/check-balance`,
+  GABON_PAYOUT: `${BASE_URL_GABON}/payout`,
 }
 
 

@@ -4,102 +4,22 @@ import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import Logo from '../shared/Logo';
 import { Accueil, Cards, Gains, Kyc, Logout, Notifications, Parameters, Transfert, Users, Wallet } from './icons';
-import { FaChevronLeft, FaChevronRight, FaUserCheck } from 'react-icons/fa';
+import { FaChevronLeft, FaChevronRight, FaUserCheck, FaHandHoldingUsd } from 'react-icons/fa';
+
 import { IoIosSend } from "react-icons/io";
 import cstyle from './styles/sidebar-style.module.scss'
 import urls from '@/config/urls';
 import urlsV2 from '@/config/urls_v2';
+import { hasPermission } from '@/utils/permissions';
+import { selectCurrentVersion } from '@/redux/slices_v2/settings';
+import { useSelector } from 'react-redux';
 
 interface ISideBarLinks {
   title: string;
   icon: string;
   path: string;
 };
-const SideBarLinks = [
-  {
-    title: 'Accueil',
-    slug:'home',
-    path: urls.dashboardHome.root,
-    count: null,
-    icon: <Accueil/>,
-  },
-  {
-    title: 'Comptes utilisateurs',
-    slug:'usersAccounts',
-    path: urls.usersAccounts.root,
-    count: null,
-    icon: <Users/>,    
-  },
-  {
-    title: 'Transactions wallet',
-    slug:'walletTransactions',
-    path: urls.walletTransactions.root,
-    count: null,
-    icon: <Wallet/>,    
-  },
-  {
-    title: 'Transfert d\'argent',
-    slug:'transferts',
-    path: urls.transferts.root,
-    count: null,
-    icon: <Transfert/>,    
-  },
-  {
-    title: 'Cartes',
-    slug:'cards',
-    path: urls.cards.root,
-    count: null,
-    icon: <Cards/>,    
-  },
-  {
-    title: 'Verifications KYC',
-    slug:'kyc',
-    path: urls.kyc.root,
-    count: null,
-    icon: <Kyc/>,    
-  },
-  {
-    title: 'Gains',
-    slug:'profit',
-    path: urls.profit.root,
-    count: null,
-    icon: <Gains/>,    
-  },
-  {
-    title: 'Administration',
-    slug:'administration',
-    path: urls.administration.root,
-    count: null,
-    icon: <Notifications/>,    
-  },
-  {
-    title: 'Notifications',
-    slug:'notifications',
-    path: urls.notifications.root,
-    count: null,
-    icon: <IoIosSend size={18}/>,    
-  },
-  {
-    title: 'Paramètres généraux',
-    slug:'generalSettings',
-    path: urls.generalSettings.root,
-    count: null,
-    icon: <Parameters/>,    
-  },
-  {
-    title: 'Verifs KYC V2',
-    slug:'kycV2',
-    path: urlsV2.kyc.root,
-    count: null,
-    icon: <FaUserCheck size={18}/>,    
-  },
-  // {
-  //   title: 'Logout',
-  //   path: urls.login,
-  //   count: null,
-  //   icon: <Logout/>,    
-  // }
-]
+
 
 type Props = {
   isExpanded: boolean;
@@ -111,7 +31,119 @@ type Props = {
 const SideBar = (props: Props) => {
   const {isExpanded, setIsExpanded, user} = props;
   const pathname = usePathname();
+
+  const currentVersion = useSelector(selectCurrentVersion);
+
   // const [isExpanded, setIsExpanded] = useState(false);
+
+  const SideBarLinksV1 = [
+    {
+      title: 'Accueil',
+      slug:'home',
+      canSee: hasPermission(user, 'home', 'view'),
+      path: urls.dashboardHome.root,
+      count: null,
+      icon: <Accueil/>,
+    },
+    {
+      title: 'Comptes utilisateurs',
+      slug:'usersAccounts',
+      canSee: hasPermission(user, 'user_accounts', 'view'),
+      path: urls.usersAccounts.root,
+      count: null,
+      icon: <Users/>,    
+    },
+    {
+      title: 'Transactions wallet',
+      slug:'walletTransactions',
+      canSee: hasPermission(user, 'wallet_transactions', 'view'),
+      path: urls.walletTransactions.root,
+      count: null,
+      icon: <Wallet/>,    
+    },
+    {
+      title: 'Transfert d\'argent',
+      slug:'transferts',
+      canSee: hasPermission(user, 'transfers', 'view'),
+      path: urls.transferts.root,
+      count: null,
+      icon: <Transfert/>,    
+    },
+    {
+      title: 'Cartes',
+      slug:'cards',
+      canSee: hasPermission(user, 'cards', 'view'),
+      path: urls.cards.root,
+      count: null,
+      icon: <Cards/>,    
+    },
+    {
+      title: 'Verifications KYC',
+      slug:'kyc',
+      canSee: hasPermission(user, 'kyc', 'view'),
+      path: urls.kyc.root,
+      count: null,
+      icon: <Kyc/>,    
+    },
+    {
+      title: 'Gains',
+      slug:'profit',
+      canSee: hasPermission(user, 'profit', 'view'),
+      path: urls.profit.root,
+      count: null,
+      icon: <Gains/>,    
+    },
+    {
+      title: 'Administration',
+      slug:'administration',
+      canSee: hasPermission(user, 'administration', 'view'),
+      path: urls.administration.root,
+      count: null,
+      icon: <Notifications/>,    
+    },
+    {
+      title: 'Notifications',
+      slug:'notifications',
+      canSee: hasPermission(user, 'notifications', 'view'),
+      path: urls.notifications.root,
+      count: null,
+      icon: <IoIosSend size={18}/>,    
+    },
+    {
+      title: 'Paramètres généraux',
+      slug:'generalSettings',
+      canSee: hasPermission(user, 'general_settings', 'view'),
+      path: urls.generalSettings.root,
+      count: null,
+      icon: <Parameters/>,    
+    },
+    // {
+    //   title: 'Logout',
+    //   path: urls.login,
+    //   count: null,
+    //   icon: <Logout/>,    
+    // }
+  ]
+  const SideBarLinksV2 = [
+    {
+      title: 'Verifs KYC',
+      slug:'kycV2',
+      canSee: hasPermission(user, 'kyc_v2', 'view'),
+      path: urlsV2.kyc.root,
+      count: null,
+      icon: <FaUserCheck size={18}/>,    
+    },
+    {
+      title: 'Services de paiement',
+      slug:'payment_services',
+      canSee: hasPermission(user, 'payment_services', 'view'),
+      path: urlsV2.payment_services.root,
+      count: null,
+      icon: <FaHandHoldingUsd size={20}/>,    
+    },
+    
+  ]
+
   
   return (
     <div className='relative'>      
@@ -140,89 +172,51 @@ const SideBar = (props: Props) => {
           <div className='relative'>
             <ul className='list-image-none w-full my-0 py-0'
             style={{marginBlockStart:0, marginBlockEnd:0, paddingInlineStart:0}}>
-              {SideBarLinks.map((link) =>  {
-                const isActive = (pathname?.split('/')[3] === link.path.split('/')[3]);
-                const iconColor = isActive ? 'fill-[#fff]' : 'fill-[#444]'; // Adjust the color based on the condition
-                if(user?.adminRole === 'customer-support'){
-                  if(link.slug === 'usersAccounts' || link.slug === 'kycV2') {
-                    return (
-                      <li key={link.title} className={`relative`} style={{margin: !isExpanded ? '5px 0':''}}>
-                        <Link 
-                        href={link.path} 
-                        className={`relative pl-[22px] pr-3 py-3 flex items-center justify-between gap-[15px] group 
-                        text-gray-700 group hover:bg-[#18BC7A] 
-                      hover:pl-7 transition-all ${isActive ? 'bg-[#18BC7A] pl-7' : ''}
-                        text-sm group-hover:text-gray-100 transition-all ${pathname?.split('/')[3] === link.path.split('/')[3] ? 'text-white' : ''}`}>
-                        <div className='flex items-center gap-[15px]'>
-                          <div className='' style={{transform: !isExpanded ? 'scale(1.2)':''}}>
-                            {/* {link.icon} */}
-                            {React.cloneElement(link.icon, { className: iconColor })}
-                          </div>
-                          {/* <div className={`group-hover:text-gray-100`} style={{display: !isExpanded ? 'none':''}}>
-                            {link.title}
-                          </div> */}
-                          {isExpanded ?
-                          <div className={`group-hover:text-gray-100`} style={{display: !isExpanded ? 'none':''}}>
-                            {link.title}
-                          </div>
-                          :
-                          <div className={`absolute top-0 left-[80px]  shadow-lg rounded-md bg-white px-3 py-3 hidden group-hover:block`}
-                          style={{zIndex:'1000', color:'#444', whiteSpace:'nowrap'}}
-                          >
-                            {link.title}
-                          </div>}
+
+              {((currentVersion==2) ? SideBarLinksV2 : SideBarLinksV1).map((link) =>  {
+                const isActive = (pathname?.split('/')[2] === link.path.split('/')[2]) && (pathname?.split('/')[3] === link.path.split('/')[3]);
+                const iconColor = isActive ? 'fill-[#fff]' : 'fill-[#444]'; // Adjust the color based on the condition                
+                if(link.canSee) {
+                  return (
+                    <li key={link.title} className={`relative`} style={{margin: !isExpanded ? '5px 0':''}}>
+                      <Link 
+                      href={link.path} 
+                      className={`relative pl-[22px] pr-3 py-3 flex items-center justify-between gap-[15px] group 
+                      text-gray-700 group hover:bg-[#18BC7A] 
+                    hover:pl-7 transition-all ${isActive ? 'bg-[#18BC7A] pl-7' : ''}
+                      text-sm group-hover:text-gray-100 transition-all ${isActive ? 'text-white' : ''}`}>
+                      <div className='flex items-center gap-[15px]'>
+                        <div className='' style={{transform: !isExpanded ? 'scale(1.2)':''}}>
+                          {/* {link.icon} */}
+                          {React.cloneElement(link.icon, { className: iconColor })}
                         </div>
-                        {link.count ?
-                        <div className=''>
-                          <div className='absolute w-[20px] h-[20px] top-[10px] right-[10px] rounded-full bg-[#444] group-hover:bg-[#fff] text-center flex justify-center items-center 
-                          text-xs font-bold text-white group-hover:text-[#18BC7A]'>
-                            <span>14</span>
-                          </div>
+                        {/* <div className={`group-hover:text-gray-100`} style={{display: !isExpanded ? 'none':''}}>
+                          {link.title}
+                        </div> */}
+                        {isExpanded ?
+                        <div className={`group-hover:text-gray-100`} style={{display: !isExpanded ? 'none':''}}>
+                          {link.title}
                         </div>
-                        :<></>}
-                        </Link>
-                      </li>
-                    )
-                  }
-                } else {
-                return (
-                <li key={link.title} className={`relative`} style={{margin: !isExpanded ? '5px 0':''}}>
-                  <Link 
-                  href={link.path} 
-                  className={`relative pl-[22px] pr-3 py-3 flex items-center justify-between gap-[15px] group 
-                  text-gray-700 group hover:bg-[#18BC7A] 
-                hover:pl-7 transition-all ${isActive ? 'bg-[#18BC7A] pl-7' : ''}
-                  text-sm group-hover:text-gray-100 transition-all ${pathname?.split('/')[3] === link.path.split('/')[3] ? 'text-white' : ''}`}>
-                  <div className='flex items-center gap-[15px]'>
-                    <div className='' style={{transform: !isExpanded ? 'scale(1.2)':''}}>
-                      {/* {link.icon} */}
-                      {React.cloneElement(link.icon, { className: iconColor })}
-                    </div>
-                    {/* <div className={`group-hover:text-gray-100`} style={{display: !isExpanded ? 'none':''}}>
-                      {link.title}
-                    </div> */}
-                    {isExpanded ?
-                    <div className={`group-hover:text-gray-100`} style={{display: !isExpanded ? 'none':''}}>
-                      {link.title}
-                    </div>
-                    :
-                    <div className={`absolute top-0 left-[80px]  shadow-lg rounded-md bg-white px-3 py-3 hidden group-hover:block`}
-                    style={{zIndex:'1000', color:'#444', whiteSpace:'nowrap'}}
-                    >
-                      {link.title}
-                    </div>}
-                  </div>
-                  {link.count ?
-                  <div className=''>
-                    <div className='absolute w-[20px] h-[20px] top-[10px] right-[10px] rounded-full bg-[#444] group-hover:bg-[#fff] text-center flex justify-center items-center 
-                    text-xs font-bold text-white group-hover:text-[#18BC7A]'>
-                      <span>14</span>
-                    </div>
-                  </div>
-                  :<></>}
-                  </Link>
-                </li>
-              )}})}
+                        :
+                        <div className={`absolute top-0 left-[80px]  shadow-lg rounded-md bg-white px-3 py-3 hidden group-hover:block`}
+                        style={{zIndex:'1000', color:'#444', whiteSpace:'nowrap'}}
+                        >
+                          {link.title}
+                        </div>}
+                      </div>
+                      {link.count ?
+                      <div className=''>
+                        <div className='absolute w-[20px] h-[20px] top-[10px] right-[10px] rounded-full bg-[#444] group-hover:bg-[#fff] text-center flex justify-center items-center 
+                        text-xs font-bold text-white group-hover:text-[#18BC7A]'>
+                          <span>14</span>
+                        </div>
+                      </div>
+                      :<></>}
+                      </Link>
+                    </li>
+                  )
+                }                 
+                })}
             </ul>
           </div>
         </div>

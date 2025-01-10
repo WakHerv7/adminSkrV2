@@ -17,6 +17,7 @@ import { useRouter } from "next/navigation";
 import urls from '@/config/urls';
 import { selectCurrentUser } from "@/redux/slices/auth";
 import { useSelector } from "react-redux";
+import { hasPermission } from "@/utils/permissions";
 
 interface ICartesCard {
   cardNumber: string;
@@ -110,7 +111,7 @@ const CartesCard = ({
           <span style={{whiteSpace:'nowrap'}} className="text-sm font-[400] tracking-tighter">{activateDate}</span>            
       </div>
       
-      {currentUser.adminRole !== 'customer-support' ?
+      {hasPermission(currentUser, 'home:cards', 'edit') ?
       <>
       <div className="grid grid-cols-2 gap-3 w-full">
           <div className="col-span-2">

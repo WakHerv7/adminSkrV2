@@ -13,12 +13,14 @@ import cstyle from './styles/navbar-style.module.scss';
 import Modal from "./Modal/Modal";
 import { useDispatch, useSelector } from "react-redux";
 import { logOut, selectCurrentUser } from "@/redux/slices/auth";
+import { selectCurrentVersion, setVersion } from "@/redux/slices_v2/settings";
 import CustomDropdown2 from "./CustomDropdown2";
 import CButton from "./CButton";
 import { useRouter } from "next/navigation";
 import { AuthService } from "@/api/services/auth";
 import toast from "react-hot-toast";
 import { useMutation } from "react-query";
+import { hasPermission } from "@/utils/permissions";
 type Props = {
     title: string | undefined;
     backLink?: string;
@@ -44,6 +46,7 @@ export default function Navbar(props:Props) {
         classes.filter(Boolean).join(' ');
 
     const currentUser = useSelector(selectCurrentUser);
+    const currentVersion = useSelector(selectCurrentVersion);
     
     const mutation = useMutation({
 		mutationFn: async () => handleLogout(currentUser.email),
@@ -70,6 +73,14 @@ export default function Navbar(props:Props) {
         
 		mutation.mutate();
 	};
+
+    const handleVersion = (e:any) => {
+        if(e.target.checked){
+            dispatch(setVersion(2));
+        } else {
+            dispatch(setVersion(1));
+        }
+    }
     
     // Use the useScrollPosition hook to get the current scroll position
     scrollPositionY = useScrollYPosition();
@@ -123,6 +134,7 @@ export default function Navbar(props:Props) {
             ]}
             /> */}
 
+            
             <div className="flex justify-between items-center gap-[0px]">
                 {/* <Link href="?modal=true">
                     <button type="button" className="bg-blue-500 text-white p-2">Open Modal</button>
@@ -134,7 +146,7 @@ export default function Navbar(props:Props) {
                     14
                     </div>
                 </div> */}
-                <div className="text-xs">{currentUser?.name?.split(' ')[0]}</div>
+                <div className="text-xs">{currentUser?.last_name?.split(' ')[0]}</div>
                 
                 <CustomDropdown2
                     btnChild={
@@ -178,7 +190,7 @@ export default function Navbar(props:Props) {
                             className="flex justify-center w-full px-3 gap-2"
                         >
                             <span className="text-nowrap text-sm ">
-                            {currentUser?.name}
+                            {currentUser?.last_name}
                             </span>
                         </div>,
                         <div
@@ -199,7 +211,7 @@ export default function Navbar(props:Props) {
                         // </div>,
                         <>
                         {
-                            currentUser?.email === "digitalixgroupltd@gmail.com" ?
+                            hasPermission(currentUser, 'retrait_gb', 'view') ?
                             <div
                                 key={"3"}
                                 className="flex justify-center w-full px-3 gap-2 py-3"
@@ -230,13 +242,20 @@ export default function Navbar(props:Props) {
                 />
                 
             </div>
-            {/* <div className="pl-2">
+
+            <div className="pl-2">
                 <label htmlFor="modeToggle" className="flex items-center cursor-pointer">                
                     <div className="relative">                
-                        <input type="checkbox" defaultChecked id="modeToggle" className="sr-only"/>                
-                        <div className="switchbar block bg-gray-200 w-[110px] h-[30px] rounded-full flex items-center px-2 text-xs">
-                            <span className="testMode">Mode Test</span>
-                            <span className="proMode">Mode Pro</span>
+                        <input 
+                        type="checkbox" 
+                        defaultChecked={(currentVersion==2)}
+                        onChange={(e)=>handleVersion(e)}
+                        id="modeToggle" 
+                        className="sr-only"
+                        />                
+                        <div className="switchbar block bg-gray-100 w-[70px] h-[33px] rounded-full flex items-center px-2 text-xs">
+                            <span className="testMode font-bold text-[18px] text-gray-600">V2</span>
+                            <span className="proMode font-bold text-[18px] text-gray-600">V1</span>
                         </div>
 
                         <div className="dot absolute left-1 top-[1px] bg-[#18BC7A] w-[28px] h-[28px] 
@@ -245,7 +264,8 @@ export default function Navbar(props:Props) {
                         </div>
                     </div>
                 </label>            
-            </div> */}
+            </div>
+            
             </div>
         </div>
         {/* <Modal/>  */}

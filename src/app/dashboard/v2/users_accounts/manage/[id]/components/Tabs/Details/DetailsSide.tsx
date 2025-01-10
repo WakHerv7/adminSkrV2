@@ -26,6 +26,7 @@ import { KycService } from '@/api/services/v2/kyc';
 import { useQuery } from "react-query";
 import toast from "react-hot-toast";
 import { setKYCWarningsList } from "@/redux/slices_v2/kyc";
+import { hasPermission } from "@/utils/permissions";
 
 
 const getKYCWarningsList = async () => {
@@ -89,7 +90,7 @@ export default function DetailsSide() {
             {`${customerDetails?.customer?.balance_xaf?.toLocaleString('fr-FR') ?? 0} XAF `}
             
           </p>
-          {currentUser.adminRole !== 'customer-support' ?
+          { hasPermission(currentUser, 'user_account_details:details', 'edit') ?
             <>
             <div className="flex justify-between items-center gap-3">
               <CButton
@@ -123,7 +124,8 @@ export default function DetailsSide() {
             <span className="font-bold">{`($ ${retrieveUSDAmount({amount:customerDetails?.customer?.balance_sponsorship_xaf, amountUSD:customerDetails?.customer?.balance_sponsorship_usd})?.toLocaleString('fr-FR')})`}</span>
           </p>
           <p className="text-[#18BC7A] text-2xl font-bold tracking-tight my-1">{customerDetails?.customer?.balance_sponsorship_xaf?.toLocaleString('fr-FR') ?? 0} XAF</p>
-          {currentUser.adminRole !== 'customer-support' ?
+          
+          {hasPermission(currentUser, 'user_account_details:details', 'edit') ?
           <>
           <div className="flex justify-between items-center gap-3">
             <CButton
@@ -169,6 +171,7 @@ export default function DetailsSide() {
               // :<></>
             }
           </div>
+          {hasPermission(currentUser, 'user_account_details:details', 'edit_kyc') ?
           <div>
             <CButton 
             onClick={()=>setIsUpdateVerificationStatusModalFormOpen(true)}
@@ -184,6 +187,7 @@ export default function DetailsSide() {
             />
             {/* <Modal name={'blockUserAccount'} modalContent={<BlockUserAccountModalForm customer={customerDetails?.customer}/>}/> */}
           </div>
+          : <></> }
           <div className="flex justify-between items-center w-full mt-3">
             <span className="text-gray-800 text-sm font-normal">Etat du compte</span>
             { 

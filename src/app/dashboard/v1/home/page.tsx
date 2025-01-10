@@ -258,13 +258,13 @@ export default function Home() {
               <div className='flex justify-between items-center gap-8'>
 								<p className='text-xs'>{`Transactions aujourd'hui`}</p>
 								<h1 className='text-sm font-semibold'>
-                  {transactionTrendsQueryRes?.data?.todayTotal?.[0].todayTotalAmount.toLocaleString('fr-FR') ?? 0} 
+                  {transactionTrendsQueryRes?.data?.todayTotal?.[0]?.todayTotalAmount?.toLocaleString('fr-FR') ?? 0} 
                   {` XAF`}</h1>
 							</div>
 							<div className='flex justify-between items-center gap-8'>
 								<p className='text-xs'>Transactions Totales</p>
 								<p className='text-xs text-right'>
-                {transactionTrendsQueryRes?.data?.avgTotal?.[0].totalAmount.toLocaleString('fr-FR') ?? 0} 
+                {transactionTrendsQueryRes?.data?.avgTotal?.[0]?.totalAmount?.toLocaleString('fr-FR') ?? 0} 
                   {` XAF`}</p>
 							</div>
               </>

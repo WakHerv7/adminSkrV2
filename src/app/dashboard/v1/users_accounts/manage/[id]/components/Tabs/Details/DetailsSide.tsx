@@ -22,6 +22,7 @@ import { FaCheck, FaX } from "react-icons/fa6";
 import { MdCheck, MdClose } from "react-icons/md";
 import ActivateUserAccountModal from "./modals/ActivateUserAccountModal";
 import { selectCurrentUser } from "@/redux/slices/auth";
+import { hasPermission } from "@/utils/permissions";
 
 export default function DetailsSide() {
   const customerDetails:any = useSelector(selectCurrentCustomerDetails);
@@ -58,7 +59,7 @@ export default function DetailsSide() {
             {`${customerDetails?.customer?.soldeCourant?.toLocaleString('fr-FR') ?? 0} XAF `}
             
           </p>
-          {currentUser.adminRole !== 'customer-support' ?
+          {hasPermission(currentUser, 'user_account_details', 'edit') ?
           <div className="flex justify-between items-center gap-3">
             <CButton
             text={'Recharger'}
@@ -90,7 +91,7 @@ export default function DetailsSide() {
             <span className="font-bold">{`($ ${retrieveUSDAmount({amount:customerDetails?.customer?.soldeParrainage, amountUSD:customerDetails?.customer?.soldeParrainageUSD})?.toLocaleString('fr-FR')})`}</span>
           </p>
           <p className="text-[#18BC7A] text-2xl font-bold tracking-tight my-1">{customerDetails?.customer?.soldeParrainage?.toLocaleString('fr-FR') ?? 0} XAF</p>
-          {currentUser.adminRole !== 'customer-support' ?
+          {hasPermission(currentUser, 'user_account_details', 'edit') ?
           <div className="flex justify-between items-center gap-3">
             <CButton
             text={'Recharger'}

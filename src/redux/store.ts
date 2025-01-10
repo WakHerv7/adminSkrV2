@@ -16,8 +16,11 @@ import transactionRedux from "./slices/transaction";
 import customerRedux from './slices/customer';
 import cardRedux from './slices/card';
 import kycRedux from './slices/kyc';
-import kycV2Redux from './slices_v2/kyc';
 import searchRedux from './slices/search';
+/** ------------------------------------ */
+import kycV2Redux from './slices_v2/kyc';
+import chinpayRedux from './slices_v2/chinpay';
+import settingsRedux from './slices_v2/settings';
 
 const createNoopStorage = () => {
   return {
@@ -41,7 +44,9 @@ const persistConfig = {
   key: "root",
   version: 1,
   storage,
-  blacklist: ['transaction', 'customer', 'card', 'kyc', 'kyc_v2', 'search']
+  blacklist: ['transaction', 'customer', 'card', 'kyc', 'kyc_v2', 'search', 'settings'
+    ,'chinpay'
+  ]
 };
 
 
@@ -53,6 +58,8 @@ const rootReducer = combineReducers({
     card: cardRedux,
     kyc: kycRedux,
     kyc_v2: kycV2Redux,
+    settings: settingsRedux,
+    chinpay: chinpayRedux,
 });
 
 

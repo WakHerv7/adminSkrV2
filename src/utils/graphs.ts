@@ -196,14 +196,14 @@ export const getTransactionTrendGraphData = ({trxData, dual}:{trxData:any, dual?
     let data2:number[] = [];
     const trxs = trxData?.transactions ?? [];
     trxs?.map((item:any, index:any) => {
-        labels.push(`${getFormattedDateTime(item.createdAt, '', 'fr')}`);
-        data.push(item.amount);
+        labels.push(`${getFormattedDateTime(item.created_at, '', 'fr')}`);
+        data.push(item.amount_xaf);
         if(dual) {
           if (item.type === 'decline') {
             data1.push(0);
-            data2.push(item.amount);
+            data2.push(item.amount_xaf);
           } else {
-            data1.push(item.amount);
+            data1.push(item.amount_xaf);
             data2.push(0);
           }
         }
@@ -290,10 +290,13 @@ function generateRandomHSLColor() {
 export const getTransactionPerCountryGraphData = (trxData:any, title:string) => {
   let labels:string[] = [];
   let data:number[] = [];
-  trxData.forEach((item:any, index:any) => {
-    labels.push(item.country);
-    data.push(item.totalAmount); // Removed template literals as it's unnecessary
-    item.color = index < backgroundColor.length ? backgroundColor[index] : generateRandomHSLColor();
+  let newData:any = {};
+  Object.entries(trxData).map(([key, value]:any[], index:any) =>  {
+    const newKey = key.includes('Congo') && key.includes('Democratic')  ? 'Congo RDC' : key ;
+    labels.push(newKey);
+    data.push(value?.count);
+    newData[newKey] = {...value,
+      color: index < backgroundColor.length ? backgroundColor[index] : generateRandomHSLColor()}
   });
   const doughnutData = {
     labels: labels, // ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
@@ -301,20 +304,21 @@ export const getTransactionPerCountryGraphData = (trxData:any, title:string) => 
       {
         label: title ?? '',
         data: data, //Array.from({length: 6}, () => Math.floor(Math.random() * 301) + 100),
-        backgroundColor: [
-          '#FFDB5A',
-          '#F85D4B',
-          // '#6200EE',
-          // '#FD8A49',
-          // '#33E89C',
-          // '#5BCEFF',
-        ],
+        backgroundColor: backgroundColor.slice(0, Object.keys(trxData)?.length || 0),
+        // [
+        //   '#FFDB5A',
+        //   '#F85D4B',
+        //   // '#6200EE',
+        //   // '#FD8A49',
+        //   // '#33E89C',
+        //   // '#5BCEFF',
+        // ],
         hoverOffset: 4,
       },
     ],
   };
 
-  return {transactionPerCountryGraphData:doughnutData, transactionPerCountryData:trxData};
+  return {transactionPerCountryGraphData:doughnutData, transactionPerCountryData:newData};
 }
 
 
@@ -359,8 +363,8 @@ export const getTransactionPerCategoryTypeGraphData = (trxData:any, index:number
   let labels:string[] = [];
   let data:number[] = [];
   trxData.map((item:any, index:any) => {
-      labels.push(getFormattedDateTime(item.createdAt, '', 'fr'));
-      data.push(item.amount);
+      labels.push(getFormattedDateTime(item.created_at, '', 'fr'));
+      data.push(item.amount_xaf);
   });
   const dataData = {
     labels: labels, //['Mon1', 'Mon2', 'Mon3', 'Mon4', 'Mon5', 'Mon6', 'Mon7', 'Mon8', 'Mon9', 'Mon10', 'Mon11', 'Mon12'],
@@ -381,9 +385,12 @@ export const getTransactionPerCategoryTypeGraphData = (trxData:any, index:number
 export const getGraphData = (trxData:any, index:number) => {
   let labels:string[] = [];
   let data:number[] = [];
-  trxData?.result?.map((item:any, index:any) => {
-      labels.push(getFormattedDateTime(item.createdAt, 'date', 'fr'));
-      data.push(item.count);
+  // trxData?.result?.map((item:any, index:any) => {
+    trxData?.result && Object.entries(trxData?.result)?.map(([key, value]:any[], index:any) =>  {
+      labels.push(key);
+      data.push(value.count);
+      // labels.push(getFormattedDateTime(item.created_at, 'date', 'fr'));
+      // data.push(item.count);
   });
   const dataData = {
     labels: labels, //['Mon1', 'Mon2', 'Mon3', 'Mon4', 'Mon5', 'Mon6', 'Mon7', 'Mon8', 'Mon9', 'Mon10', 'Mon11', 'Mon12'],

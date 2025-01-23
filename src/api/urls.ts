@@ -23,15 +23,22 @@ export const authUrls = {
   LOGOUT_USER: `${BASE_URL_AUTH}/logout`,
   // REGISTER_USER: `${BASE_URL}/signup`,  
 };
-
+/** ------------------------------------ */
 export const V2_BASE_URL_CUSTOMER = `${API_V2_BASE_URL}/customers`;
 export const customerUrlsV2 = {  
   GET_CUSTOMERS: `${V2_BASE_URL_CUSTOMER}`,
+  GET_KYC_CUSTOMERS: `${V2_BASE_URL_CUSTOMER}/kyc`,
   GET_KYC_STATS: `${V2_BASE_URL_CUSTOMER}/kyc-stats`,
   GET_ONE_CUSTOMER: (id:any) => `${V2_BASE_URL_CUSTOMER}/${id}`,
   UPDATE_ONE_CUSTOMER: (id:any) => `${V2_BASE_URL_CUSTOMER}/${id}`,
   GET_ONE_CUSTOMER_TRANSACTIONS: (id:any) => `${V2_BASE_URL_CUSTOMER}/${id}/transactions`,
   GET_ONE_CUSTOMER_TRANSFERS: (id:any) => `${V2_BASE_URL_CUSTOMER}/${id}/transfers`,
+  STATS_PER_COUNTRY: `${V2_BASE_URL_CUSTOMER}/stats/per-country`,
+};
+/** ------------------------------------ */
+export const V2_BASE_URL_CARD = `${API_V2_BASE_URL}/cards`;
+export const cardUrlsV2 = {  
+  STATS_PER_COUNTRY: `${V2_BASE_URL_CARD}/stats/per-country`,
 };
 /** ------------------------------------ */
 export const V2_BASE_URL_KYC = `${API_V2_BASE_URL}/kyc`;
@@ -42,6 +49,10 @@ export const kycUrlsV2 = {
 export const V2_BASE_URL_TRANSACTION = `${API_V2_BASE_URL}/transactions`;
 export const transactionUrlsV2 = {  
   MANAGE_USER_ACCOUNT_TRANSACTIONS: `${V2_BASE_URL_TRANSACTION}/manage-user-account-balance`,
+  STATS_PERIODIC: `${V2_BASE_URL_TRANSACTION}/stats/periodic`,
+  STATS_PER_COUNTRY: `${V2_BASE_URL_TRANSACTION}/stats/per-country`,
+  STATS_PER_CATEGORY_TYPE: `${V2_BASE_URL_TRANSACTION}/stats/per-category-type`,
+  
 
   // GET_ALL_TRANSACTIONS: `${BASE_URL_TRANSACTION}`,
   // GET_PERIODIC_TRANSACTIONS: `${BASE_URL_TRANSACTION}/periodic`,
@@ -62,6 +73,13 @@ export const transactionUrlsV2 = {
     GET_ONE_CHNPAYMENT: (id:any) => `${V2_BASE_URL_CHNPAYMENT}/transaction/${id}`,
     UPDATE_CHNPAYMENT: (id:any) => `${V2_BASE_URL_CHNPAYMENT}/status/${id}`,
     UPDATE_CHNPAYMENT_PROOF: (id:any) => `${V2_BASE_URL_CHNPAYMENT}/proof/${id}`,
+  };
+  /** ------------------------------------ */
+  export const V2_BASE_URL_NAIRAPAYMENT = `${API_V2_BASE_URL}/nairapayment`;
+  export const nairapaymentUrlsV2 = {  
+    GET_ALL_NAIRAPAYMENTS: `${V2_BASE_URL_NAIRAPAYMENT}`,
+    GET_ONE_NAIRAPAYMENT: (id:any) => `${V2_BASE_URL_NAIRAPAYMENT}/${id}`,
+    UPDATE_NAIRAPAYMENT: (id:any) => `${V2_BASE_URL_NAIRAPAYMENT}/status/${id}`,
   };
 /** ======================================================== */
 

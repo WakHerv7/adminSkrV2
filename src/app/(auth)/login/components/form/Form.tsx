@@ -23,6 +23,7 @@ import { setCredentials } from "@/redux/slices/auth";
 import { useRouter } from "next/navigation";
 import classNames from "classnames";
 import urls from "@/config/urls"
+import urlsV2 from "@/config/urls_v2";
 
 const handleLogin = async (data: z.infer<typeof loginSchema>) => {
   const response = await AuthService.login(data); 
@@ -67,7 +68,7 @@ export default function LogiForm() {
       localStorage.setItem('sktoken', token);
       toast.success("Login successful! Redirecting..."); 
       dispatch(setCredentials({ token, getSekureApiToken, user}));
-			router.push(previousUrl || urls.dashboard);
+			router.push(previousUrl || urlsV2.dashboardHome.root);
 		},
 	});
 

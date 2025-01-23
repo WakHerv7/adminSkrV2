@@ -10,4 +10,14 @@ export class TransactionService {
         if(customerId) query_params.customerId =customerId;
         return BaseMethods.postRequest(transactionUrlsV2.MANAGE_USER_ACCOUNT_TRANSACTIONS, body, true, query_params);
     }
+    static get_stats_periodic = ({period, separateDecline}: {period?:string, separateDecline?:boolean}) =>{
+        let query_params:any = {};
+        if(period) query_params.period =period;
+        if(separateDecline) query_params.separateDecline ='true';
+        return BaseMethods.getRequest(transactionUrlsV2.STATS_PERIODIC, true, query_params);
+    }
+    static get_stats_countries = () =>
+        BaseMethods.getRequest(transactionUrlsV2.STATS_PER_COUNTRY, true);
+    static get_stats_category_type = () =>
+        BaseMethods.getRequest(transactionUrlsV2.STATS_PER_CATEGORY_TYPE, true);
 }

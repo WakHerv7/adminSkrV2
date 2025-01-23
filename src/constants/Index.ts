@@ -1,4 +1,4 @@
-export { headerUserAccountData } from "./UserAccountData";
+export { headerUserAccountData, headerUserAccountDataV2 } from "./UserAccountData";
 export { tableUserAccountData } from "./UserAccountData";
 export { headerHomeUserAccountData } from "./HomeUserAccountData";
 export { tableHomeUserAccountData } from "./HomeUserAccountData";

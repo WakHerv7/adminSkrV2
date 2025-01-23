@@ -36,7 +36,7 @@ import PieChart from "@/components/charts/pieChart/PieChart";
 import CButton from "@/components/shared/CButton";
 import { FaLock } from "react-icons/fa";
 import { 
-    headerUserAccountData as headerData, tableUserAccountData as tableData,
+    headerUserAccountDataV2 as headerData, tableUserAccountData as tableData,
     trxData as data, pieData, pieData2, doughnutData } from "@/constants/Index";
 import { waitCircleIcon,
     checkCircleIcon,
@@ -51,6 +51,7 @@ import { useDispatch, useSelector } from "react-redux";
 import urlsV2 from '@/config/urls_v2';
 import { selectSearchTerm, setSearchTerm } from "@/redux/slices/search";
 import LabelWithBadge from "@/components/shared/LabelWithBadge";
+import { CustomerService } from "@/api/services/v2/customer";
 
 let infoData: TDataList[] = [
     [
@@ -126,7 +127,7 @@ const getAllCustomers = async ({queryKey}:any) => {
     if(st) params.searchTerm = st;
     // console.log("getCustomers searchTerm : ", st, queryKey);
     
-    const response = await UserService.get_all_customers(params);
+    const response = await CustomerService.get_all_customers(params);
     const responseJson = await response.json();
     if (!response.ok) {
       throw new Error(responseJson.message || 'Failed to get users'); 
@@ -135,14 +136,14 @@ const getAllCustomers = async ({queryKey}:any) => {
     
     return responseJson.data; 
 };
-const getCustomersStats = async () => {
-    const response = await UserService.get_customers_stats();
-    const responseJson = await response.json();
-    if (!response.ok) {
-      throw new Error(responseJson.message || 'Failed to get users statistics'); 
-    }  
-    return responseJson.data; 
-};
+// const getCustomersStats = async () => {
+//     const response = await UserService.get_customers_stats();
+//     const responseJson = await response.json();
+//     if (!response.ok) {
+//       throw new Error(responseJson.message || 'Failed to get users statistics'); 
+//     }  
+//     return responseJson.data; 
+// };
 
 export default function Home() {
     useTitle("Sekure | Comptes utilisateurs", true);
@@ -150,14 +151,14 @@ export default function Home() {
     // dispatch(setSearchTerm(''));
     const searchTerm:string = useSelector(selectSearchTerm);
 
-    const allUsersStatsQueryRes = useQuery({
-        queryKey: ["allUsersStats"],
-        queryFn: getCustomersStats,
-        onError: (err) => {
-          toast.error("Failed to get users stats.");
-        },
-        refetchInterval: 30000, // Fetches data every 30 seconds
-    });
+    // const allUsersStatsQueryRes = useQuery({
+    //     queryKey: ["allUsersStats"],
+    //     queryFn: getCustomersStats,
+    //     onError: (err) => {
+    //       toast.error("Failed to get users stats.");
+    //     },
+    //     refetchInterval: 30000, // Fetches data every 30 seconds
+    // });
     const allUsersQueryRes = useQuery({
         queryKey: ["allCustomers", searchTerm],
         queryFn: getAllCustomers,
@@ -169,7 +170,7 @@ export default function Home() {
     });
 
     console.log("allUsersQueryRes.data : ", allUsersQueryRes.data);
-    console.log("allUsersStatsQueryRes.data : ", allUsersStatsQueryRes.data);
+    // console.log("allUsersStatsQueryRes.data : ", allUsersStatsQueryRes.data);
 
     let rearrangedTableData:any[] = [];
 
@@ -177,68 +178,47 @@ export default function Home() {
     //     
     // }
     
-    if(allUsersStatsQueryRes?.data) {
+    if(allUsersQueryRes?.data) {
+    // if(allUsersStatsQueryRes?.data) {
+        // infoData[0][0][0].value.text = allUsersStatsQueryRes?.data?.stats.todayTotal?.toLocaleString('fr-FR') ?? 0;
+        // infoData[0][1][0].value.text = Math.round(allUsersStatsQueryRes?.data?.stats.avg ?? 0) + "  /jour";
+        // infoData[1][0][0].value.text = allUsersStatsQueryRes?.data?.stats.total?.toLocaleString('fr-FR') ?? 0;
+        // infoData[1][1][0].value.text = allUsersStatsQueryRes?.data?.stats.totalActives ?.toLocaleString('fr-FR')?? 0;
+        // infoData[1][1][1].value.text = allUsersStatsQueryRes?.data?.stats.totalBlocked?.toLocaleString('fr-FR') ?? 0;
+        // infoData[2][0][0].value.text = (allUsersStatsQueryRes?.data?.stats.totalSolde?.toLocaleString('fr-FR') ?? 0) + "  XAF";
+        // infoData[3][0][0].value.text = allUsersStatsQueryRes?.data?.stats.totalKYC?.toLocaleString('fr-FR') ?? 0;
+        // infoData[3][1][0].value.text = allUsersStatsQueryRes?.data?.stats.totalVerificationPending?.toLocaleString('fr-FR') ?? 0;
+        // infoData[3][1][1].value.text = allUsersStatsQueryRes?.data?.stats.totalVerified?.toLocaleString('fr-FR') ?? 0;
+        // infoData[3][1][2].value.text = allUsersStatsQueryRes?.data?.stats.totalVerificationBlocked?.toLocaleString('fr-FR') ?? 0;
 
-        infoData[0][0][0].value.text = allUsersStatsQueryRes?.data?.stats.todayTotal?.toLocaleString('fr-FR') ?? 0;
-        infoData[0][1][0].value.text = Math.round(allUsersStatsQueryRes?.data?.stats.avg ?? 0) + "  /jour";
-        infoData[1][0][0].value.text = allUsersStatsQueryRes?.data?.stats.total?.toLocaleString('fr-FR') ?? 0;
-        infoData[1][1][0].value.text = allUsersStatsQueryRes?.data?.stats.totalActives ?.toLocaleString('fr-FR')?? 0;
-        infoData[1][1][1].value.text = allUsersStatsQueryRes?.data?.stats.totalBlocked?.toLocaleString('fr-FR') ?? 0;
-        infoData[2][0][0].value.text = (allUsersStatsQueryRes?.data?.stats.totalSolde?.toLocaleString('fr-FR') ?? 0) + "  XAF";
-        infoData[3][0][0].value.text = allUsersStatsQueryRes?.data?.stats.totalKYC?.toLocaleString('fr-FR') ?? 0;
-        infoData[3][1][0].value.text = allUsersStatsQueryRes?.data?.stats.totalVerificationPending?.toLocaleString('fr-FR') ?? 0;
-        infoData[3][1][1].value.text = allUsersStatsQueryRes?.data?.stats.totalVerified?.toLocaleString('fr-FR') ?? 0;
-        infoData[3][1][2].value.text = allUsersStatsQueryRes?.data?.stats.totalVerificationBlocked?.toLocaleString('fr-FR') ?? 0;
-
-        rearrangedTableData = allUsersQueryRes?.data?.data?.map((item:any, index:any) => {
+        rearrangedTableData = allUsersQueryRes?.data?.map((item:any, index:any) => {
             const rearrangedItem = {
                 serial: index+1,
-                name: item.name,			
-                country: item.pays,
-                phone: item.country_code ? `${item.country_code} ${item.phone}` : item.phone,
+                name: `${item.last_name} ${item.first_name}`,			
+                country: item.country,
+                phone: item.country_phone_code ? `${item.country_phone_code} ${item.phone}` : item.phone,
                 email: item.email,        
-                solde: item.soldeCourant.toLocaleString('fr-FR'),
-                // nbCartes: item.numberOfCards, //index%3 + 1,
+                solde: item.balance_xaf.toLocaleString('fr-FR'),
+                nbCartes: item.numberOfCards, //index%3 + 1,
                 totalTrx: item.totalTransactionAmount.toLocaleString('fr-FR'),
                 avgTrx: item.avgTransactionAmount ? Math.round(item.avgTransactionAmount).toLocaleString('fr-FR') : 0,
-                kyc: item.kyc_status == 'accepted' 
-                        ?<LabelWithBadge label="Approuvé" badgeColor="#18BC7A"/>
-                        :item.kyc_status == 'blocked'
-                        ?<LabelWithBadge label="Bloqué" badgeColor="#F85D4B"/>
-                        :item.kyc_status == 'ongoing'
-                        ?<LabelWithBadge label="En cours" badgeColor="#999"/>
-                        :<LabelWithBadge label="Aucun" badgeColor="#000"/>,
+                kyc: item.kyc_result == 'APPROVED' 
+                    ?<LabelWithBadge label="Approuvé" badgeColor="#18BC7A"/>
+                    :item.kyc_result == 'DECLINED'
+                    ?<LabelWithBadge label="Refusé" badgeColor="#F85D4B"/>
+                    :item.kyc_status == 'PENDING'
+                    ?<LabelWithBadge label="En cours" badgeColor="#999"/>
+                    :<LabelWithBadge label="Aucun" badgeColor="#000"/>,          
                 status: <ActiveYesNo isActive={item.active}/>,
-                locked: <ActiveYesNo isActive={item.blocked} colorActive={"#F85D4B"} labelActive={'Bloqué'} labelInactive={'Non'}/>,
-                date: getFormattedDateTime(item.createdAt), //item.date,
-                actionst: <>
-                <div className='flex gap-5'>
-                <CButton
-                text={'Manager'}
-                href={`${urlsV2.usersAccounts.manage}/${item._id}`}
-                btnStyle={'dark'}
-                icon={<FourDots />}              
-                />
-                
-                {/* {item.locked ?
-                <CButton 
-                text={'Debloquer'} 
-                btnStyle={'lightYellow'}
-                icon={<FaLock />}
-                width={'100%'}
-                />
-                :
-                <CButton 
-                text={'Bloquer'} 
-                btnStyle={'yellow'}
-                icon={<FaLock />}
-                width={'100%'}
-                />
-                } */}
-                
-                
-                </div>
-                </>
+                locked: <ActiveYesNo isActive={item.blocked} colorActive={"#F85D4B"} labelActive={'Bloqué'} labelInactive={'Non'}/>,          
+                date: getFormattedDateTime(item.created_at), //item.date,
+                actions:                
+                    <CButton
+                    text={'Manager'}
+                    href={`${urlsV2.usersAccounts.manage}/${item.id}`}
+                    btnStyle={'dark'}
+                    icon={<FourDots />}              
+                    />
             };
             item = rearrangedItem;
             return item;
@@ -250,13 +230,13 @@ export default function Home() {
 		title={"Comptes utilisateurs"}
 		>
             <section className='mt-2'>
-                {allUsersStatsQueryRes?.status === 'loading' ? 
+                {/* {allUsersStatsQueryRes?.status === 'loading' ? 
                     <div className="flex justify-center w-full py-10">
                         <div className={'loadingSpinner'}></div>
                     </div>
                     :
                     <InfoCardGrid infoData={infoData}/>
-                }
+                } */}
                 
                 {/* <div className='mb-10 grid lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-1' style={{gap:'20px'}}>
                     {infoData.map((data, index) => (

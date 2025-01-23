@@ -113,7 +113,7 @@ const getAllKYC = async ({queryKey}:any) => {
   if(filter?.kyc_result) params.kyc_result = filter?.kyc_result;
   if(filter?.kyc_status) params.kyc_status = filter?.kyc_status;
 
-  const response = await CustomerService.get_all_customers(params);
+  const response = await CustomerService.get_kyc_customers(params);
   const responseJson = await response.json();
   if (!response.ok) {
     throw new Error(responseJson.message || 'Failed to get users'); 

@@ -3,7 +3,7 @@ import { usePathname } from 'next/navigation'
 // import { Link, NavLink } from 'next-link';
 import Link from 'next/link'
 import Logo from '../shared/Logo';
-import { Accueil, Cards, Gains, Kyc, Logout, Notifications, Parameters, Transfert, Users, Wallet } from './icons';
+import { Accueil, Cards, Gains, Kyc, Logout, Notifications, Parameters, Transfert, Users, UsersV2, Wallet } from './icons';
 import { FaChevronLeft, FaChevronRight, FaUserCheck, FaHandHoldingUsd } from 'react-icons/fa';
 
 import { IoIosSend } from "react-icons/io";
@@ -125,6 +125,22 @@ const SideBar = (props: Props) => {
     // }
   ]
   const SideBarLinksV2 = [
+    {
+      title: 'Accueil',
+      slug:'home',
+      canSee: hasPermission(user, 'home', 'view'),
+      path: urlsV2.dashboardHome.root,
+      count: null,
+      icon: <Accueil/>,
+    },
+    {
+      title: 'Comptes utilisateurs',
+      slug:'usersAccounts',
+      canSee: hasPermission(user, 'user_accounts', 'view'),
+      path: urlsV2.usersAccounts.root,
+      count: null,
+      icon: <UsersV2/>,    
+    },
     {
       title: 'Verifs KYC',
       slug:'kycV2',

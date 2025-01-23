@@ -96,6 +96,21 @@ export const headerChnPaymentDataV2: ITableHeader = {
   "date": "Date de création",
   "edit": ""
 };
+export const headerNairaPaymentDataV2: ITableHeader = {
+  "serial": "S/N",
+  // "type": "Type",
+  "phone": "Telephone",
+  "bank_name": "Banque",
+  "account_number": "N° Compte bancaire",
+  // "country": "Pays",
+  "idTrx": "ID Transaction",
+  "oldNew": "A/N",
+  "amount": "Montant (XAF)",
+  // "amount_ngn": "Montant (NGN)",
+  "status": "Statut",
+  "date": "Date de création",
+  "edit": ""
+};
 
 export const tableTransactionData: IGenericRow[] = [
 {

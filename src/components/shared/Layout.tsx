@@ -52,7 +52,7 @@ const Layout: React.FC<LayoutProps> = ({ children, title, backLink, goBack }) =>
         router.push(previousUrl || urls.usersAccounts.root);  
       }
       else if(hasPermission(user, 'home', 'view')) {
-        router.push(previousUrl || urls.dashboardHome.root);  
+        router.push(previousUrl || urlsV2.dashboardHome.root);  
       }			
 		}
     
@@ -61,7 +61,7 @@ const Layout: React.FC<LayoutProps> = ({ children, title, backLink, goBack }) =>
     }
 
 		if(token && (pathname=='/dashboard/retrait-gb' || pathname=='/retrait-gb') && !hasPermission(user, 'retrait_gb', 'view')) {
-			router.push(previousUrl || urls.dashboardHome.root);
+			router.push(previousUrl || urlsV2.dashboardHome.root);
 		}
     // if(token && (pathname=='/dashboard/retrait-gb' || pathname=='/retrait-gb') ) {
 		// 	router.push(previousUrl || urls.dashboardHome.root);

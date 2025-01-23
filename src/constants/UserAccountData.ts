@@ -22,6 +22,22 @@ export const headerUserAccountData: ITableHeader = {
   "date": "Date de création",
   "edit": ""
 };
+export const headerUserAccountDataV2: ITableHeader = {
+  "serial": "S/N",
+  "name": "Nom",
+  "country": "Pays",
+  "phone": "Telephone",
+  "email": "Email",
+  "solde": "Solde Cpt.",
+  "nbCartes": "Nbre Cartes",
+  "totalTrx": "Total Trans.",
+  "avgTrx": "Moy. Trans.",
+  "kyc": "KYC",
+  "status": "Statut",
+  "locked": "Bloqué",
+  "date": "Date de création",
+  "edit": ""
+};
 
 export const tableUserAccountData: IGenericRow[] = [
   {

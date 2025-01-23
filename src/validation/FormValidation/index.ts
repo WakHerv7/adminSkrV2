@@ -112,3 +112,21 @@ export const chnpaymentSchema = z.object({
   user_country: z.string().optional(),
   user_city: z.string().optional(),
 })
+
+
+export const nairapaymentSchema = z.object({
+  bank_name: z.string(),
+  bank_code: z.string(),
+  amount_xaf: z.number(),
+  amount_with_fee_xaf: z.number(),
+  amount_ngn : z.number(),
+  fee_xaf: z.number().optional(),
+  account_name: z.string().optional(),
+  account_number: z.string().optional(),
+  reason: z.string().optional(),
+  user_name: z.string().optional(),
+  user_phone: z.string().optional(),
+  user_email: z.string().optional(),
+  user_country: z.string().optional(),
+  user_city: z.string().optional(),
+})

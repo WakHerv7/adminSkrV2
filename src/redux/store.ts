@@ -20,6 +20,7 @@ import searchRedux from './slices/search';
 /** ------------------------------------ */
 import kycV2Redux from './slices_v2/kyc';
 import chinpayRedux from './slices_v2/chinpay';
+import nairapayRedux from './slices_v2/nairapay';
 import settingsRedux from './slices_v2/settings';
 
 const createNoopStorage = () => {
@@ -45,7 +46,7 @@ const persistConfig = {
   version: 1,
   storage,
   blacklist: ['transaction', 'customer', 'card', 'kyc', 'kyc_v2', 'search', 'settings'
-    ,'chinpay'
+    ,'chinpay', 'nairapay'
   ]
 };
 
@@ -60,6 +61,7 @@ const rootReducer = combineReducers({
     kyc_v2: kycV2Redux,
     settings: settingsRedux,
     chinpay: chinpayRedux,
+    nairapay: nairapayRedux,
 });
 
 

@@ -2,34 +2,11 @@
 
 import Layout from "@/components/shared/Layout";
 // import TabsComponent from "@/components/shared/TabsComponent";
-import CButton from "@/components/shared/CButton";
-import { FaFilter, FaYenSign } from "react-icons/fa";
-import { HiOutlineFilter } from "react-icons/hi";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs";
-import  KYCAll from "./components/Tabs/KYCAll";
-import  KYCNone from "./components/Tabs/KYCNone";
-import  KYCAccepted from "./components/Tabs/KYCAccepted";
-import  KYCDeclined from "./components/Tabs/KYCDeclined";
-import  KYCPending from "./components/Tabs/KYCPending";
-import InfoCard, { TDataList } from "@/components/cards/InfoCard";
-import { checkCircleIcon, haltCircleIcon, stopIcon, folderIcon, ongoingCircleIcon, verifiedIcon, waitCircleIcon } from "@/constants/icons";
-import { UserService } from "@/api/services/user";
-import { useTitle } from "@/hooks/useTitle";
-import { useDispatch, useSelector } from "react-redux";
-import { useQuery } from "react-query";
-import toast from "react-hot-toast";
-import { setKYCAccepted, setKYCAll, setKYCDeclined, setKYCNone, setKYCPending } from "@/redux/slices_v2/kyc";
-import { selectSearchTerm } from "@/redux/slices/search";
-import { useState } from "react";
 import { CustomerService } from "@/api/services/v2/customer";
+import { useTitle } from "@/hooks/useTitle";
+import { usePathname, useRouter } from "next/navigation";
+import { FaYenSign } from "react-icons/fa";
 import { FaNairaSign } from "react-icons/fa6";
-import { usePathname } from "next/navigation";
-import { useRouter } from "next/navigation";
 
 
 const getAllKYC = async ({queryKey}:any) => {

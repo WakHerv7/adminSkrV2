@@ -27,6 +27,7 @@ export const authUrls = {
 export const V2_BASE_URL_CUSTOMER = `${API_V2_BASE_URL}/customers`;
 export const customerUrlsV2 = {  
   GET_CUSTOMERS: `${V2_BASE_URL_CUSTOMER}`,
+  GET_CUSTOMERS_STATS: `${V2_BASE_URL_CUSTOMER}/stats`,
   GET_KYC_CUSTOMERS: `${V2_BASE_URL_CUSTOMER}/kyc`,
   GET_KYC_STATS: `${V2_BASE_URL_CUSTOMER}/kyc-stats`,
   GET_ONE_CUSTOMER: (id:any) => `${V2_BASE_URL_CUSTOMER}/${id}`,

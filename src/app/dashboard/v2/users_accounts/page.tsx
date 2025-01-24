@@ -69,55 +69,76 @@ let infoData: TDataList[] = [
             label:{text:"Comptes créés ", fw:"bold", color:"#444"},
             value:{text:"1456", fw:"bold", color:"#444"}
         }],
-        [
-            {
-                label:{text:checkCircleIcon, tooltip:"Actifs", fw:"", color:"#444"},
-                value:{text:"1399", fw:"bold", color:"#18BC7A"}
-            },
-            {
-                label:{text:haltCircleIcon, tooltip:"Bloqués", fw:"", color:"#444"},
-                value:{text:"57", fw:"bold", color:"#F85D4B"}
-            },
-        ]
+        [{
+            label:{text:"Total solde SEKURE ", fw:"bold", color:"#444"},
+            value:{text:"24 558 450 XAF", fw:"bold", color:"#444"}
+        }],
+        // [
+        //     {
+        //         label:{text:checkCircleIcon, tooltip:"Actifs", fw:"", color:"#444"},
+        //         value:{text:"1399", fw:"bold", color:"#18BC7A"}
+        //     },
+        //     {
+        //         label:{text:haltCircleIcon, tooltip:"Bloqués", fw:"", color:"#444"},
+        //         value:{text:"57", fw:"bold", color:"#F85D4B"}
+        //     },
+        // ]
     ],
     [
         [{
-            label:{text:"Total solde SEKURE ", fw:"bold", color:"#444"},
+            label:{text:"Anciens comptes ", fw:"bold", color:"#444"},
+            value:{text:"1456", fw:"bold", color:"#444"}
+        }],
+        [{
+            label:{text:"Solde total anciens comptes ", fw:"bold", color:"#444"},
             value:{text:"24 558 450 XAF", fw:"bold", color:"#444"}
         }],
     ],
     [
         [{
-            label:{text:"Verifications KYC ", fw:"bold", color:"#444"},
+            label:{text:"Nouveaux comptes ", fw:"bold", color:"#444"},
             value:{text:"1456", fw:"bold", color:"#444"}
         }],
-        [
-            {
-                label:{text:waitCircleIcon, tooltip:"En attente", fw:"", color:"#444", fs:'11px'},
-                value:{text:"1399", fw:"bold", color:"#888", fs:'14px'}
-            },
-            {
-                label:{text:checkCircleIcon, tooltip:"Validés", fw:"", color:"#444", fs:'11px'},
-                value:{text:"443", fw:"bold", color:"#18BC7A", fs:'14px'}
-            },
-            {
-                label:{text:haltCircleIcon, tooltip:"Bloqués", fw:"", color:"#444", fs:'11px'},
-                value:{text:"57", fw:"bold", color:"#F85D4B", fs:'14px'}
-            },
-        ]
-    ]
+        [{
+            label:{text:"Solde total nouveaux comptes ", fw:"bold", color:"#444"},
+            value:{text:"24 558 450 XAF", fw:"bold", color:"#444"}
+        }],
+    ],
+    // [
+    //     [{
+    //         label:{text:"Verifications KYC ", fw:"bold", color:"#444"},
+    //         value:{text:"1456", fw:"bold", color:"#444"}
+    //     }],
+    //     [
+    //         {
+    //             label:{text:waitCircleIcon, tooltip:"En attente", fw:"", color:"#444", fs:'11px'},
+    //             value:{text:"1399", fw:"bold", color:"#888", fs:'14px'}
+    //         },
+    //         {
+    //             label:{text:checkCircleIcon, tooltip:"Validés", fw:"", color:"#444", fs:'11px'},
+    //             value:{text:"443", fw:"bold", color:"#18BC7A", fs:'14px'}
+    //         },
+    //         {
+    //             label:{text:haltCircleIcon, tooltip:"Bloqués", fw:"", color:"#444", fs:'11px'},
+    //             value:{text:"57", fw:"bold", color:"#F85D4B", fs:'14px'}
+    //         },
+    //     ]
+    // ]
 ];
 
 infoData[0][0][0].value.text = 0;
 infoData[0][1][0].value.text = 0 + "  /jour";
 infoData[1][0][0].value.text = 0;
-infoData[1][1][0].value.text = 0;
-infoData[1][1][1].value.text = 0;
-infoData[2][0][0].value.text = 0 + "  XAF";
+infoData[1][1][0].value.text = 0 + "  XAF";
+// infoData[1][1][1].value.text = 0;
+infoData[2][0][0].value.text = 0;
+infoData[2][1][0].value.text = 0 + "  XAF";
 infoData[3][0][0].value.text = 0;
-infoData[3][1][0].value.text = 0;
-infoData[3][1][1].value.text = 0;
-infoData[3][1][2].value.text = 0;
+infoData[3][1][0].value.text = 0 + "  XAF";
+// infoData[4][0][0].value.text = 0;
+// infoData[4][1][0].value.text = 0 + "  XAF";
+// infoData[3][1][1].value.text = 0;
+// infoData[3][1][2].value.text = 0;
 
 
 
@@ -136,14 +157,14 @@ const getAllCustomers = async ({queryKey}:any) => {
     
     return responseJson.data; 
 };
-// const getCustomersStats = async () => {
-//     const response = await UserService.get_customers_stats();
-//     const responseJson = await response.json();
-//     if (!response.ok) {
-//       throw new Error(responseJson.message || 'Failed to get users statistics'); 
-//     }  
-//     return responseJson.data; 
-// };
+const getCustomersStats = async () => {
+    const response = await CustomerService.get_customers_stats();
+    const responseJson = await response.json();
+    if (!response.ok) {
+      throw new Error(responseJson.message || 'Failed to get users statistics'); 
+    }  
+    return responseJson.data; 
+};
 
 export default function Home() {
     useTitle("Sekure | Comptes utilisateurs", true);
@@ -151,14 +172,14 @@ export default function Home() {
     // dispatch(setSearchTerm(''));
     const searchTerm:string = useSelector(selectSearchTerm);
 
-    // const allUsersStatsQueryRes = useQuery({
-    //     queryKey: ["allUsersStats"],
-    //     queryFn: getCustomersStats,
-    //     onError: (err) => {
-    //       toast.error("Failed to get users stats.");
-    //     },
-    //     refetchInterval: 30000, // Fetches data every 30 seconds
-    // });
+    const allUsersStatsQueryRes = useQuery({
+        queryKey: ["allUsersStats"],
+        queryFn: getCustomersStats,
+        onError: (err) => {
+          toast.error("Failed to get users stats.");
+        },
+        refetchInterval: 30000, // Fetches data every 30 seconds
+    });
     const allUsersQueryRes = useQuery({
         queryKey: ["allCustomers", searchTerm],
         queryFn: getAllCustomers,
@@ -170,7 +191,7 @@ export default function Home() {
     });
 
     console.log("allUsersQueryRes.data : ", allUsersQueryRes.data);
-    // console.log("allUsersStatsQueryRes.data : ", allUsersStatsQueryRes.data);
+    console.log("allUsersStatsQueryRes.data : ", allUsersStatsQueryRes.data);
 
     let rearrangedTableData:any[] = [];
 
@@ -178,18 +199,18 @@ export default function Home() {
     //     
     // }
     
-    if(allUsersQueryRes?.data) {
+    if(allUsersStatsQueryRes?.data) {
     // if(allUsersStatsQueryRes?.data) {
-        // infoData[0][0][0].value.text = allUsersStatsQueryRes?.data?.stats.todayTotal?.toLocaleString('fr-FR') ?? 0;
-        // infoData[0][1][0].value.text = Math.round(allUsersStatsQueryRes?.data?.stats.avg ?? 0) + "  /jour";
-        // infoData[1][0][0].value.text = allUsersStatsQueryRes?.data?.stats.total?.toLocaleString('fr-FR') ?? 0;
-        // infoData[1][1][0].value.text = allUsersStatsQueryRes?.data?.stats.totalActives ?.toLocaleString('fr-FR')?? 0;
-        // infoData[1][1][1].value.text = allUsersStatsQueryRes?.data?.stats.totalBlocked?.toLocaleString('fr-FR') ?? 0;
-        // infoData[2][0][0].value.text = (allUsersStatsQueryRes?.data?.stats.totalSolde?.toLocaleString('fr-FR') ?? 0) + "  XAF";
-        // infoData[3][0][0].value.text = allUsersStatsQueryRes?.data?.stats.totalKYC?.toLocaleString('fr-FR') ?? 0;
-        // infoData[3][1][0].value.text = allUsersStatsQueryRes?.data?.stats.totalVerificationPending?.toLocaleString('fr-FR') ?? 0;
-        // infoData[3][1][1].value.text = allUsersStatsQueryRes?.data?.stats.totalVerified?.toLocaleString('fr-FR') ?? 0;
-        // infoData[3][1][2].value.text = allUsersStatsQueryRes?.data?.stats.totalVerificationBlocked?.toLocaleString('fr-FR') ?? 0;
+        infoData[0][0][0].value.text = allUsersStatsQueryRes?.data?.todayCountUsers?.toLocaleString('fr-FR') ?? 0;
+        infoData[0][1][0].value.text = Math.round(allUsersStatsQueryRes?.data?.avgUsers ?? 0) + "  /jour";
+        infoData[1][0][0].value.text = allUsersStatsQueryRes?.data?.countUsers?.toLocaleString('fr-FR') ?? 0;
+        infoData[1][1][0].value.text = (allUsersStatsQueryRes?.data?.totalSolde?.toLocaleString('fr-FR') ?? 0) + "  XAF";        
+        infoData[2][0][0].value.text = allUsersStatsQueryRes?.data?.countV1Users?.toLocaleString('fr-FR') ?? 0;
+        infoData[2][1][0].value.text = (allUsersStatsQueryRes?.data?.totalSoldeV1?.toLocaleString('fr-FR') ?? 0) + "  XAF";
+        infoData[3][0][0].value.text = allUsersStatsQueryRes?.data?.countV2Users?.toLocaleString('fr-FR') ?? 0;
+        infoData[3][1][0].value.text = (allUsersStatsQueryRes?.data?.totalSoldeV2?.toLocaleString('fr-FR') ?? 0) + "  XAF";
+        // infoData[4][0][0].value.text = allUsersStatsQueryRes?.data?.todayTotal?.toLocaleString('fr-FR') ?? 0;
+        // infoData[4][1][0].value.text = (allUsersStatsQueryRes?.data?.totalSolde?.toLocaleString('fr-FR') ?? 0) + "  XAF";
 
         rearrangedTableData = allUsersQueryRes?.data?.map((item:any, index:any) => {
             const rearrangedItem = {
@@ -230,13 +251,13 @@ export default function Home() {
 		title={"Comptes utilisateurs"}
 		>
             <section className='mt-2'>
-                {/* {allUsersStatsQueryRes?.status === 'loading' ? 
+                {allUsersStatsQueryRes?.status === 'loading' ? 
                     <div className="flex justify-center w-full py-10">
                         <div className={'loadingSpinner'}></div>
                     </div>
                     :
                     <InfoCardGrid infoData={infoData}/>
-                } */}
+                }
                 
                 {/* <div className='mb-10 grid lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-1' style={{gap:'20px'}}>
                     {infoData.map((data, index) => (

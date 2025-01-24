@@ -9,6 +9,10 @@ export class CustomerService {
         if(searchTerm) query_params.searchTerm =searchTerm;
         return BaseMethods.getRequest(customerUrlsV2.GET_CUSTOMERS, true, query_params);
     }
+    static get_customers_stats = () => {
+        return BaseMethods.getRequest(customerUrlsV2.GET_CUSTOMERS_STATS, true);
+    }
+
     static get_kyc_customers = ({kyc_result, kyc_status, searchTerm}: {kyc_result?:string, kyc_status?:string, searchTerm?:string}) =>{
         let query_params:any = {};
         if(kyc_result) query_params.kyc_result =kyc_result;

@@ -2,6 +2,11 @@ export function isString({value}: any) {
     return typeof value === "string";
 }
 
+export function isObject(value: any): boolean {
+  return typeof value === 'object' && value !== null;
+}
+
+
 export function objectToUrlParams(obj:any):string {
   const params = [];
   for (const key in obj) {

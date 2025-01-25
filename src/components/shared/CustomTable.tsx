@@ -12,28 +12,34 @@ import { RxDotsHorizontal } from 'react-icons/rx';
 import CButton from './CButton';
 import { useDispatch, useSelector } from 'react-redux';
 import { setSearchTerm, selectSearchTerm } from '@/redux/slices/search';
+import CustomersFilterForm from './CustomTableFilters/CustomersFilterForm';
 
 
 
-interface CustomDropdownProps {
+interface CustomTableProps {
   btn?: React.ReactNode;
   filter?: boolean;
+  filterType?: string;
   isLoading?: boolean;
   threeButtons?: boolean;
   headerData: ITableHeader;
   tableData: IGenericRow[];
   search?:string; 
 	setSearch?:(data?:any)=>void;
+  filterContent?:any; 
+	setFilterContent?:(data?:any)=>void;
 }
 
-const CustomTable: React.FC<CustomDropdownProps> = ({
+const CustomTable: React.FC<CustomTableProps> = ({
   search, setSearch,
+  filterContent, setFilterContent,
   headerData, 
   tableData, 
-  btn, filter, isLoading, threeButtons}) =>  {
+  btn, filter, filterType, isLoading, threeButtons}) =>  {
   const dispatch = useDispatch();
   const searchTerm:string = useSelector(selectSearchTerm);
   const [currentPage, setCurrentPage] = useState(1);
+  const [filterDetails, setFilterDetails] = useState(false);
   const [usersPerPage] = useState(5);
   const [data, setData] = React.useState<IGenericRow[]>(); // Add type annotation for data and change initial state value to an empty object
 
@@ -54,6 +60,16 @@ const CustomTable: React.FC<CustomDropdownProps> = ({
   const paginate = (pageNumber: number) => {
     setCurrentPage(pageNumber);
   }
+  const handleFilterOpen = () => {
+    setFilterDetails(!filterDetails)
+    console.log("filterDetails ::: ", filterDetails);    
+  }
+
+  // useEffect(() => {
+  //   console.log("filter ::: ", filter);
+  //   console.log("filterType ::: ", filterType);
+  //   console.log("filterDetails ::: ", filterDetails);
+  // }, []);
 
   return (
     <>
@@ -73,6 +89,7 @@ const CustomTable: React.FC<CustomDropdownProps> = ({
        icon={<HiOutlineFilter/>}
        btnStyle={'green'}
        height={'32px'}
+       onClick={()=>handleFilterOpen()}
        />
        :<></>}
        
@@ -129,6 +146,16 @@ const CustomTable: React.FC<CustomDropdownProps> = ({
         
       </div>
     </div>
+    {filter && filterDetails ?
+    <div className='mt-3'>
+      {filterType === 'user' ? 
+      <CustomersFilterForm
+      filterContent={filterContent}
+      setFilterContent={setFilterContent}/>
+      :<></>}
+    </div>
+    :<></>}
+    
     <div className='mt-6 w-full'>
       <AdminTable searchTerm={searchTerm} isLoading={isLoading} headerData={headerData} data={tableData || []} />
     </div>

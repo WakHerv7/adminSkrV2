@@ -6,7 +6,7 @@ import { useQuery } from "react-query";
 import { axiosOpenedInstance } from "@/utils/axios";
 import toast from "react-hot-toast";
 import { Kbd } from "@nextui-org/react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import SideBar from "@/components/shared/SideBar"
 import { RxCaretDown, RxDotsHorizontal } from "react-icons/rx"
@@ -22,7 +22,7 @@ import { IGenericRow } from '@/components/AdminTable/Table';
 import ActiveYesNo from "@/components/shared/ActiveYesNo";
 import ButtonOutlined from "@/components/shared/ButtonOutlined";
 import { FourDots } from "@/components/shared/icons";
-import { isString } from "@/utils/utils";
+import { isObject, isString } from "@/utils/utils";
 import Transfers from "@/components/cards/Transfers";
 import TransfersTotal from "@/components/cards/TransfersTotal";
 import TransferType from "@/components/cards/TransferType";
@@ -143,10 +143,18 @@ infoData[3][1][0].value.text = 0 + "  XAF";
 
 
 const getAllCustomers = async ({queryKey}:any) => {
-    const [_key, st] = queryKey;
+    const [_key, st, filterContent] = queryKey;
     let params:any = {};
     if(st) params.searchTerm = st;
-    // console.log("getCustomers searchTerm : ", st, queryKey);
+
+    if(isObject(filterContent)){
+        Object.entries(filterContent).map(([key, value]:any[]) => {
+            params[key] = value;
+        });
+    }
+    console.log("getAllCustomers searchTerm : ", st);
+    console.log("getAllCustomers filterContent : ", filterContent);
+    console.log("getAllCustomers params : ", params);
     
     const response = await CustomerService.get_all_customers(params);
     const responseJson = await response.json();
@@ -168,6 +176,9 @@ const getCustomersStats = async () => {
 
 export default function Home() {
     useTitle("Sekure | Comptes utilisateurs", true);
+
+    const [filterContent, setFilterContent] = useState({});
+
     const dispatch = useDispatch();
     // dispatch(setSearchTerm(''));
     const searchTerm:string = useSelector(selectSearchTerm);
@@ -181,7 +192,7 @@ export default function Home() {
         refetchInterval: 30000, // Fetches data every 30 seconds
     });
     const allUsersQueryRes = useQuery({
-        queryKey: ["allCustomers", searchTerm],
+        queryKey: ["allCustomers", searchTerm, filterContent],
         queryFn: getAllCustomers,
         onError: (err) => {
           toast.error("Failed to get users.");
@@ -347,7 +358,7 @@ export default function Home() {
                 <div className="my-[50px]">
                     <div className="mb-5">
                         <Title 
-                        title={"Liste des utilisateurs"}
+                        title={"Liste des utilisateurs v2"}
                         subtitle={"Liste en temps réel des derniers utilisateurs inscrits"}
                         />
                     </div>
@@ -356,6 +367,10 @@ export default function Home() {
                     tableData={rearrangedTableData}
                     isLoading={allUsersQueryRes.status == 'loading'}
                     threeButtons
+                    filter
+                    filterType={'user'}
+                    filterContent={filterContent}
+                    setFilterContent={setFilterContent}
                     />
                 </div>
             </section>

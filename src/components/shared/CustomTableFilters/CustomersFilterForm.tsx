@@ -22,7 +22,11 @@ import { HiFilter } from 'react-icons/hi';
 import CButton from '../CButton';
 import { log } from 'util';
 
-const countryData = [
+const countryData:any[] = [
+  {
+		key:'all',
+		label:'Tous',
+	},
 	{
 		key:'CM',
 		label:'Cameroun',

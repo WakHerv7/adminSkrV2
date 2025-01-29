@@ -157,6 +157,14 @@ const SideBar = (props: Props) => {
       count: null,
       icon: <FaHandHoldingUsd size={20}/>,    
     },
+    {
+      title: 'Notifications',
+      slug:'notifications',
+      canSee: hasPermission(user, 'notifications', 'view'),
+      path: urlsV2.notifications.root,
+      count: null,
+      icon: <IoIosSend size={18}/>,    
+    },
     
   ]
 

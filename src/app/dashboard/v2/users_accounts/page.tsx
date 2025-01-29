@@ -2,11 +2,11 @@
 import Image from "next/image";
 import { useTitle } from "@/hooks/useTitle";
 import ProductsSection from "@/components/sections/ProductsSection";
-import { useQuery } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import { axiosOpenedInstance } from "@/utils/axios";
 import toast from "react-hot-toast";
 import { Kbd } from "@nextui-org/react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import SideBar from "@/components/shared/SideBar"
 import { RxCaretDown, RxDotsHorizontal } from "react-icons/rx"
@@ -35,6 +35,8 @@ import LegendItem from "@/components/shared/LegendItem";
 import PieChart from "@/components/charts/pieChart/PieChart";
 import CButton from "@/components/shared/CButton";
 import { FaLock } from "react-icons/fa";
+import classNames from "classnames";
+
 import { 
     headerUserAccountDataV2 as headerData, tableUserAccountData as tableData,
     trxData as data, pieData, pieData2, doughnutData } from "@/constants/Index";
@@ -52,6 +54,7 @@ import urlsV2 from '@/config/urls_v2';
 import { selectSearchTerm, setSearchTerm } from "@/redux/slices/search";
 import LabelWithBadge from "@/components/shared/LabelWithBadge";
 import { CustomerService } from "@/api/services/v2/customer";
+import { HashLoader } from "react-spinners";
 
 let infoData: TDataList[] = [
     [
@@ -149,7 +152,7 @@ const getAllCustomers = async ({queryKey}:any) => {
 
     if(isObject(filterContent)){
         Object.entries(filterContent).map(([key, value]:any[]) => {
-            params[key] = value;
+            if(value && value!== 'all') params[key] = value;
         });
     }
     console.log("getAllCustomers searchTerm : ", st);
@@ -165,8 +168,15 @@ const getAllCustomers = async ({queryKey}:any) => {
     
     return responseJson.data; 
 };
-const getCustomersStats = async () => {
-    const response = await CustomerService.get_customers_stats();
+const getCustomersStats = async ({queryKey}:any) => {
+    const [_key, filterContent] = queryKey;
+    let params:any = {};
+    if(isObject(filterContent)){
+        Object.entries(filterContent).map(([key, value]:any[]) => {
+            if(value && value!== 'all') params[key] = value;
+        });
+    }
+    const response = await CustomerService.get_customers_stats(params);
     const responseJson = await response.json();
     if (!response.ok) {
       throw new Error(responseJson.message || 'Failed to get users statistics'); 
@@ -174,17 +184,51 @@ const getCustomersStats = async () => {
     return responseJson.data; 
 };
 
+const generateCustomersExcel = async (queryData:any) => {
+    const {filterContent} = queryData;
+    let params:any = {};
+    if(isObject(filterContent)){
+        Object.entries(filterContent).map(([key, value]:any[]) => {
+            if(value && value!== 'all') params[key] = value;
+        });
+    }
+    const response = await CustomerService.generate_customers_excel(params); 
+    
+    if (!response.ok) {
+        const responseBody = await response.json();
+        throw new Error(responseBody.message);
+    }
+    const responseJson = await response.json();
+    return responseJson;
+}
+
 export default function Home() {
     useTitle("Sekure | Comptes utilisateurs", true);
 
     const [filterContent, setFilterContent] = useState({});
 
     const dispatch = useDispatch();
+    const redirectRef:any = useRef();
     // dispatch(setSearchTerm(''));
     const searchTerm:string = useSelector(selectSearchTerm);
 
+    const mutationExcel = useMutation({
+        mutationFn: (data)=>generateCustomersExcel({filterContent}),
+        onError: (err:any) => {
+            console.error("onError : ", err.message);
+            toast.error(`Echec lors de la generation de fichier excel : ` + err.message);
+            // downloadLink		
+        },
+        onSuccess: (data) => {
+            console.log("onSuccess : ", data);            
+            toast.success(`Fichier excel généré avec succes.`);
+            redirectRef.current.href = data?.data;
+            redirectRef.current.click();
+        },
+    });
+
     const allUsersStatsQueryRes = useQuery({
-        queryKey: ["allUsersStats"],
+        queryKey: ["allUsersStats", filterContent],
         queryFn: getCustomersStats,
         onError: (err) => {
           toast.error("Failed to get users stats.");
@@ -371,10 +415,27 @@ export default function Home() {
                     filterType={'user'}
                     filterContent={filterContent}
                     setFilterContent={setFilterContent}
+                    generateExcel={()=>mutationExcel.mutate()}
                     />
                 </div>
+
+                <div
+                    style={{zIndex:9000}}
+                    className={classNames(
+                        "transition-all invisible z-20 bg-blue-900/30 opacity-0 absolute top-0 left-0 h-full w-full flex items-center justify-center",
+                        {
+                            "!opacity-100 !visible z-20": mutationExcel.isLoading,
+                        }
+                    )}
+                >
+                    <HashLoader
+                        className="shrink-0"
+                        size={50}
+                        color="#18BC7A"
+                    />
+                </div>
+                <a ref={redirectRef} download hidden href="#"></a>
             </section>
-			
 	  </Layout>
 	);
 }

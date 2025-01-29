@@ -28,6 +28,7 @@ export const V2_BASE_URL_CUSTOMER = `${API_V2_BASE_URL}/customers`;
 export const customerUrlsV2 = {  
   GET_CUSTOMERS: `${V2_BASE_URL_CUSTOMER}`,
   GET_CUSTOMERS_STATS: `${V2_BASE_URL_CUSTOMER}/stats`,
+  GENERATE_CUSTOMERS_EXCEL: `${V2_BASE_URL_CUSTOMER}/excel`,
   GET_KYC_CUSTOMERS: `${V2_BASE_URL_CUSTOMER}/kyc`,
   GET_KYC_STATS: `${V2_BASE_URL_CUSTOMER}/kyc-stats`,
   GET_ONE_CUSTOMER: (id:any) => `${V2_BASE_URL_CUSTOMER}/${id}`,
@@ -81,6 +82,12 @@ export const transactionUrlsV2 = {
     GET_ALL_NAIRAPAYMENTS: `${V2_BASE_URL_NAIRAPAYMENT}`,
     GET_ONE_NAIRAPAYMENT: (id:any) => `${V2_BASE_URL_NAIRAPAYMENT}/${id}`,
     UPDATE_NAIRAPAYMENT: (id:any) => `${V2_BASE_URL_NAIRAPAYMENT}/status/${id}`,
+  };
+  /** ------------------------------------ */
+  export const V2_BASE_URL_NOTIFICATION = `${API_V2_PROD_BASE_URL}/notifications`;
+  export const notificationUrlsV2 = {
+    GET_NOTIFICATIONS: `${V2_BASE_URL_NOTIFICATION}`,
+    SEND_NOTIFICATION: `${V2_BASE_URL_NOTIFICATION}`,
   };
 /** ======================================================== */
 

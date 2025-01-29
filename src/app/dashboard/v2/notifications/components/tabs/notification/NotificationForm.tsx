@@ -24,7 +24,7 @@ import CButton from "@/components/shared/CButton";
 import classNames from "classnames";
 import { HashLoader } from "react-spinners";
 import { usePathname } from "next/navigation";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {Select, SelectItem} from "@nextui-org/select";
 import { selectCurrentUser } from "@/redux/slices/auth";
 import { useMutation } from "react-query";
@@ -45,13 +45,16 @@ import {I18nProvider} from "@react-aria/i18n";
 import {DateInput, NextUIProvider} from "@nextui-org/react";
 import useTags from "@/hooks/useTagInput";
 import { TagField } from "@/components/shared/TagField";
-import { NotificationService } from "@/api/services/notification";
+import { NotificationService } from "@/api/services/v2/notification";
 import { Textarea } from '@/components/ui/textarea'
 import { IoIosSend } from "react-icons/io";
 import EmojiPicker from 'emoji-picker-react';
 import { FaRegSmile } from "react-icons/fa";
 import CustomDropdown2 from "@/components/shared/CustomDropdown2";
 import {useClickAway} from 'react-use';
+import TabCheckbox from "@/components/shared/checkbox/TabCheckbox";
+import SearchUserInput from "@/components/shared/search/UserSearchInput";
+import { UserSearchTags } from "@/components/shared/search/UserSearchTags";
 
 export const formSchema = z.object({
   title: z.string(
@@ -62,15 +65,30 @@ export const formSchema = z.object({
   ),
   target: z.string(
       {message:'Selectionnez une cible'}
-  ).optional(),
+  ),
   users:z.array(z.string()).optional(),
+}).refine(
+  (data) => {      
+    // console.log("data.target :: ", data.target);
+    console.log("data.users :: ", data.users);
+    console.log("data.users?.length :: ", data.users?.length);
+      return (data.users && data.users?.length>0)
+  }, {
+  message: `Veuillez selectionner des utilisateurs`,
+  path: ['users'], // Specify the path to show error on
 });
 
 const targetData = [
   {key: 'all', label: 'Tous les utilisateurs'},
   {key: 'cameroon', label: 'Tous les utilisateurs du Cameroun'},
   {key: 'gabon', label: 'Tous les utilisateurs du Gabon'},
-  {key: 'test', label: 'Utilisateurs tests'},
+  {key: 'v1', label: 'Anciens utilisateurs'},
+  {key: 'v2', label: 'Nouveaux utilisateurs'},
+  {key: 'kyc_none', label: 'Utilisateurs sans KYC'},
+  {key: 'kyc_pending', label: 'Utilisateurs KYC en cours'},
+  {key: 'kyc_approved', label: 'Utilisateurs KYC approuvé'},
+  {key: 'kyc_declined', label: 'Utilisateurs KYC rejeté'},
+  
   // {key: 'active', label: 'Tous les utilisateurs actifs'},
   // {key: 'inactive', label: 'Tous les utilisateurs inactifs'},
   // {key: 'engaged', label: 'Tous les utilisateurs engagés'},
@@ -118,6 +136,10 @@ export default function Details() {
   });
   const [showPicker, setShowPicker] = useState(false);
   const [showPicker2, setShowPicker2] = useState(false);
+  const [showGroupTab, setShowGroupTab] = useState(true);
+  const [showPersonTab, setShowPersonTab] = useState(false);
+  const [showTargetError, setShowTargetError] = useState(false);
+  const [showUsersError, setShowUsersError] = useState(false);
   const pathname = usePathname();
   const redirectRef:any = useRef();
   const currentUser = useSelector(selectCurrentUser);
@@ -149,9 +171,29 @@ export default function Details() {
 
 
   const onSubmit = (data: any) => {    
-    console.log("onSubmit data : ", data);
+    
+    console.log("START onSubmit data : ", data);
+    if(data.target==='custom' && data.users.length<1){
+      setShowUsersError(true);
+    }
+    else if(!data.target) {
+      if(showPersonTab) data.target='custom'
+      else {setShowTargetError(true); return}
+    }
+    else{
+      setShowTargetError(false)
+      setShowUsersError(false)
+    }
+
+    console.log("END onSubmit data : ", data);
+    // return
 		mutation.mutate(data);
 	};
+
+  // useEffect(() => {
+  //   console.log('showUsersError ::: ', showUsersError);
+  // }, [showUsersError])
+  
 	const onError = (err: any) => {
 		console.error("onError", err);
 	};
@@ -168,6 +210,17 @@ export default function Details() {
       return item.trim();
     });
     form.setValue('users', newData);
+  }
+
+  const handleShowGroupTab = (value:any) => {
+    form.setValue('target', form.getValues('target') || '');
+    setShowGroupTab(value);
+    setShowPersonTab(!value);
+  }
+  const handleShowPersonTab = (value:any) => {
+    form.setValue('target', 'custom');
+    setShowPersonTab(value);
+    setShowGroupTab(!value);
   }
 
   return (
@@ -271,53 +324,82 @@ export default function Details() {
                       </div>
                     </div>
                     <div className="w-full flex flex-col gap-7">
-                      <FormField
-                      control={form.control}
-                      name="target"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="text-gray-900 text-md font-semibold tracking-tight">Groupes</FormLabel>
-                          <FormControl>
-                            <Select 
-                              {...field}
-                              placeholder="Sélectionner la cible" 
-                              style={{width:'100%', background: '#F4EFE3'}}
-                              className={`rounded-xs text-gray-900 text-md font-normal`}
-                              defaultSelectedKeys={[field.value ?? ""]}
-                              onChange={(data) => handleTargetChange(data)}
-                            >
-                              {targetData.map((item:any,idx:any) => (
-                              <SelectItem key={item.key} value={item.key}>
-                                {item.label}
-                              </SelectItem>
-                              ))}
-                            </Select>
-                          </FormControl>
-                          <FormMessage className="text-red-400"/>
-                        </FormItem>
-                        )}
-                      />
+                      <div className={`flex gap-2`}>
+                        <TabCheckbox label={`Groupes`} checked={showGroupTab} onChange={(e)=>handleShowGroupTab(e.target.checked)}/>
+                        <TabCheckbox label={`Personnes`} checked={showPersonTab} onChange={(e)=>handleShowPersonTab(e.target.checked)}/>
+                      </div>
                       
+                      {showGroupTab ?
+                      <div>
+                        <FormField
+                        control={form.control}
+                        name="target"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="text-gray-900 text-sm mb-3">{`Sélectionnez un groupe d'utilisateurs`}</FormLabel>
+                            <FormControl>
+                              <Select 
+                                {...field}
+                                placeholder="Sélectionner la cible" 
+                                style={{width:'100%', background: '#F4EFE3'}}
+                                className={`rounded-xs text-gray-900 text-md font-normal`}
+                                defaultSelectedKeys={[field.value ?? ""]}
+                                onChange={(data) => handleTargetChange(data)}
+                              >
+                                {targetData.map((item:any,idx:any) => (
+                                <SelectItem key={item.key} value={item.key}>
+                                  {item.label}
+                                </SelectItem>
+                                ))}
+                              </Select>
+                            </FormControl>
+                            <FormMessage className="text-red-400"/>
+                          </FormItem>
+                          )}
+                        />  
+                      </div>
+                      : <></>}
+                      {showPersonTab ?
+                      <div>
                       <FormField
                         control={form.control}
                         name="users"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel className="text-gray-900 text-md font-semibold tracking-tight">{`Personnes (numéros de téléphones)`}</FormLabel>
+                            <FormLabel className="text-gray-900 text-sm mb-3 flex flex-col">
+                              <span>{`Sélectionnez des personnes via leurs numéros de téléphones.`}</span>
+                              <span>{`Entrez le numero et choisissez parmi les resultats.`}</span>
+                              {/* <span>{`Vous pouvez entrer plusieurs numeros.`}</span> */}
+                            </FormLabel>
                             <FormControl>
-                                <TagField
+                              <UserSearchTags
+                              field={field}
+                              tags={field?.value ?? []}
+                              onChange={(data) => {                              
+                                handleUsersPhonesChange(data);
+                              }}
+                              max={1000}
+                              />
+                                {/* <TagField
                                   field={field}
                                   tags={field?.value ?? []}
                                   onChange={(data) => {                              
                                     handleUsersPhonesChange(data);
                                   }}
                                   max={1000}
-                                />
+                                /> */}
                             </FormControl>
                             <FormMessage className="text-red-400"/>
                           </FormItem>
                         )}
                       />
+                      {/* <div className="text-sm text-red-400">{`Veuillez selectionner des utilisateurs`}</div> */}
+                      {showUsersError ? <div className="text-sm text-red-400">{`Veuillez selectionner des utilisateurs`}</div>:<></>}
+                      {/* {showTargetError ? <div className="text-sm text-red-400">{`Veuillez selectionner un cible`}</div>:<></>} */}
+                      </div>
+                      :
+                      <></>}
+                      
                       <div className={`mt-[30px]`}>
                         <CButton 
                         text={'Envoyer'} 

@@ -287,7 +287,7 @@ export default function Home() {
 					<AreaChart data={transactionTrendsGraphData} options={chartOptions}/>
 				</div>
         <div>
-            <div className="relative  h-80 overflow-hidden">
+            <div className="relative overflow-hidden" style={{height:'23rem'}}>
                 <Title title={"Utilisateurs par pays"} />
                 {transactionPerCountryQueryRes.status === 'loading' ?
                   <div className='flex w-full py-10 justify-center items-center'>

@@ -8,8 +8,9 @@ import CButton from '@/components/shared/CButton'
 import { FourDots } from '@/components/shared/icons'
 import { IGenericRow, ITableHeader } from '@/components/AdminTable/Table'
 import { useQuery } from 'react-query'
-import { NotificationService } from '@/api/services/notification'
+import { NotificationService } from '@/api/services/v2/notification'
 import toast from 'react-hot-toast'
+import { getFormattedDateTime } from '@/utils/DateFormat'
 
 const headerData: ITableHeader =
 {
@@ -91,10 +92,10 @@ const Notification = () => {
     })
     if (item?.customers?.length>3) customersList += ` ... et ${item?.customers?.length-3} autre${(item?.customers?.length-3)>1?'s':''}`
 		const rearrangedItem = {
-			date: item?.completed_at,
+			date: getFormattedDateTime(item?.created_at),
 			customers: customersList,
       title: item?.title,			
-      content: item?.content,			
+      content: item?.text,			
 			actions: <>
 			{/* <div className='flex gap-5'>
 			  <CButton 

@@ -28,11 +28,13 @@ interface CustomTableProps {
 	setSearch?:(data?:any)=>void;
   filterContent?:any; 
 	setFilterContent?:(data?:any)=>void;
+  generateExcel?:(data?:any)=>void;
 }
 
 const CustomTable: React.FC<CustomTableProps> = ({
   search, setSearch,
   filterContent, setFilterContent,
+  generateExcel,
   headerData, 
   tableData, 
   btn, filter, filterType, isLoading, threeButtons}) =>  {
@@ -95,24 +97,29 @@ const CustomTable: React.FC<CustomTableProps> = ({
        
        {threeButtons ?
         <div className={`flex gap-x-3`}>
-          <CButton
+          {/* <CButton
           text={'Copier'}
           icon={<IoCopyOutline/>}
           btnStyle={'lightGreen'}
           height={'32px'}
-          />
+          /> */}
+          
+          {generateExcel ?
           <CButton
           text={'Excel'}
           icon={<BsFileEarmarkExcel/>}
           btnStyle={'lightGreen'}
           height={'32px'}
+          onClick={()=>generateExcel()}
           />
-          <CButton
+          :<></>}
+          
+          {/* <CButton
           text={'Imprimer'}
           icon={<IoPrintOutline/>}
           btnStyle={'lightGreen'}
           height={'32px'}
-          />
+          /> */}
         </div>
         :
         <CustomDropdown			

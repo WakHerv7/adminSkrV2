@@ -98,6 +98,7 @@ export const permissions:any = {
             transfers:{root:['view', 'details']},
         },
         'kyc_v2': {root:['view', 'details']},
+        'notifications': {root:['view', 'details']},
     },
     visitor : {
         home: {root:['view']}

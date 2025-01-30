@@ -72,7 +72,7 @@ export const formSchema = z.object({
     // console.log("data.target :: ", data.target);
     console.log("data.users :: ", data.users);
     console.log("data.users?.length :: ", data.users?.length);
-      return (data.users && data.users?.length>0)
+      return ((!data.target || data.target==='custom') && data.users && data.users?.length>0)
   }, {
   message: `Veuillez selectionner des utilisateurs`,
   path: ['users'], // Specify the path to show error on

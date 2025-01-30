@@ -39,5 +39,6 @@ const TabCheckbox = forwardRef<HTMLInputElement, CheckboxProps>(
     }
 );
 
+TabCheckbox.displayName = 'TabCheckbox';
 export default TabCheckbox;
     

@@ -27,6 +27,8 @@ import { useQuery } from "react-query";
 import toast from "react-hot-toast";
 import { setKYCWarningsList } from "@/redux/slices_v2/kyc";
 import { hasPermission } from "@/utils/permissions";
+import { IoIosSend } from "react-icons/io";
+import NotificationModalForm from "./modals/NotificationModalForm";
 
 
 const getKYCWarningsList = async () => {
@@ -43,6 +45,8 @@ export default function DetailsSide() {
   const dispatch = useDispatch();
   const customerDetails:any = useSelector(selectCurrentCustomerDetails);
   const [isUpdateVerificationStatusModalFormOpen, setIsUpdateVerificationStatusModalFormOpen] = useState(false);
+  const [isNotificationModalFormOpen, setIsNotificationModalFormOpen] = useState(false);
+  
   const [isActivateModalOpen, setIsActivateModalOpen] = useState(false);
 
   const currentUser = useSelector(selectCurrentUser);
@@ -201,7 +205,21 @@ export default function DetailsSide() {
               
             }
           </div>
-          <div className="mb-2">
+          <div className=" mt-3 mb-2">
+            <>
+            <CButton
+            icon={<IoIosSend/>}
+            onClick={()=>setIsNotificationModalFormOpen(true)}
+            text={'Envoyer une notification'}
+            btnStyle={'green'}
+            width={'100%'}
+            />
+            <NotificationModalForm
+            isOpen={isNotificationModalFormOpen}
+            setIsOpen={setIsNotificationModalFormOpen}
+            customer={customerDetails?.customer}
+            />
+            </>
           {customerDetails?.customer?.blocked ?
             <>
             {/* <CButton 

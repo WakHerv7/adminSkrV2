@@ -40,5 +40,6 @@ const RegularCheckbox = forwardRef<HTMLInputElement, CheckboxProps>(
     }
 );
 
+RegularCheckbox.displayName = 'RegularCheckbox';
 export default RegularCheckbox;
     

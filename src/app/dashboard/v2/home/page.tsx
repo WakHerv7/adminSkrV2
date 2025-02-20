@@ -29,6 +29,7 @@ import { getFormattedDate, getFormattedDateTime } from "@/utils/DateFormat";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { selectTransactionPeriod, setPeriod } from "@/redux/slices/transaction";
+import { selectLimitDate } from "@/redux/slices_v2/settings";
 import { getGraphData, getTransactionPerCategoryTypeGraphData, getTransactionPerCountryGraphData, getTransactionTrendGraphData } from "@/utils/graphs";
 import { selectSearchTerm, setSearchTerm } from "@/redux/slices/search";
 import urlsV2 from '@/config/urls_v2';
@@ -95,9 +96,10 @@ const getBestUsers = async ({queryKey}:any) => {
 };
 
 const getTransactionTrends = async ({queryKey}:any) => {
-  const [_key, period] = queryKey;
+  const [_key, period, limitDate] = queryKey;
   let params:any = {};
   if(period) params.period = period;
+  if(limitDate) params.limitDate = limitDate;
   const response = await TransactionService.get_stats_periodic(params);
   const responseJson = await response.json();
   if (!response.ok) {
@@ -106,9 +108,11 @@ const getTransactionTrends = async ({queryKey}:any) => {
   return responseJson.data; 
 };
 
-const getTransactionsPerCountry = async () => {
-  
-  const response = await CustomerService.get_stats_countries();
+const getTransactionsPerCountry = async ({queryKey}:any) => {
+  const [_key, limitDate] = queryKey;
+  let params:any = {};
+  if(limitDate) params.limitDate = limitDate;
+  const response = await CustomerService.get_stats_countries(params);
   // const response = await TransactionService.get_stats_countries();
   const responseJson = await response.json();
   if (!response.ok) {
@@ -117,8 +121,11 @@ const getTransactionsPerCountry = async () => {
   return responseJson.data; 
 };
 
-const getCategoryTypeTransactions = async () => {
-  const response = await TransactionService.get_stats_category_type();
+const getCategoryTypeTransactions = async ({queryKey}:any) => {
+  const [_key, limitDate] = queryKey;
+  let params:any = {};
+  if(limitDate) params.limitDate = limitDate;
+  const response = await TransactionService.get_stats_category_type(params);
   const responseJson = await response.json();
   if (!response.ok) {
     throw new Error(responseJson.message || 'Failed to get transactions per category and type'); 
@@ -131,6 +138,7 @@ export default function Home() {
     useTitle("Sekure | Accueil", true);
     const dispatch = useDispatch();
     const period:string = useSelector(selectTransactionPeriod);
+    const limitDate:string = useSelector(selectLimitDate);
     const searchTerm:string = useSelector(selectSearchTerm);
 
     const bestUsersQueryRes = useQuery({
@@ -143,7 +151,7 @@ export default function Home() {
     });
     
     const transactionTrendsQueryRes = useQuery({
-      queryKey: ["transactionTrends", period],
+      queryKey: ["transactionTrends", period, limitDate],
       queryFn: getTransactionTrends,
       onError: (err) => {
         toast.error("Une erreur est survenue:"+err);
@@ -152,7 +160,7 @@ export default function Home() {
     });
 
     const transactionPerCountryQueryRes = useQuery({
-      queryKey: ["transactionPerCountry"],
+      queryKey: ["transactionPerCountry", limitDate],
       queryFn: getTransactionsPerCountry,
       onError: (err) => {
         toast.error("Une erreur est survenue:"+err);
@@ -161,7 +169,7 @@ export default function Home() {
     });
 
     const transactionPerCategoryTypeQueryRes = useQuery({
-      queryKey: ["transactionPerCategoryType"],
+      queryKey: ["transactionPerCategoryType", limitDate],
       queryFn: getCategoryTypeTransactions,
       onError: (err) => {
         toast.error("Une erreur est survenue:"+err);
@@ -193,7 +201,7 @@ export default function Home() {
         const rearrangedItem = {
           serial: index+1,
           name: `${item.last_name} ${item.first_name}`,			
-          country: item.country,
+          country: item.country.includes('Congo') && item.country.includes('Democratic')  ? 'Congo RDC' : item.country ,
           phone: item.country_phone_code ? `${item.country_phone_code} ${item.phone}` : item.phone,
           email: item.email,        
           solde: item.balance_xaf.toLocaleString('fr-FR'),
@@ -298,7 +306,7 @@ export default function Home() {
                   <Doughnut data={transactionPerCountryGraphData} />
                   <div className='grid grid-cols-2 gap-x-10 gap-3'>
                     {Object.entries(transactionPerCountryData)?.map(([key, value]:any[], index:any) => (
-                      <LegendItem key={index} label={key} color={value?.color} value={`${value.percentageCount}%`}/>
+                      <LegendItem key={index} label={key} title={String(value?.count)} color={value?.color} value={`${value.percentageCount}%`}/>
                     ))}                     
                   </div>
                   </>

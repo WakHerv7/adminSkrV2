@@ -45,8 +45,7 @@ const persistConfig = {
   key: "root",
   version: 1,
   storage,
-  blacklist: ['transaction', 'customer', 'card', 'kyc', 'kyc_v2', 'search', 'settings'
-    ,'chinpay', 'nairapay'
+  blacklist: ['transaction', 'customer', 'card', 'kyc', 'kyc_v2', 'search', 'chinpay', 'nairapay'
   ]
 };
 

@@ -1,3 +1,11 @@
+export function parseDateStr(dateString:string) {
+  return dateString ? dateString.replace(/T.*Z$/, '') : "";
+}
+
+export function parseDateObject(dateString:string) {
+  return dateString ? new Date(dateString.replace(/T.*Z$/, '')) : new Date();
+}
+
 export const getFormattedDate = (entry: Date, lang?:string, isText?:boolean) => {
   if (typeof entry === "string") {
     entry = new Date(entry);

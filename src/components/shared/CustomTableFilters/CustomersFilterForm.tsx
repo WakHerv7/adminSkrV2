@@ -35,6 +35,22 @@ const countryData:any[] = [
 		key:'GA',
 		label:'Gabon',
 	},
+  {
+		key:'BJ',
+		label:'Benin',
+	},
+  {
+		key:'GH',
+		label:'Ghana',
+	},
+  {
+		key:'CG',
+		label:'Congo',
+	},
+  {
+		key:'CD',
+		label:'Congo RDC',
+	},
 	{
 		key:'NG',
 		label:'Nigeria',

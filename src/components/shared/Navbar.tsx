@@ -1,7 +1,7 @@
 import { RxArrowLeft, RxCaretDown } from "react-icons/rx"
 import { IoIosDisc, IoIosNotificationsOutline } from "react-icons/io"
 import { CgProfile } from "react-icons/cg";
-import { FaArrowLeft } from "react-icons/fa";
+import { FaArrowLeft, FaCalendar } from "react-icons/fa";
 import Image from "next/image";
 import './style-navbar.css';
 import CustomDropdown from "./CustomDropdown";
@@ -21,6 +21,10 @@ import { AuthService } from "@/api/services/auth";
 import toast from "react-hot-toast";
 import { useMutation } from "react-query";
 import { hasPermission } from "@/utils/permissions";
+import { useState } from "react";
+import ChangeLimitDateModalForm from "@/app/dashboard/v2/home/modals/ChangeLimitDateModalForm";
+import { selectLimitDate } from "@/redux/slices_v2/settings";
+import { getTextFormattedDate, parseDateObject } from "@/utils/DateFormat";
 type Props = {
     title: string | undefined;
     backLink?: string;
@@ -47,6 +51,9 @@ export default function Navbar(props:Props) {
 
     const currentUser = useSelector(selectCurrentUser);
     const currentVersion = useSelector(selectCurrentVersion);
+    const currentLimitDate = useSelector(selectLimitDate);
+
+    const [isChangeLimitDateModalFormOpen, setIsChangeLimitDateModalFormOpen] = useState(false);
     
     const mutation = useMutation({
 		mutationFn: async () => handleLogout(currentUser.email),
@@ -146,6 +153,20 @@ export default function Navbar(props:Props) {
                     14
                     </div>
                 </div> */}
+                <div className="mr-10">
+                    <div className="flex gap-3 text-xs items-center cursor-pointer hover:text-[#18BC7A]"
+                    onClick={()=>setIsChangeLimitDateModalFormOpen(true)}
+                    >
+                        <FaCalendar size={14}/>
+                        <span>{getTextFormattedDate(parseDateObject(currentLimitDate))}</span>
+                    </div>
+                    <ChangeLimitDateModalForm
+                    isOpen={isChangeLimitDateModalFormOpen}
+                    setIsOpen={setIsChangeLimitDateModalFormOpen}
+                    customer={currentUser}
+                    />
+                </div>
+
                 <div className="text-xs">{currentUser?.last_name?.split(' ')[0]}</div>
                 
                 <CustomDropdown2

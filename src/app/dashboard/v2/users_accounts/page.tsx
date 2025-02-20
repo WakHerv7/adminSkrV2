@@ -271,7 +271,7 @@ export default function Home() {
             const rearrangedItem = {
                 serial: index+1,
                 name: `${item.last_name} ${item.first_name}`,			
-                country: item.country,
+                country:  item.country.includes('Congo') && item.country.includes('Democratic')  ? 'Congo RDC' : item.country ,
                 phone: item.country_phone_code ? `${item.country_phone_code} ${item.phone}` : item.phone,
                 email: item.email,        
                 solde: item.balance_xaf.toLocaleString('fr-FR'),

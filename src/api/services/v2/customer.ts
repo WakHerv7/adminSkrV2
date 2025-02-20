@@ -58,6 +58,11 @@ export class CustomerService {
     static get_one_customer_transfers= (id:string) =>{
         return BaseMethods.getRequest(customerUrlsV2.GET_ONE_CUSTOMER_TRANSFERS(id), true);
     }
-    static get_stats_countries = () =>
-        BaseMethods.getRequest(customerUrlsV2.STATS_PER_COUNTRY, true);
+    static get_stats_countries = ({limitDate}: {limitDate?:string}) => {
+        let query_params:any = {};
+        if(limitDate) query_params.limitDate =limitDate;        
+        return BaseMethods.getRequest(customerUrlsV2.STATS_PER_COUNTRY, true, query_params);
+    }
+    // static get_stats_countries = () =>
+    //     BaseMethods.getRequest(customerUrlsV2.STATS_PER_COUNTRY, true);
 }

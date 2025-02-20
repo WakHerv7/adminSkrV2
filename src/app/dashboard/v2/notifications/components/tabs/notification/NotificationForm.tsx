@@ -80,10 +80,19 @@ export const formSchema = z.object({
 
 const targetData = [
   {key: 'all', label: 'Tous les utilisateurs'},
+  
   {key: 'cameroon', label: 'Tous les utilisateurs du Cameroun'},
   {key: 'gabon', label: 'Tous les utilisateurs du Gabon'},
+  {key: 'benin', label: 'Tous les utilisateurs du Benin'},
+  {key: 'congordc', label: 'Tous les utilisateurs du Congo RDC'},
+  {key: 'congo', label: 'Tous les utilisateurs du Congo'},
+  
+  {key: 'male', label: 'Tous les hommes'},
+  {key: 'female', label: 'Toutes les femmes'},
+  
   {key: 'v1', label: 'Anciens utilisateurs'},
   {key: 'v2', label: 'Nouveaux utilisateurs'},
+
   {key: 'kyc_none', label: 'Utilisateurs sans KYC'},
   {key: 'kyc_pending', label: 'Utilisateurs KYC en cours'},
   {key: 'kyc_approved', label: 'Utilisateurs KYC approuvé'},

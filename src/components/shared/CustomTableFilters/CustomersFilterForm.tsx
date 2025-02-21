@@ -59,7 +59,8 @@ const countryData:any[] = [
 
 
 export const filterSchema = z.object({
-  decreasingWalletOrder: z.boolean().default(false).optional(),
+  decreasingActiveWalletOrder: z.boolean().default(false).optional(),
+  decreasingStandbyWalletOrder: z.boolean().default(false).optional(),
   country: z.string().optional(),
 });
 
@@ -90,6 +91,20 @@ const CustomersFilterForm: React.FC<FilterProps> = ({filterContent, setFilterCon
 
 	const onError = (err: any) => {
 		console.error("any", err);
+	};
+
+  const handleWalletOrder = (label:string, value: any) => {
+    if(label === 'decreasingActiveWalletOrder' && value) {
+      form.setValue(label, value);
+      form.setValue('decreasingStandbyWalletOrder', !value);
+    }
+    else if(label === 'decreasingStandbyWalletOrder' && value) {
+      form.setValue(label, value);
+      form.setValue('decreasingActiveWalletOrder', !value);
+    }
+    else if(!value  &&  (label==='decreasingActiveWalletOrder' || label==='decreasingStandbyWalletOrder')){
+      form.setValue(label, value);
+    }
 	};
 
   return (
@@ -127,16 +142,19 @@ const CustomersFilterForm: React.FC<FilterProps> = ({filterContent, setFilterCon
           />
           <FormField            
             control={form.control}
-            name="decreasingWalletOrder"
+            name="decreasingActiveWalletOrder"
             render={({ field }) => (
                 <FormItem  className=''>
                 <FormControl>
-                  <label htmlFor={`customCheckboxUsers`} className="flex items-center cursor-pointer">                
+                  <label htmlFor={`decreasingActiveWalletOrder`} className="flex items-center cursor-pointer">                
                     <div className="relative">                
                       <input
                       checked={field.value}
-                      onChange={(e)=>form.setValue('decreasingWalletOrder', e.target.checked)}
-                       type="checkbox" id={`customCheckboxUsers`} name={`customCheckboxUsers`} className="customCheckbox sr-only"/>                
+                      onChange={(e)=>handleWalletOrder('decreasingActiveWalletOrder', e.target.checked)}
+                       type="checkbox" 
+                       id={`decreasingActiveWalletOrder`} 
+                       name={`decreasingActiveWalletOrder`} 
+                       className="customCheckbox sr-only"/>                
                       <div className="checkboxContainer block p-[3px] border border-solid border-1 border-gray-300 bg-[#f2f2f2] rounded-full flex items-center text-xs">
                         {/* <FaCircle className='checkboxContentTransparent' color="transparent" size={12} /> */}
                          {field.value ?
@@ -146,7 +164,39 @@ const CustomersFilterForm: React.FC<FilterProps> = ({filterContent, setFilterCon
                       </div>
                     </div>
                     <div className='pl-3 py-4 text-sm'>
-                      Ordre decroissant de solde
+                      Ordre decroissant de solde actif
+                    </div>
+                  </label>
+                </FormControl>
+                {/* <FormMessage className="text-red-400"/> */}
+                </FormItem>
+            )}
+          />
+          <FormField            
+            control={form.control}
+            name="decreasingStandbyWalletOrder"
+            render={({ field }) => (
+                <FormItem  className=''>
+                <FormControl>
+                  <label htmlFor={`decreasingStandbyWalletOrder`} className="flex items-center cursor-pointer">                
+                    <div className="relative">                
+                      <input
+                      checked={field.value}
+                      onChange={(e)=>handleWalletOrder('decreasingStandbyWalletOrder', e.target.checked)}
+                       type="checkbox" 
+                       id={`decreasingStandbyWalletOrder`} 
+                       name={`decreasingStandbyWalletOrder`} 
+                       className="customCheckbox sr-only"/>                
+                      <div className="checkboxContainer block p-[3px] border border-solid border-1 border-gray-300 bg-[#f2f2f2] rounded-full flex items-center text-xs">
+                        {/* <FaCircle className='checkboxContentTransparent' color="transparent" size={12} /> */}
+                         {field.value ?
+                         <FaCircle className={''} color={"#18BC7A"} size={12} />
+                        :
+                        <FaCircle className={''} color={"#ffffff00"} size={12} />}
+                      </div>
+                    </div>
+                    <div className='pl-3 py-4 text-sm'>
+                      Ordre decroissant de solde actif
                     </div>
                   </label>
                 </FormControl>

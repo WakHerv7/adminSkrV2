@@ -56,27 +56,6 @@ import TabCheckbox from "@/components/shared/checkbox/TabCheckbox";
 import SearchUserInput from "@/components/shared/search/UserSearchInput";
 import { UserSearchTags } from "@/components/shared/search/UserSearchTags";
 
-export const formSchema = z.object({
-  title: z.string(
-      {message:'Entrez un titre'}
-  ),
-  content: z.string(
-      {message:'Entrez un contenu'}
-  ),
-  target: z.string(
-      {message:'Selectionnez une cible'}
-  ),
-  users:z.array(z.string()).optional(),
-}).refine(
-  (data) => {      
-    // console.log("data.target :: ", data.target);
-    console.log("data.users :: ", data.users);
-    console.log("data.users?.length :: ", data.users?.length);
-      return ((!data.target || data.target==='custom') && data.users && data.users?.length>0)
-  }, {
-  message: `Veuillez selectionner des utilisateurs`,
-  path: ['users'], // Specify the path to show error on
-});
 
 const targetData = [
   {key: 'all', label: 'Tous les utilisateurs'},
@@ -97,13 +76,33 @@ const targetData = [
   {key: 'kyc_pending', label: 'Utilisateurs KYC en cours'},
   {key: 'kyc_approved', label: 'Utilisateurs KYC approuvé'},
   {key: 'kyc_declined', label: 'Utilisateurs KYC rejeté'},
-  
-  // {key: 'active', label: 'Tous les utilisateurs actifs'},
-  // {key: 'inactive', label: 'Tous les utilisateurs inactifs'},
-  // {key: 'engaged', label: 'Tous les utilisateurs engagés'},
-  // {key: 'sms', label: 'Tous les utilisateurs SMS'},
-  // {key: 'email', label: 'Tous les utilisateurs Email'},
 ];
+
+const targetKeys:any[] = targetData.map((item:any) => item.key);
+
+
+export const formSchema = z.object({
+  title: z.string(
+      {message:'Entrez un titre'}
+  ),
+  content: z.string(
+      {message:'Entrez un contenu'}
+  ),
+  target: z.string(
+      {message:'Selectionnez une cible'}
+  ),
+  users:z.array(z.string()).optional(),
+}).refine(
+  (data) => {      
+    // console.log("data.target :: ", data.target);
+    console.log("data.users :: ", data.users);
+    console.log("data.users?.length :: ", data.users?.length);
+      return ((!data.target || data.target==='custom') && data.users && data.users?.length>0) || (targetKeys.includes(data.target) )
+  }, {
+  message: `Veuillez selectionner des utilisateurs`,
+  path: ['users'], // Specify the path to show error on
+});
+
 
 
 function parseDateStr(dateString:string) {

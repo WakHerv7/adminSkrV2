@@ -92,8 +92,8 @@ export default function DetailsSide() {
           </p>
           <p className="text-[#18BC7A] text-2xl font-bold tracking-tight my-1">
             {`${customerDetails?.customer?.balance_xaf?.toLocaleString('fr-FR') ?? 0} XAF `}
-            
           </p>
+
           { hasPermission(currentUser, 'user_account_details:details', 'edit') ?
             <>
             <div className="flex justify-between items-center gap-3">
@@ -119,6 +119,16 @@ export default function DetailsSide() {
             </div>
             </>
           : <></> }
+        </div>
+
+        <div className="">
+          <p className="text-gray-800 text-sm font-normal tracking-tight">
+            {`Total solde en verification `}
+            <span className="font-bold">{`($ ${retrieveUSDAmount({amount:customerDetails?.customer?.balance_xaf, amountUSD:customerDetails?.customer?.balance_usd})?.toLocaleString('fr-FR')})`}</span>
+          </p>
+          <p className="text-gray-500 text-xl font-bold tracking-tight my-1">
+            {`${customerDetails?.customer?.old_balance_xaf?.toLocaleString('fr-FR') ?? 0} XAF `}
+          </p>
         </div>
 
         <div className="">

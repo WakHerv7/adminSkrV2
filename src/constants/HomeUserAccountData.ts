@@ -14,6 +14,7 @@ export const headerHomeUserAccountData: ITableHeader = {
   "phone": "Telephone",
   "email": "Email",
   "solde": "Solde Cpt.",
+  "soldeStandby": "Solde Verif.",
   "nbCartes": 'Nbre Cartes',
   "totalTrx": "Total Trans.",
   "avgTrx": "Moy. Trans.",

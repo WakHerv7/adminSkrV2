@@ -276,9 +276,9 @@ export default function Home() {
                 email: item.email,        
                 solde: item.balance_xaf?.toLocaleString('fr-FR'),
                 soldeStandby: item.old_balance_xaf?.toLocaleString('fr-FR') ?? 0,
-                nbCartes: item.numberOfCards, //index%3 + 1,
-                totalTrx: item.totalTransactionAmount.toLocaleString('fr-FR'),
-                avgTrx: item.avgTransactionAmount ? Math.round(item.avgTransactionAmount).toLocaleString('fr-FR') : 0,
+                nbCartes: item.number_of_cards,       //item.numberOfCards,
+                totalTrx: item.total_transaction_amount?.toLocaleString('fr-FR'),      // item.totalTransactionAmount.toLocaleString('fr-FR'),
+                avgTrx: item.average_transaction_amount ? Math.round(item.average_transaction_amount)?.toLocaleString('fr-FR') : 0,      // item.avgTransactionAmount ? Math.round(item.avgTransactionAmount).toLocaleString('fr-FR') : 0,
                 kyc: item.kyc_result == 'APPROVED' 
                     ?<LabelWithBadge label="Approuvé" badgeColor="#18BC7A"/>
                     :item.kyc_result == 'DECLINED'

@@ -36,6 +36,15 @@ import urlsV2 from '@/config/urls_v2';
 import LabelWithBadge from "@/components/shared/LabelWithBadge";
 import { TransactionService } from "@/api/services/v2/transaction";
 import { CustomerService } from "@/api/services/v2/customer";
+import StatsPerCategoryType from "./components/StatsPerCategoryType";
+import {
+	Tabs,
+	TabsContent,
+	TabsList,
+	TabsTrigger,
+} from "@/components/ui/tabs";
+import StatsDailyPerCategoryType from "./components/StatsDailyPerCategoryType";
+
 
 const dataCardsData = [
   // {title:'Recharges de comptes'},
@@ -108,7 +117,7 @@ const getTransactionTrends = async ({queryKey}:any) => {
   return responseJson.data; 
 };
 
-const getTransactionsPerCountry = async ({queryKey}:any) => {
+const getUsersPerCountry = async ({queryKey}:any) => {
   const [_key, limitDate] = queryKey;
   let params:any = {};
   if(limitDate) params.limitDate = limitDate;
@@ -121,17 +130,17 @@ const getTransactionsPerCountry = async ({queryKey}:any) => {
   return responseJson.data; 
 };
 
-const getCategoryTypeTransactions = async ({queryKey}:any) => {
-  const [_key, limitDate] = queryKey;
-  let params:any = {};
-  if(limitDate) params.limitDate = limitDate;
-  const response = await TransactionService.get_stats_category_type(params);
-  const responseJson = await response.json();
-  if (!response.ok) {
-    throw new Error(responseJson.message || 'Failed to get transactions per category and type'); 
-  }  
-  return responseJson.data; 
-};
+// const getCategoryTypeTransactions = async ({queryKey}:any) => {
+//   const [_key, limitDate] = queryKey;
+//   let params:any = {};
+//   if(limitDate) params.limitDate = limitDate;
+//   const response = await TransactionService.get_stats_category_type(params);
+//   const responseJson = await response.json();
+//   if (!response.ok) {
+//     throw new Error(responseJson.message || 'Failed to get transactions per category and type'); 
+//   }  
+//   return responseJson.data; 
+// };
 
 
 export default function Home() {
@@ -161,21 +170,21 @@ export default function Home() {
 
     const transactionPerCountryQueryRes = useQuery({
       queryKey: ["transactionPerCountry", limitDate],
-      queryFn: getTransactionsPerCountry,
+      queryFn: getUsersPerCountry,
       onError: (err) => {
         toast.error("Une erreur est survenue:"+err);
       },
       refetchInterval: 75000, // Fetches data every 15 seconds
     });
 
-    const transactionPerCategoryTypeQueryRes = useQuery({
-      queryKey: ["transactionPerCategoryType", limitDate],
-      queryFn: getCategoryTypeTransactions,
-      onError: (err) => {
-        toast.error("Une erreur est survenue:"+err);
-      },
-      refetchInterval: 35000, // Fetches data every 15 seconds
-    });
+    // const transactionPerCategoryTypeQueryRes = useQuery({
+    //   queryKey: ["transactionPerCategoryType", limitDate],
+    //   queryFn: getCategoryTypeTransactions,
+    //   onError: (err) => {
+    //     toast.error("Une erreur est survenue:"+err);
+    //   },
+    //   refetchInterval: 35000, // Fetches data every 15 seconds
+    // });
 
     // console.log("last10TransactionsRes.data : ", last10TransactionsRes.data ? new Date(last10TransactionsRes.data[0]): null, last10TransactionsRes.data);
     
@@ -185,15 +194,15 @@ export default function Home() {
     
     console.log("transactionPerCountry.data : ", transactionPerCountryQueryRes.data);
     
-    console.log("transactionPerCategoryType.data : ", transactionPerCategoryTypeQueryRes.data);
+    // console.log("transactionPerCategoryType.data : ", transactionPerCategoryTypeQueryRes.data);
 
 
 
     const {transactionTrendsGraphData, chartOptions} = getTransactionTrendGraphData({trxData:transactionTrendsQueryRes.data ?? {}, dual:true});
     const {transactionPerCountryGraphData, transactionPerCountryData} = getTransactionPerCountryGraphData(transactionPerCountryQueryRes.data ?? [], 'Nbre utilisateurs');
-    const {dataData:cardsGraphData, trxData:cardsData} = getGraphData(transactionPerCategoryTypeQueryRes?.data?.cards ?? [], 1);
-    const {dataData:usersGraphData , trxData:usersData} = getGraphData(transactionPerCategoryTypeQueryRes?.data?.users ?? [], 2);
-    const {dataData:cardsTopUpsGraphData , trxData:cardsTopUpsData} = getGraphData(transactionPerCategoryTypeQueryRes?.data?.cardTopUpPerDay ?? [], 3);
+    // const {dataData:cardsGraphData, trxData:cardsData} = getGraphData(transactionPerCategoryTypeQueryRes?.data?.cards ?? [], 1);
+    // const {dataData:usersGraphData , trxData:usersData} = getGraphData(transactionPerCategoryTypeQueryRes?.data?.users ?? [], 2);
+    // const {dataData:cardsTopUpsGraphData , trxData:cardsTopUpsData} = getGraphData(transactionPerCategoryTypeQueryRes?.data?.cardTopUpPerDay ?? [], 3);
 
     let rearrangedTableData:any[] = [];
     if(bestUsersQueryRes.data) {
@@ -206,9 +215,9 @@ export default function Home() {
           email: item.email,        
           solde: item.balance_xaf?.toLocaleString('fr-FR'),
           soldeStandby: item.old_balance_xaf?.toLocaleString('fr-FR') ?? 0,
-          nbCartes: item.numberOfCards, //index%3 + 1,
-          totalTrx: item.totalTransactionAmount.toLocaleString('fr-FR'),
-          avgTrx: item.avgTransactionAmount ? Math.round(item.avgTransactionAmount).toLocaleString('fr-FR') : 0,
+          nbCartes: item.number_of_cards,       //item.numberOfCards,
+          totalTrx: item.total_transaction_amount?.toLocaleString('fr-FR'),      // item.totalTransactionAmount.toLocaleString('fr-FR'),
+          avgTrx: item.average_transaction_amount ? Math.round(item.average_transaction_amount)?.toLocaleString('fr-FR') : 0,      // item.avgTransactionAmount ? Math.round(item.avgTransactionAmount).toLocaleString('fr-FR') : 0,
           kyc: item.kyc_result == 'APPROVED' 
             ?<LabelWithBadge label="Approuvé" badgeColor="#18BC7A"/>
             :item.kyc_result == 'DECLINED'
@@ -317,72 +326,23 @@ export default function Home() {
       </section>
       
 
-      <section>
-        <div className='w-full my-[50px] border border-gray-800'/>
-        {transactionPerCategoryTypeQueryRes.status === 'loading' ?
-            <div className='flex w-full py-10 justify-center items-center'>
-              <div className={'loadingSpinner'}></div>
-            </div>
-            :
-        <div className='grid grid-flow-row grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-col-5 w-full gap-5'>
-          {          
-          transactionPerCategoryTypeQueryRes?.data && Object.values(transactionPerCategoryTypeQueryRes.data?.transactions)?.map((item:any, index:any) =>{
-            const itemGraphData = getTransactionPerCategoryTypeGraphData(item?.transactions ?? [], index);
-            return (
-            <div key={index}>
-              <DataCard 
-                title={item.title}
-                change_per="24%"
-                chartData={itemGraphData}
-                data={{
-                  today: `${item?.todayTotal?.todayTotalAmount?.toLocaleString('fr-FR') ?? 0} XAF`,
-                  total: `${item?.avgTotal?.totalAmount?.toLocaleString('fr-FR') ?? 0} XAF`,
-                  average: `${item?.avgTotal?.avgAmount ? Math.round(item?.avgTotal?.avgAmount).toLocaleString('fr-FR') : 0} XAF`,
-                }}
-              />
-            </div>
-          )})}
-          {transactionPerCategoryTypeQueryRes?.data &&
-          <>
-          <div>
-            <DataCard 
-              title={"Comptes créés"}
-              change_per="24%"
-              chartData={usersGraphData}
-              data={{
-                today: `${usersData?.todayTotal?.total?.toLocaleString('fr-FR') ?? 0}`,
-                total: `${usersData?.avgTotal?.total?.toLocaleString('fr-FR') ?? 0}`,
-                average: `${usersData?.avgTotal?.avg ? Math.round(usersData?.avgTotal?.avg).toLocaleString('fr-FR') : 0}`,
-              }}
-            />
-          </div>
-          <div>
-            <DataCard 
-              title={"Création de cartes"}
-              change_per="24%"
-              chartData={cardsGraphData}
-              data={{
-                today: `${cardsData?.todayTotal?.total?.toLocaleString('fr-FR') ?? 0}`,
-                total: `${cardsData?.avgTotal?.total?.toLocaleString('fr-FR') ?? 0}`,
-                average: `${cardsData?.avgTotal?.avg ? Math.round(cardsData?.avgTotal?.avg).toLocaleString('fr-FR') : 0}`,
-              }}
-            />
-          </div>
-          <div>
-            <DataCard 
-              title={"Recharges de cartes par jour"}
-              change_per="24%"
-              chartData={cardsTopUpsGraphData}
-              data={{
-                today: `${cardsTopUpsData?.todayTotal?.total?.toLocaleString('fr-FR') ?? 0}`,
-                total: `${cardsTopUpsData?.avgTotal?.total?.toLocaleString('fr-FR') ?? 0}`,
-                average: `${cardsTopUpsData?.avgTotal?.avg ? Math.round(cardsTopUpsData?.avgTotal?.avg).toLocaleString('fr-FR') : 0}`,
-              }}
-            />
-          </div>
-          </>}
-        </div>
-        }
+      <section className="w-full my-[50px]">
+        <Tabs defaultValue="01" className="w-full">
+					<div className="border-b-1">
+					<TabsList className="TabsList">
+						<TabsTrigger className="TabsTrigger" value="01">{`Aujourd'hui`}</TabsTrigger>
+						<TabsTrigger className="TabsTrigger" value="02">{`Par jour`}</TabsTrigger>
+					</TabsList>
+					</div>
+					<div className={`mt-5`}>
+					<TabsContent value="01">
+            <StatsPerCategoryType/>
+					</TabsContent>
+					<TabsContent value="02">
+          <StatsDailyPerCategoryType/>
+					</TabsContent>
+					</div>
+				</Tabs>
       </section>
 
 

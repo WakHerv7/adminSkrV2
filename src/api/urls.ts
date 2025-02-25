@@ -54,6 +54,7 @@ export const transactionUrlsV2 = {
   STATS_PERIODIC: `${V2_BASE_URL_TRANSACTION}/stats/periodic`,
   STATS_PER_COUNTRY: `${V2_BASE_URL_TRANSACTION}/stats/per-country`,
   STATS_PER_CATEGORY_TYPE: `${V2_BASE_URL_TRANSACTION}/stats/per-category-type`,
+  STATS_DAILY_PER_CATEGORY_TYPE: `${V2_BASE_URL_TRANSACTION}/stats/daily-per-category-type`,
   
 
   // GET_ALL_TRANSACTIONS: `${BASE_URL_TRANSACTION}`,

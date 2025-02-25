@@ -9,11 +9,12 @@ interface CustomDropdownProps {
     cstyle: string;
     iconSize?: number;
     hasDropdownIcon?: boolean;
+    position?: string;
     icon?: React.ReactElement;
     items: React.ReactElement[];
 }
 
-const CustomDropdown: React.FC<CustomDropdownProps> = ({ title, btnChild, cstyle, iconSize, icon, items, hasDropdownIcon=true }) => {
+const CustomDropdown: React.FC<CustomDropdownProps> = ({ title, btnChild, cstyle, iconSize, icon, items, hasDropdownIcon=true, position }) => {
     let color = '';
     if (cstyle === 'green') {
        color = '#fff';
@@ -25,7 +26,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({ title, btnChild, cstyle
     const iconElement = icon ? React.cloneElement(icon as React.ReactElement<any>, { size: iconSize ?? 15, color }) : null;
 
   return (
-    <div className="text-right">
+    <div className={`${position==='left'?'':'text-right'}`}>
       <Menu as="div" className="relative inline-block text-left">
         <div>
           <Menu.Button >

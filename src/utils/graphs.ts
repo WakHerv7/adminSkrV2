@@ -1,5 +1,5 @@
 import { ScriptableContext } from "chart.js";
-import { getFormattedDateTime } from "./DateFormat";
+import { getFormattedDate, getFormattedDateTime } from "./DateFormat";
 
 interface CategoryModeItemProps {
   [key: string]: string | undefined; // Index signature
@@ -377,9 +377,32 @@ export const getTransactionPerCategoryTypeGraphData = (trxData:any, index:number
       pointStyle: false
     }]
   };
-
   return dataData;
 }
+
+
+
+export const getTransactionDailyPerCategoryTypeGraphData = (trxData:any, index:number) => {
+  let labels:string[] = [];
+  let data:number[] = [];
+  trxData.map((item:any, index:any) => {
+      labels.push(getFormattedDate(item.transaction_date, 'fr'));
+      data.push(item.total_amount);
+  });
+  const dataData = {
+    labels: labels, //['Mon1', 'Mon2', 'Mon3', 'Mon4', 'Mon5', 'Mon6', 'Mon7', 'Mon8', 'Mon9', 'Mon10', 'Mon11', 'Mon12'],
+    datasets: [{
+      label: '',
+      // data: [20, 32, 11, 29, 10, 25, 30, 27, 100, 320, 28, 100],
+      data: data, //Array.from({length: 12}, () => Math.floor(Math.random() * 100)),
+      borderColor: index%2 == 0 ? '#FFDB5A' : '#18BC7A',
+      borderWidth: 2,
+      pointStyle: false
+    }]
+  };
+  return dataData;
+}
+
 
 
 export const getGraphData = (trxData:any, index:number) => {

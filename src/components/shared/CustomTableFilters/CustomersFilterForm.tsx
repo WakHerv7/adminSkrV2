@@ -196,7 +196,7 @@ const CustomersFilterForm: React.FC<FilterProps> = ({filterContent, setFilterCon
                       </div>
                     </div>
                     <div className='pl-3 py-4 text-sm'>
-                      Ordre decroissant de solde actif
+                      Ordre decroissant de solde verif.
                     </div>
                   </label>
                 </FormControl>

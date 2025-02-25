@@ -29,4 +29,9 @@ export class TransactionService {
         if(limitDate) query_params.limitDate =limitDate;
         return BaseMethods.getRequest(transactionUrlsV2.STATS_PER_CATEGORY_TYPE, true, query_params);
     }
+    static get_stats_daily_category_type = ({limitDate}: {limitDate?:string}) => {
+        let query_params:any = {};
+        if(limitDate) query_params.limitDate =limitDate;
+        return BaseMethods.getRequest(transactionUrlsV2.STATS_DAILY_PER_CATEGORY_TYPE, true, query_params);
+    }
 }

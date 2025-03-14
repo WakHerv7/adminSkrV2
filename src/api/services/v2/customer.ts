@@ -65,4 +65,10 @@ export class CustomerService {
     }
     // static get_stats_countries = () =>
     //     BaseMethods.getRequest(customerUrlsV2.STATS_PER_COUNTRY, true);
+
+    static handle_release_standby_balance = ({ adminUserId, body }: { adminUserId?:string, body:any  }) => {
+        let query_params:any = {};
+        if(adminUserId) query_params.adminUserId =adminUserId;
+        return BaseMethods.patchRequest(customerUrlsV2.REALEASE_ONE_USER_BALANCE, body, true, query_params);
+    }
 }

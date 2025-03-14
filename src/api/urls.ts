@@ -36,6 +36,7 @@ export const customerUrlsV2 = {
   GET_ONE_CUSTOMER_TRANSACTIONS: (id:any) => `${V2_BASE_URL_CUSTOMER}/${id}/transactions`,
   GET_ONE_CUSTOMER_TRANSFERS: (id:any) => `${V2_BASE_URL_CUSTOMER}/${id}/transfers`,
   STATS_PER_COUNTRY: `${V2_BASE_URL_CUSTOMER}/stats/per-country`,
+  REALEASE_ONE_USER_BALANCE: `${V2_BASE_URL_CUSTOMER}/release-one-user-balance`,
 };
 /** ------------------------------------ */
 export const V2_BASE_URL_CARD = `${API_V2_BASE_URL}/cards`;
@@ -90,8 +91,47 @@ export const transactionUrlsV2 = {
     GET_NOTIFICATIONS: `${V2_BASE_URL_NOTIFICATION}`,
     SEND_NOTIFICATION: `${V2_BASE_URL_NOTIFICATION}`,
   };
-/** ======================================================== */
 
+
+
+
+/** V1 SUPABASE ======================================================== */
+
+export const V1_BASE_URL_CUSTOMER = `${API_V2_BASE_URL}/v1/users`;
+export const customerUrlsV1 = {  
+  GET_CUSTOMERS: `${V1_BASE_URL_CUSTOMER}`,
+  STATS_PER_COUNTRY: `${V1_BASE_URL_CUSTOMER}/stats/per-country`,
+};
+/** ------------------------------------ */
+export const V1_BASE_URL_TRANSACTION = `${API_V2_BASE_URL}/v1/trx`;
+export const transactionUrlsV1 = {  
+  STATS_PERIODIC: `${V1_BASE_URL_TRANSACTION}/stats/periodic`,
+  STATS_PER_CATEGORY_TYPE: `${V1_BASE_URL_TRANSACTION}/stats/per-category-type`,
+  STATS_DAILY_PER_CATEGORY_TYPE: `${V1_BASE_URL_TRANSACTION}/stats/daily-per-category-type`,
+
+};
+
+
+
+/** V1V2 SUPABASE ======================================================== */
+
+export const V1V2_BASE_URL_CUSTOMER = `${API_V2_BASE_URL}/v1v2/users`;
+export const customerUrlsV1V2 = {  
+  GET_CUSTOMERS: `${V1V2_BASE_URL_CUSTOMER}`,
+  STATS_PER_COUNTRY: `${V1V2_BASE_URL_CUSTOMER}/stats/per-country`,
+};
+/** ------------------------------------ */
+export const V1V2_BASE_URL_TRANSACTION = `${API_V2_BASE_URL}/v1v2/trx`;
+export const transactionUrlsV1V2 = {  
+  STATS_PERIODIC: `${V1V2_BASE_URL_TRANSACTION}/stats/periodic`,
+  STATS_PER_CATEGORY_TYPE: `${V1V2_BASE_URL_TRANSACTION}/stats/per-category-type`,
+  STATS_DAILY_PER_CATEGORY_TYPE: `${V1V2_BASE_URL_TRANSACTION}/stats/daily-per-category-type`,
+
+};
+
+
+
+/** ======================================================== */
 export const BASE_URL_USER = `${BASE_URL}/admin/users`;
 export const userUrls = {  
   GET_USERS: `${BASE_URL_USER}`,
@@ -155,6 +195,13 @@ export const BASE_URL_GABON = `${API_V2_PROD_BASE_URL}/gabon`;
 export const gabonUrls = {  
   GET_GABON_BALANCE: `${BASE_URL_GABON}/check-balance`,
   GABON_PAYOUT: `${BASE_URL_GABON}/payout`,
+}
+
+export const BASE_URL_BENIN = `${API_V2_BASE_URL}/benin`;
+export const beninUrls = {  
+  GET_BENIN_BALANCE: `${BASE_URL_BENIN}/check-balance`,
+  BENIN_PAYOUT: `${BASE_URL_BENIN}/payout`,
+  GET_BENIN_PAYOUT_STATUS: `${BASE_URL_BENIN}/check-payout-status`,
 }
 
 

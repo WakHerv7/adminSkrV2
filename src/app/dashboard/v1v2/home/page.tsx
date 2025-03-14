@@ -34,8 +34,8 @@ import { getGraphData, getTransactionPerCategoryTypeGraphData, getTransactionPer
 import { selectSearchTerm, setSearchTerm } from "@/redux/slices/search";
 import urlsV2 from '@/config/urls_v2';
 import LabelWithBadge from "@/components/shared/LabelWithBadge";
-import { TransactionService } from "@/api/services/v1/transaction";
-import { CustomerService } from "@/api/services/v1/customer";
+import { TransactionService } from "@/api/services/v1v2/transaction";
+import { CustomerService } from "@/api/services/v1v2/customer";
 import StatsPerCategoryType from "./components/StatsPerCategoryType";
 import {
 	Tabs,
@@ -218,6 +218,9 @@ export default function Home() {
           nbCartes: item.number_of_cards,       //item.numberOfCards,
           totalTrx: item.total_transaction_amount?.toLocaleString('fr-FR'),      // item.totalTransactionAmount.toLocaleString('fr-FR'),
           avgTrx: item.average_transaction_amount ? Math.round(item.average_transaction_amount)?.toLocaleString('fr-FR') : 0,      // item.avgTransactionAmount ? Math.round(item.avgTransactionAmount).toLocaleString('fr-FR') : 0,
+          oldNew: item.is_from_v1 ? 
+            <LabelWithBadge label="Ancien" badgeColor="#000"/>
+            :<LabelWithBadge label="Nouveau" badgeColor="#18BC7A"/>,
           kyc: item.kyc_result == 'APPROVED' 
             ?<LabelWithBadge label="Approuvé" badgeColor="#18BC7A"/>
             :item.kyc_result == 'DECLINED'
@@ -226,7 +229,7 @@ export default function Home() {
             ?<LabelWithBadge label="En cours" badgeColor="#999"/>
             :<LabelWithBadge label="Aucun" badgeColor="#000"/>,          
           status: <ActiveYesNo isActive={item.active}/>,
-          locked: <ActiveYesNo isActive={item.blocked} colorActive={"#F85D4B"} labelActive={'Bloqué'} labelInactive={'Non'}/>,          
+          // locked: <ActiveYesNo isActive={item.blocked} colorActive={"#F85D4B"} labelActive={'Bloqué'} labelInactive={'Non'}/>,          
           date: getFormattedDateTime(item.created_at), //item.date,
           actions:                
             <CButton
@@ -327,17 +330,17 @@ export default function Home() {
       
 
       <section className="w-full my-[50px]">
-        <Tabs defaultValue="01" className="w-full">
+        <Tabs defaultValue="02" className="w-full">
 					<div className="border-b-1">
 					<TabsList className="TabsList">
-						<TabsTrigger className="TabsTrigger" value="01">{`Aujourd'hui`}</TabsTrigger>
+						{/* <TabsTrigger className="TabsTrigger" value="01">{`Aujourd'hui`}</TabsTrigger> */}
 						<TabsTrigger className="TabsTrigger" value="02">{`Par jour`}</TabsTrigger>
 					</TabsList>
 					</div>
 					<div className={`mt-5`}>
-					<TabsContent value="01">
+					{/* <TabsContent value="01">
             <StatsPerCategoryType/>
-					</TabsContent>
+					</TabsContent> */}
 					<TabsContent value="02">
           <StatsDailyPerCategoryType/>
 					</TabsContent>

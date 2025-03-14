@@ -153,6 +153,8 @@ export default function Navbar(props:Props) {
                     14
                     </div>
                 </div> */}
+
+                {(currentUser.admin_role==='owner' || currentUser.admin_role==='manager') ?
                 <div className="mr-10">
                     <div className="flex gap-3 text-xs items-center cursor-pointer hover:text-[#18BC7A]"
                     onClick={()=>setIsChangeLimitDateModalFormOpen(true)}
@@ -166,6 +168,7 @@ export default function Navbar(props:Props) {
                     customer={currentUser}
                     />
                 </div>
+                :<></>}
 
                 <div className="text-xs">{currentUser?.last_name?.split(' ')[0]}</div>
                 
@@ -234,11 +237,11 @@ export default function Navbar(props:Props) {
                         {
                             hasPermission(currentUser, 'retrait_gb', 'view') ?
                             <div
-                                key={"3"}
+                                key={"4"}
                                 className="flex justify-center w-full px-3 gap-2 py-3"
                             >
                                 <CButton
-                                text={'Retrait Gabon'} 
+                                text={'Retraits'} 
                                 btnStyle={'lightGreen'}
                                 href={"/retrait-gb"}
                                 />
@@ -247,8 +250,23 @@ export default function Navbar(props:Props) {
                             <></>
                         }
                         </>,
+                        <>
+                        {(currentUser.admin_role==='owner' || currentUser.admin_role==='manager') ?
                         <div
-                            key={"3"}
+                            key={"5"}
+                            className="flex justify-center w-full px-3 gap-2"
+                        >
+                            <CButton
+                            text={'Dashboard V1V2'} 
+                            btnStyle={'outlineGreen'}
+                            href={"/dashboard/v1v2/home"}
+                            // icon={<FourDots />} 
+                            />
+                        </div>
+                        :<></>}
+                        </>,
+                        <div
+                            key={"6"}
                             className="flex justify-center w-full px-3 gap-2"
                         >
                              <CButton
@@ -264,6 +282,7 @@ export default function Navbar(props:Props) {
                 
             </div>
 
+            {(currentUser.admin_role==='owner' || currentUser.admin_role==='manager') ?
             <div className="pl-2">
                 <label htmlFor="modeToggle" className="flex items-center cursor-pointer">                
                     <div className="relative">                
@@ -286,6 +305,7 @@ export default function Navbar(props:Props) {
                     </div>
                 </label>            
             </div>
+            :<></>}
             
             </div>
         </div>

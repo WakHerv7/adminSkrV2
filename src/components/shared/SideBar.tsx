@@ -10,6 +10,7 @@ import { IoIosSend } from "react-icons/io";
 import cstyle from './styles/sidebar-style.module.scss'
 import urls from '@/config/urls';
 import urlsV2 from '@/config/urls_v2';
+import urlsV1V2 from '@/config/urlsv1v2';
 import { hasPermission } from '@/utils/permissions';
 import { selectCurrentVersion } from '@/redux/slices_v2/settings';
 import { useSelector } from 'react-redux';
@@ -168,6 +169,17 @@ const SideBar = (props: Props) => {
     
   ]
 
+  const SideBarLinksV1V2 = [
+    {
+      title: 'Accueil',
+      slug:'home',
+      canSee: hasPermission(user, 'homev1v2', 'view'),
+      path: urlsV1V2.dashboardHome.root,
+      count: null,
+      icon: <Accueil/>,
+    }
+  ]
+
   
   return (
     <div className='relative'>      
@@ -197,6 +209,55 @@ const SideBar = (props: Props) => {
             <ul className='list-image-none w-full my-0 py-0'
             style={{marginBlockStart:0, marginBlockEnd:0, paddingInlineStart:0}}>
 
+              {user?.admin_role === 'guest' ?
+              <>
+              {(SideBarLinksV1V2).map((link) =>  {
+                const isActive = (pathname?.split('/')[2] === link.path.split('/')[2]) && (pathname?.split('/')[3] === link.path.split('/')[3]);
+                const iconColor = isActive ? 'fill-[#fff]' : 'fill-[#444]'; // Adjust the color based on the condition                
+                if(link.canSee) {
+                  return (
+                    <li key={link.title} className={`relative`} style={{margin: !isExpanded ? '5px 0':''}}>
+                      <Link 
+                      href={link.path} 
+                      className={`relative pl-[22px] pr-3 py-3 flex items-center justify-between gap-[15px] group 
+                      text-gray-700 group hover:bg-[#18BC7A] 
+                    hover:pl-7 transition-all ${isActive ? 'bg-[#18BC7A] pl-7' : ''}
+                      text-sm group-hover:text-gray-100 transition-all ${isActive ? 'text-white' : ''}`}>
+                      <div className='flex items-center gap-[15px]'>
+                        <div className='' style={{transform: !isExpanded ? 'scale(1.2)':''}}>
+                          {/* {link.icon} */}
+                          {React.cloneElement(link.icon, { className: iconColor })}
+                        </div>
+                        {/* <div className={`group-hover:text-gray-100`} style={{display: !isExpanded ? 'none':''}}>
+                          {link.title}
+                        </div> */}
+                        {isExpanded ?
+                        <div className={`group-hover:text-gray-100`} style={{display: !isExpanded ? 'none':''}}>
+                          {link.title}
+                        </div>
+                        :
+                        <div className={`absolute top-0 left-[80px]  shadow-lg rounded-md bg-white px-3 py-3 hidden group-hover:block`}
+                        style={{zIndex:'1000', color:'#444', whiteSpace:'nowrap'}}
+                        >
+                          {link.title}
+                        </div>}
+                      </div>
+                      {link.count ?
+                      <div className=''>
+                        <div className='absolute w-[20px] h-[20px] top-[10px] right-[10px] rounded-full bg-[#444] group-hover:bg-[#fff] text-center flex justify-center items-center 
+                        text-xs font-bold text-white group-hover:text-[#18BC7A]'>
+                          <span>14</span>
+                        </div>
+                      </div>
+                      :<></>}
+                      </Link>
+                    </li>
+                  )
+                }                 
+                })}
+              </>
+              :
+              <>
               {((currentVersion==2) ? SideBarLinksV2 : SideBarLinksV1).map((link) =>  {
                 const isActive = (pathname?.split('/')[2] === link.path.split('/')[2]) && (pathname?.split('/')[3] === link.path.split('/')[3]);
                 const iconColor = isActive ? 'fill-[#fff]' : 'fill-[#444]'; // Adjust the color based on the condition                
@@ -241,6 +302,8 @@ const SideBar = (props: Props) => {
                   )
                 }                 
                 })}
+              </>
+              }
             </ul>
           </div>
         </div>

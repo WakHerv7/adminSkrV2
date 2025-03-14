@@ -91,7 +91,32 @@ const infoData: TDataList[] = [
               value:{text:"0", fw:"bold", color:"#888", fs:'14px', tooltip:"Pas de KYC",}
           },
       ]
-  ],
+    ],
+    [
+      [{
+          label:{
+              text: "KYC traités aujourd'hui",
+              tooltip:"KYC traités aujourd'hui", 
+              fw:"bold", 
+              color:"#444"
+          },
+          value:{text:"5780/8852", fw:"bold", color:"#444"}
+      }],
+      [          
+          // {
+          //     label:{text:verifiedIcon, tooltip:"KYC Vérifiés", fw:"", color:"#444", fs:'11px'},
+          //     value:{text:"2781", fw:"bold", color:"#888", fs:'14px', tooltip:"KYC Vérifiés",}
+          // },
+          {
+              label:{text:checkCircleIcon, tooltip:"KYC Approuvés", fw:"", color:"#444", fs:'11px'},
+              value:{text:"2500", fw:"bold", color:"#18BC7A", fs:'14px', tooltip:"KYC Approuvés",}
+          },
+          {
+              label:{text:haltCircleIcon, tooltip:"KYC Rejetés", fw:"", color:"#444", fs:'11px'},
+              value:{text:"281", fw:"bold", color:"#F85D4B", fs:'14px', tooltip:"KYC Rejetés",}
+          },
+      ]
+    ],
 ];
 
 
@@ -100,11 +125,16 @@ infoData[0][1][0].value.text = 0;
 infoData[0][1][1].value.text = 0;
 infoData[0][1][2].value.text = 0;
 infoData[0][1][3].value.text = 0;
+//
 infoData[1][0][0].value.text = `${0}/${0} comptes`;
 infoData[1][1][0].value.text = 0;
 infoData[1][1][1].value.text = 0;
 infoData[1][1][2].value.text = 0;
 infoData[1][1][3].value.text = 0;
+//
+infoData[2][0][0].value.text = 0;
+infoData[2][1][0].value.text = 0;
+infoData[2][1][1].value.text = 0;
 
 const getAllKYC = async ({queryKey}:any) => {
   const [_key, filter, st] = queryKey;
@@ -153,6 +183,7 @@ export default function KYC() {
       },
       refetchInterval: 30000, // Fetches data every 30 seconds
   });
+  console.log("allKYCStatsQueryRes.data : ", allKYCStatsQueryRes.data);
 
 
   const allKYCQueryRes = useQuery({
@@ -232,11 +263,16 @@ export default function KYC() {
     infoData[0][1][1].value.text = (allKYCStatsQueryRes?.data?.stats?.today?.countPending?.toLocaleString('fr-FR') ?? 0);
     infoData[0][1][2].value.text = (allKYCStatsQueryRes?.data?.stats?.today?.countDeclined?.toLocaleString('fr-FR') ?? 0);
     infoData[0][1][3].value.text = (allKYCStatsQueryRes?.data?.stats?.today?.countNone?.toLocaleString('fr-FR') ?? 0);
+    
     infoData[1][0][0].value.text = `${(allKYCStatsQueryRes?.data?.stats?.overall?.countAll?.toLocaleString('fr-FR') ?? 0)} comptes`;
     infoData[1][1][0].value.text = (allKYCStatsQueryRes?.data?.stats?.overall?.countAccepted?.toLocaleString('fr-FR') ?? 0);
     infoData[1][1][1].value.text = (allKYCStatsQueryRes?.data?.stats?.overall?.countPending?.toLocaleString('fr-FR') ?? 0);
     infoData[1][1][2].value.text = (allKYCStatsQueryRes?.data?.stats?.overall?.countDeclined?.toLocaleString('fr-FR') ?? 0);
     infoData[1][1][3].value.text = (allKYCStatsQueryRes?.data?.stats?.overall?.countNone?.toLocaleString('fr-FR') ?? 0);
+
+    infoData[2][0][0].value.text = `${(allKYCStatsQueryRes?.data?.stats?.completedToday?.countAll?.toLocaleString('fr-FR') ?? 0)} comptes`;
+    infoData[2][1][0].value.text = (allKYCStatsQueryRes?.data?.stats?.completedToday?.countAccepted?.toLocaleString('fr-FR') ?? 0);
+    infoData[2][1][1].value.text = (allKYCStatsQueryRes?.data?.stats?.completedToday?.countDeclined?.toLocaleString('fr-FR') ?? 0);
 
   }
 

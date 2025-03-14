@@ -100,7 +100,7 @@ export const permissions:any = {
         'kyc_v2': {root:['view', 'details']},
         'notifications': {root:['view', 'details']},
     },
-    visitor : {
-        home: {root:['view']}
+    guest : {
+        homev1v2: {root:['view']}
     }
 }

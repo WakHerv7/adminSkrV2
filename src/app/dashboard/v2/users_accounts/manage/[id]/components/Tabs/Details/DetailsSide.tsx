@@ -29,6 +29,7 @@ import { setKYCWarningsList } from "@/redux/slices_v2/kyc";
 import { hasPermission } from "@/utils/permissions";
 import { IoIosSend } from "react-icons/io";
 import NotificationModalForm from "./modals/NotificationModalForm";
+import ReleaseStandByAccountBalanceModalForm from "./modals/ReleaseStandByAccountBalanceModalForm";
 
 
 const getKYCWarningsList = async () => {
@@ -129,6 +130,19 @@ export default function DetailsSide() {
           <p className="text-gray-500 text-xl font-bold tracking-tight my-1">
             {`${customerDetails?.customer?.old_balance_xaf?.toLocaleString('fr-FR') ?? 0} XAF `}
           </p>
+          { hasPermission(currentUser, 'user_account_details:details', 'edit') &&
+          (customerDetails?.customer?.old_balance_xaf || 0)>0 ?
+          <>
+            <CButton
+            text={'Reverser vers solde actif'}
+            href={`?releaseStandByAccount=true`}
+            btnStyle={'dark'}
+            icon={<FourDots />}
+            width={'100%'}            
+            />
+            <Modal name={'releaseStandByAccount'} modalContent={<ReleaseStandByAccountBalanceModalForm customer={customerDetails?.customer}/>}/>
+          </>
+          : <></> }
         </div>
 
         <div className="">

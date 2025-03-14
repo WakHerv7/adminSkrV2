@@ -23,27 +23,17 @@ import {
 import ActiveYesNo from "@/components/shared/ActiveYesNo";
 import { useTitle } from "@/hooks/useTitle";
 import { useMutation, useQuery } from "react-query";
-
+import { UserService } from "@/api/services/user";
 import toast from "react-hot-toast";
 import { getFormattedDate, getFormattedDateTime } from "@/utils/DateFormat";
+import { TransactionService } from "@/api/services/transaction";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { selectTransactionPeriod, setPeriod } from "@/redux/slices/transaction";
-import { selectLimitDate } from "@/redux/slices_v2/settings";
 import { getGraphData, getTransactionPerCategoryTypeGraphData, getTransactionPerCountryGraphData, getTransactionTrendGraphData } from "@/utils/graphs";
 import { selectSearchTerm, setSearchTerm } from "@/redux/slices/search";
-import urlsV2 from '@/config/urls_v2';
+import urls from '@/config/urls';
 import LabelWithBadge from "@/components/shared/LabelWithBadge";
-import { TransactionService } from "@/api/services/v1/transaction";
-import { CustomerService } from "@/api/services/v1/customer";
-import StatsPerCategoryType from "./components/StatsPerCategoryType";
-import {
-	Tabs,
-	TabsContent,
-	TabsList,
-	TabsTrigger,
-} from "@/components/ui/tabs";
-import StatsDailyPerCategoryType from "./components/StatsDailyPerCategoryType";
 
 
 const dataCardsData = [
@@ -94,9 +84,9 @@ const backgroundColor = [
 
 const getBestUsers = async ({queryKey}:any) => {
   const [_key, st] = queryKey;
-  let params:any = {label:'best_customers'};
+  let params:any = {filter:'best_customers'};
   if(st) params.searchTerm = st;
-  const response = await CustomerService.get_all_customers(params);
+  const response = await UserService.get_all_customers(params);
   const responseJson = await response.json();
   if (!response.ok) {
     throw new Error(responseJson.message || 'Failed to get users'); 
@@ -105,11 +95,10 @@ const getBestUsers = async ({queryKey}:any) => {
 };
 
 const getTransactionTrends = async ({queryKey}:any) => {
-  const [_key, period, limitDate] = queryKey;
+  const [_key, period] = queryKey;
   let params:any = {};
   if(period) params.period = period;
-  if(limitDate) params.limitDate = limitDate;
-  const response = await TransactionService.get_stats_periodic(params);
+  const response = await TransactionService.get_periodic_transactions(params);
   const responseJson = await response.json();
   if (!response.ok) {
     throw new Error(responseJson.message || 'Failed to get transactions'); 
@@ -117,12 +106,8 @@ const getTransactionTrends = async ({queryKey}:any) => {
   return responseJson.data; 
 };
 
-const getUsersPerCountry = async ({queryKey}:any) => {
-  const [_key, limitDate] = queryKey;
-  let params:any = {};
-  if(limitDate) params.limitDate = limitDate;
-  const response = await CustomerService.get_stats_countries(params);
-  // const response = await TransactionService.get_stats_countries();
+const getTransactionsPerCountry = async () => {
+  const response = await TransactionService.get_countries_transactions();
   const responseJson = await response.json();
   if (!response.ok) {
     throw new Error(responseJson.message || 'Failed to get transactions per country'); 
@@ -130,24 +115,27 @@ const getUsersPerCountry = async ({queryKey}:any) => {
   return responseJson.data; 
 };
 
-// const getCategoryTypeTransactions = async ({queryKey}:any) => {
-//   const [_key, limitDate] = queryKey;
-//   let params:any = {};
-//   if(limitDate) params.limitDate = limitDate;
-//   const response = await TransactionService.get_stats_category_type(params);
-//   const responseJson = await response.json();
-//   if (!response.ok) {
-//     throw new Error(responseJson.message || 'Failed to get transactions per category and type'); 
-//   }  
-//   return responseJson.data; 
-// };
-
+const getCategoryTypeTransactions = async () => {
+  const response = await TransactionService.get_category_type_transactions();
+  const responseJson = await response.json();
+  if (!response.ok) {
+    throw new Error(responseJson.message || 'Failed to get transactions per category and type'); 
+  }  
+  return responseJson.data; 
+};
+const getLast10Transactions = async () => {
+  const response = await TransactionService.get_last_10_transactions();
+  const responseJson = await response.json();
+  if (!response.ok) {
+    throw new Error(responseJson.message || 'Failed to get last 10 transactions'); 
+  }  
+  return responseJson.data; 
+};
 
 export default function Home() {
     useTitle("Sekure | Accueil", true);
     const dispatch = useDispatch();
     const period:string = useSelector(selectTransactionPeriod);
-    const limitDate:string = useSelector(selectLimitDate);
     const searchTerm:string = useSelector(selectSearchTerm);
 
     const bestUsersQueryRes = useQuery({
@@ -160,81 +148,86 @@ export default function Home() {
     });
     
     const transactionTrendsQueryRes = useQuery({
-      queryKey: ["transactionTrends", period, limitDate],
+      queryKey: ["transactionTrends", period],
       queryFn: getTransactionTrends,
       onError: (err) => {
         toast.error("Une erreur est survenue:"+err);
       },
-      refetchInterval: 30000, // Fetches data every 15 seconds
+      refetchInterval: 15000, // Fetches data every 15 seconds
     });
 
     const transactionPerCountryQueryRes = useQuery({
-      queryKey: ["transactionPerCountry", limitDate],
-      queryFn: getUsersPerCountry,
+      queryKey: ["transactionPerCountry"],
+      queryFn: getTransactionsPerCountry,
       onError: (err) => {
         toast.error("Une erreur est survenue:"+err);
       },
       refetchInterval: 75000, // Fetches data every 15 seconds
     });
 
-    // const transactionPerCategoryTypeQueryRes = useQuery({
-    //   queryKey: ["transactionPerCategoryType", limitDate],
-    //   queryFn: getCategoryTypeTransactions,
+    const transactionPerCategoryTypeQueryRes = useQuery({
+      queryKey: ["transactionPerCategoryType"],
+      queryFn: getCategoryTypeTransactions,
+      onError: (err) => {
+        toast.error("Une erreur est survenue:"+err);
+      },
+      refetchInterval: 25000, // Fetches data every 15 seconds
+    });
+
+    // const last10TransactionsRes = useQuery({
+    //   queryKey: ["last10Transactions"],
+    //   queryFn: getLast10Transactions,
     //   onError: (err) => {
     //     toast.error("Une erreur est survenue:"+err);
     //   },
-    //   refetchInterval: 35000, // Fetches data every 15 seconds
+    //   refetchInterval: 15000, // Fetches data every 15 seconds
     // });
 
     // console.log("last10TransactionsRes.data : ", last10TransactionsRes.data ? new Date(last10TransactionsRes.data[0]): null, last10TransactionsRes.data);
-    
     console.log("bestUsersQueryRes.data : ", bestUsersQueryRes.data);
-    
-    console.log("transactionTrends.data : ", transactionTrendsQueryRes.data);
-    
-    console.log("transactionPerCountry.data : ", transactionPerCountryQueryRes.data);
-    
-    // console.log("transactionPerCategoryType.data : ", transactionPerCategoryTypeQueryRes.data);
+    // console.log("transactionTrends.data : ", transactionTrendsQueryRes.data);
+    // console.log("transactionPerCountry.data : ", transactionPerCountryQueryRes.data);
+    console.log("transactionPerCategoryType.data : ", transactionPerCategoryTypeQueryRes.data);
 
 
 
     const {transactionTrendsGraphData, chartOptions} = getTransactionTrendGraphData({trxData:transactionTrendsQueryRes.data ?? {}, dual:true});
-    const {transactionPerCountryGraphData, transactionPerCountryData} = getTransactionPerCountryGraphData(transactionPerCountryQueryRes.data ?? [], 'Nbre utilisateurs');
-    // const {dataData:cardsGraphData, trxData:cardsData} = getGraphData(transactionPerCategoryTypeQueryRes?.data?.cards ?? [], 1);
-    // const {dataData:usersGraphData , trxData:usersData} = getGraphData(transactionPerCategoryTypeQueryRes?.data?.users ?? [], 2);
-    // const {dataData:cardsTopUpsGraphData , trxData:cardsTopUpsData} = getGraphData(transactionPerCategoryTypeQueryRes?.data?.cardTopUpPerDay ?? [], 3);
+    const {transactionPerCountryGraphData, transactionPerCountryData} = getTransactionPerCountryGraphData(transactionPerCountryQueryRes.data ?? [], 'Total des paiements');
+    const {dataData:cardsGraphData, trxData:cardsData} = getGraphData(transactionPerCategoryTypeQueryRes?.data?.cards ?? [], 1);
+    const {dataData:usersGraphData , trxData:usersData} = getGraphData(transactionPerCategoryTypeQueryRes?.data?.users ?? [], 2);
+    const {dataData:cardsTopUpsGraphData , trxData:cardsTopUpsData} = getGraphData(transactionPerCategoryTypeQueryRes?.data?.cardTopUpPerDay ?? [], 3);
 
     let rearrangedTableData:any[] = [];
     if(bestUsersQueryRes.data) {
-      rearrangedTableData = bestUsersQueryRes.data.map((item:any, index:any) => {
+      rearrangedTableData = bestUsersQueryRes.data.data.map((item:any, index:any) => {
         const rearrangedItem = {
           serial: index+1,
-          name: `${item.last_name} ${item.first_name}`,			
-          country: item.country.includes('Congo') && item.country.includes('Democratic')  ? 'Congo RDC' : item.country ,
-          phone: item.country_phone_code ? `${item.country_phone_code} ${item.phone}` : item.phone,
+          name: item.name,			
+          country: item.pays,
+          phone: item.country_code ? `${item.country_code} ${item.phone}` : item.phone,
           email: item.email,        
-          solde: item.balance_xaf?.toLocaleString('fr-FR'),
-          soldeStandby: item.old_balance_xaf?.toLocaleString('fr-FR') ?? 0,
-          nbCartes: item.number_of_cards,       //item.numberOfCards,
-          totalTrx: item.total_transaction_amount?.toLocaleString('fr-FR'),      // item.totalTransactionAmount.toLocaleString('fr-FR'),
-          avgTrx: item.average_transaction_amount ? Math.round(item.average_transaction_amount)?.toLocaleString('fr-FR') : 0,      // item.avgTransactionAmount ? Math.round(item.avgTransactionAmount).toLocaleString('fr-FR') : 0,
-          kyc: item.kyc_result == 'APPROVED' 
-            ?<LabelWithBadge label="Approuvé" badgeColor="#18BC7A"/>
-            :item.kyc_result == 'DECLINED'
-            ?<LabelWithBadge label="Refusé" badgeColor="#F85D4B"/>
-            :item.kyc_status == 'PENDING'
-            ?<LabelWithBadge label="En cours" badgeColor="#999"/>
-            :<LabelWithBadge label="Aucun" badgeColor="#000"/>,          
+          solde: item.soldeCourant.toLocaleString('fr-FR'),
+          nbCartes: item.numberOfCards, //index%3 + 1,
+          totalTrx: item.totalTransactionAmount.toLocaleString('fr-FR'),
+          avgTrx: item.avgTransactionAmount ? Math.round(item.avgTransactionAmount).toLocaleString('fr-FR') : 0,
+          kyc: item.kyc_status == 'accepted' 
+                  ?<LabelWithBadge label="Approuvé" badgeColor="#18BC7A"/>
+                  :item.kyc_status == 'blocked'
+                  ?<LabelWithBadge label="Bloqué" badgeColor="#F85D4B"/>
+                  :item.kyc_status == 'ongoing'
+                  ?<LabelWithBadge label="En cours" badgeColor="#999"/>
+                  :<LabelWithBadge label="Aucun" badgeColor="#000"/>,
           status: <ActiveYesNo isActive={item.active}/>,
-          locked: <ActiveYesNo isActive={item.blocked} colorActive={"#F85D4B"} labelActive={'Bloqué'} labelInactive={'Non'}/>,          
-          date: getFormattedDateTime(item.created_at), //item.date,
+          locked: <ActiveYesNo isActive={item.blocked} colorActive={"#F85D4B"} labelActive={'Bloqué'} labelInactive={'Non'}/>,
+          
+          date: getFormattedDateTime(item.createdAt), //item.date,
           actions:                
-            <CButton
-            text={'Manager'}
-            href={`${urlsV2.usersAccounts.manage}/${item.id}`}
-            btnStyle={'dark'}
-            icon={<FourDots />}              
-            />
+                <CButton
+                text={'Manager'}
+                href={`${urls.usersAccounts.manage}/${item._id}`}
+                btnStyle={'dark'}
+                icon={<FourDots />}              
+                />
 
         };
         item = rearrangedItem;
@@ -247,7 +240,6 @@ export default function Home() {
 		<Layout
 			title="Accueil et visualisation globale"
 		>
-      <></>
 			<section className="flex justify-between items-start gap-10 w-full">
 				<div className="flex-1 overflow-hidden">
 					<div className="w-full flex justify-between items-start mb-3">
@@ -266,13 +258,13 @@ export default function Home() {
               <div className='flex justify-between items-center gap-8'>
 								<p className='text-xs'>{`Transactions aujourd'hui`}</p>
 								<h1 className='text-sm font-semibold'>
-                  {transactionTrendsQueryRes?.data?.todayTotal?.todayTotalAmount?.toLocaleString('fr-FR') ?? 0} 
+                  {transactionTrendsQueryRes?.data?.todayTotal?.[0]?.todayTotalAmount?.toLocaleString('fr-FR') ?? 0} 
                   {` XAF`}</h1>
 							</div>
 							<div className='flex justify-between items-center gap-8'>
 								<p className='text-xs'>Transactions Totales</p>
 								<p className='text-xs text-right'>
-                {transactionTrendsQueryRes?.data?.avgTotal?.totalAmount?.toLocaleString('fr-FR') ?? 0} 
+                {transactionTrendsQueryRes?.data?.avgTotal?.[0]?.totalAmount?.toLocaleString('fr-FR') ?? 0} 
                   {` XAF`}</p>
 							</div>
               </>
@@ -305,8 +297,8 @@ export default function Home() {
 					<AreaChart data={transactionTrendsGraphData} options={chartOptions}/>
 				</div>
         <div>
-            <div className="relative overflow-hidden" style={{height:'23rem'}}>
-                <Title title={"Utilisateurs par pays"} />
+            <div className="relative  h-80 overflow-hidden">
+                <Title title={"Traffic de paiements"} />
                 {transactionPerCountryQueryRes.status === 'loading' ?
                   <div className='flex w-full py-10 justify-center items-center'>
                     <div className={'loadingSpinner'}></div>
@@ -315,8 +307,8 @@ export default function Home() {
                   <>
                   <Doughnut data={transactionPerCountryGraphData} />
                   <div className='grid grid-cols-2 gap-x-10 gap-3'>
-                    {Object.entries(transactionPerCountryData)?.map(([key, value]:any[], index:any) => (
-                      <LegendItem key={index} label={key} title={String(value?.count)} color={value?.color} value={`${value.percentageCount}%`}/>
+                    {transactionPerCountryData?.map((item:any, index:any) => (
+                      <LegendItem key={index} label={item.country} color={item.color} value={`${Math.round(item.percentageOfTotal)}%`}/>
                     ))}                     
                   </div>
                   </>
@@ -326,23 +318,72 @@ export default function Home() {
       </section>
       
 
-      <section className="w-full my-[50px]">
-        <Tabs defaultValue="01" className="w-full">
-					<div className="border-b-1">
-					<TabsList className="TabsList">
-						<TabsTrigger className="TabsTrigger" value="01">{`Aujourd'hui`}</TabsTrigger>
-						<TabsTrigger className="TabsTrigger" value="02">{`Par jour`}</TabsTrigger>
-					</TabsList>
-					</div>
-					<div className={`mt-5`}>
-					<TabsContent value="01">
-            <StatsPerCategoryType/>
-					</TabsContent>
-					<TabsContent value="02">
-          <StatsDailyPerCategoryType/>
-					</TabsContent>
-					</div>
-				</Tabs>
+      <section>
+        <div className='w-full my-[50px] border border-gray-800'/>
+        {transactionPerCategoryTypeQueryRes.status === 'loading' ?
+            <div className='flex w-full py-10 justify-center items-center'>
+              <div className={'loadingSpinner'}></div>
+            </div>
+            :
+        <div className='grid grid-flow-row grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-col-5 w-full gap-5'>
+          {          
+          transactionPerCategoryTypeQueryRes?.data && Object.values(transactionPerCategoryTypeQueryRes.data?.transactions)?.map((item:any, index:any) =>{
+            const itemGraphData = getTransactionPerCategoryTypeGraphData(item?.transactions ?? [], index);
+            return (
+            <div key={index}>
+              <DataCard 
+                title={item.title}
+                change_per="24%"
+                chartData={itemGraphData}
+                data={{
+                  today: `${item?.todayTotal?.[0]?.todayTotalAmount?.toLocaleString('fr-FR') ?? 0} XAF`,
+                  total: `${item?.avgTotal?.[0]?.totalAmount?.toLocaleString('fr-FR') ?? 0} XAF`,
+                  average: `${item?.avgTotal?.[0]?.avgAmount ? Math.round(item?.avgTotal?.[0]?.avgAmount).toLocaleString('fr-FR') : 0} XAF`,
+                }}
+              />
+            </div>
+          )})}
+          {transactionPerCategoryTypeQueryRes?.data &&
+          <>
+          <div>
+            <DataCard 
+              title={"Comptes créés"}
+              change_per="24%"
+              chartData={usersGraphData}
+              data={{
+                today: `${usersData?.todayTotal?.[0]?.total?.toLocaleString('fr-FR') ?? 0}`,
+                total: `${usersData?.avgTotal?.[0]?.total?.toLocaleString('fr-FR') ?? 0}`,
+                average: `${usersData?.avgTotal?.[0]?.avg ? Math.round(usersData?.avgTotal?.[0]?.avg).toLocaleString('fr-FR') : 0}`,
+              }}
+            />
+          </div>
+          <div>
+            <DataCard 
+              title={"Création de cartes"}
+              change_per="24%"
+              chartData={cardsGraphData}
+              data={{
+                today: `${cardsData?.todayTotal?.[0]?.total?.toLocaleString('fr-FR') ?? 0}`,
+                total: `${cardsData?.avgTotal?.[0]?.total?.toLocaleString('fr-FR') ?? 0}`,
+                average: `${cardsData?.avgTotal?.[0]?.avg ? Math.round(cardsData?.avgTotal?.[0]?.avg).toLocaleString('fr-FR') : 0}`,
+              }}
+            />
+          </div>
+          <div>
+            <DataCard 
+              title={"Recharges de cartes par jour"}
+              change_per="24%"
+              chartData={cardsTopUpsGraphData}
+              data={{
+                today: `${cardsTopUpsData?.todayTotal?.[0]?.total?.toLocaleString('fr-FR') ?? 0}`,
+                total: `${cardsTopUpsData?.avgTotal?.[0]?.total?.toLocaleString('fr-FR') ?? 0}`,
+                average: `${cardsTopUpsData?.avgTotal?.[0]?.avg ? Math.round(cardsTopUpsData?.avgTotal?.[0]?.avg).toLocaleString('fr-FR') : 0}`,
+              }}
+            />
+          </div>
+          </>}
+        </div>
+        }
       </section>
 
 

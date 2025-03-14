@@ -30,9 +30,11 @@ import { Autocomplete, Box, Chip, MenuItem, OutlinedInput, TextField } from '@mu
 import _ from 'lodash';
 import { TransactionService } from '@/api/services/transaction';
 import { selectCurrentCustomerDetails, setCurrentCustomerDetails } from '@/redux/slices/customer';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { GabonService } from '@/api/services/gabon';
 import { getCurrentDateTime } from '@/utils/utils';
+import CheckBJPayoutStatus from '../components/CheckBJPayoutStatus';
+import { BeninService } from '@/api/services/benin';
 // import { useNavigate } from 'react-router-dom';
 export const formSchema = z.object({
     amount: z.string(
@@ -45,12 +47,12 @@ export const formSchema = z.object({
 
     
 const handleGabonBalanceWithdrawal = async (queryData:any) => {
-    const {token, data} = queryData;
+    const {userId, data} = queryData;
     // console.log("handleTransaction : ", {currentUserId, customerId, label, body});
     // return {currentUserId, customerId, label, body}
-    const response = await GabonService.handle_gabon_balance_withdrawal({
-        token,
-        phone:'66192325',
+    const response = await BeninService.handle_benin_balance_withdrawal({
+        userId,
+        phone: data?.phone,
         amount: data?.amount ?? 0,
     }); 
     if (!response.ok) {
@@ -68,9 +70,11 @@ const handleGabonBalanceWithdrawal = async (queryData:any) => {
 }
 
 
-export default function RetraitModalForm({amount}:{amount:number}) {
+export default function RetraitBJModalForm({amount}:{amount:number}) {
     const pathname = usePathname();
     const redirectRef:any = useRef();
+    const [trxId, setTrxId] = useState<string>('');
+    const [trxStatus, setTrxStatus] = useState<string>('');
     
     
     const searchParams = useSearchParams();
@@ -85,7 +89,7 @@ export default function RetraitModalForm({amount}:{amount:number}) {
         resolver: zodResolver(formSchema),
         defaultValues : {
             amount: undefined,
-            phone: "66192325",
+            phone: undefined,
         }
     });
 
@@ -94,7 +98,7 @@ export default function RetraitModalForm({amount}:{amount:number}) {
     const customerDetails:any = useSelector(selectCurrentCustomerDetails);
 
     const mutation = useMutation({
-		mutationFn: (data)=>handleGabonBalanceWithdrawal({token:getSekureApiToken, data}),
+		mutationFn: (data)=>handleGabonBalanceWithdrawal({userId:currentUser.id, data}),
 		onError: (err:any) => {
             console.error("onError : ", err.message);
             toast.error(`Une erreur est survenue lors du retrait du solde Gabon : ${err.message}`);		
@@ -102,9 +106,12 @@ export default function RetraitModalForm({amount}:{amount:number}) {
 		onSuccess: (data) => {
             console.log("onSuccess : ", data);
             localStorage.setItem(`retraitGabon[${getCurrentDateTime()}]`, `Retrait de ${form.getValues('amount')} du solde Gabon effectué avec SUCCES !`);
-            toast.success(`Retrait de ${form.getValues('amount')} du solde Gabon effectué avec SUCCES !`);
-            redirectRef.current.href = window.location.pathname;
-            redirectRef.current.click();
+            toast.success(`Retrait de ${form.getValues('amount')} du solde Benin effectué avec SUCCES !`);
+            setTrxId(data?.transaction?.order_id);
+            setTrxStatus('pending');
+            
+            // redirectRef.current.href = window.location.pathname;
+            // redirectRef.current.click();
 		},
 	});
 
@@ -134,13 +141,36 @@ export default function RetraitModalForm({amount}:{amount:number}) {
     <div className="bg-white m-auto p-8 rounded-md min-w-[350px] max-w-[700px]">
         <div className="flex justify-between mb-5 gap-10">
             <Title
-            title={`Retrait Gabon`}
+            title={`Retrait Benin`}
             />
             <Link href={pathname}>
                 <FaX size={16} color={"#444"}/>
             </Link>
         </div>
 
+        {trxId && trxStatus==='pending'?
+        <>
+        <CheckBJPayoutStatus
+        trxId={trxId}
+        setTrxStatus={setTrxStatus}
+        />
+        </>
+        :
+        trxStatus==='success'?
+        <>
+        <div className='flex flex-col justify-center items-center my-[30px] w-full'>
+            <div className='text-xl font-bold text-[#18BC7A]'>Payout successful</div>
+        </div>
+        </>
+        :
+        trxStatus==='failed'?
+        <>
+        <div className='flex flex-col justify-center items-center my-[30px] w-full'>
+            <div className='text-xl font-bold text-[##F85D4B]'>Payout failed</div>
+        </div>
+        </>
+        :
+        <>
         <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit, onError)}>
             <div className="space-y-[20px]">
@@ -169,12 +199,13 @@ export default function RetraitModalForm({amount}:{amount:number}) {
                 name="phone"
                 render={({ field }) => (
                     <FormItem>
-                    <FormLabel className="text-gray-900 text-sm font-[500] tracking-tight">Numero récepteur au Gabon</FormLabel>
+                    <FormLabel className="text-gray-900 text-sm font-[500] tracking-tight">Numero récepteur au Benin</FormLabel>
                     <FormControl>
                         <Input 
                         type="text"
                         className="px-2 w-full bg-gray-100"
-                        value={field.value} 
+                        {...field}
+                        // value={field.value} 
                         />
                     </FormControl>
                     <FormMessage className="text-red-400"/>
@@ -211,6 +242,8 @@ export default function RetraitModalForm({amount}:{amount:number}) {
            
         </form>
         </Form>
+        </>}
+        
         <a ref={redirectRef} hidden href="#"></a>
        
     </div>

@@ -12,6 +12,7 @@ import { selectCurrentToken, selectCurrentUser } from "@/redux/slices/auth";
 import { useSelector } from "react-redux";
 import urls from "@/config/urls";
 import urlsV2 from "@/config/urls_v2";
+import urlsV1V2 from "@/config/urlsv1v2";
 import { hasPermission } from "@/utils/permissions";
 interface LayoutProps {
     title: string;
@@ -48,8 +49,11 @@ const Layout: React.FC<LayoutProps> = ({ children, title, backLink, goBack }) =>
     const previousUrl = window.sessionStorage.getItem('previousUrl');
 		if(token && pathname=='/login') {
       // router.push(previousUrl || urls.usersAccounts.root);
-      if(user.adminRole === 'customer-support'){
-        router.push(previousUrl || urls.usersAccounts.root);  
+      if(user.admin_role === 'customer-support'){
+        router.push(previousUrl || urlsV2.kyc.root);  
+      }
+      else if(user.admin_role === 'guest'){
+        router.push(urlsV1V2.dashboardHome.root);  
       }
       else if(hasPermission(user, 'home', 'view')) {
         router.push(previousUrl || urlsV2.dashboardHome.root);  
@@ -66,20 +70,29 @@ const Layout: React.FC<LayoutProps> = ({ children, title, backLink, goBack }) =>
     // if(token && (pathname=='/dashboard/retrait-gb' || pathname=='/retrait-gb') ) {
 		// 	router.push(previousUrl || urls.dashboardHome.root);
 		// }
+
     
-    if(token && (user.adminRole === 'customer-support' && 
+    if(token && (user.admin_role === 'customer-support' && 
       (!pathname.startsWith(urls.usersAccounts.root) 
       && !pathname.startsWith(urlsV2.usersAccounts.root) 
-      && !pathname.startsWith(urlsV2.kyc.root)) ))
-      router.push(previousUrl || urls.usersAccounts.root);
-    }, [pathname]);
+      && !pathname.startsWith(urlsV2.kyc.root)
+      && !pathname.startsWith(urlsV2.notifications.root)
+      ) 
+    )){
+      router.push(previousUrl || urlsV2.kyc.root);
+    }
 
-    // if(token && (user.adminRole === 'customer-support' && 
-    //   (!pathname.startsWith(urls.usersAccounts.root) 
-    //   && !pathname.startsWith(urlsV2.usersAccounts.root) 
-    //   && !pathname.startsWith(urlsV2.kyc.root)) ))
-    //   router.push(previousUrl || urls.usersAccounts.root);
-    // }, [pathname]);
+
+    if(token && (user.admin_role === 'guest' && !pathname.startsWith(urlsV1V2.dashboardHome.root)) )
+    {  
+      router.push(urlsV1V2.dashboardHome.root);
+    }
+
+
+  }, [pathname]);
+
+
+    
     /** //////////////////////////////////////////// */
     
   return (

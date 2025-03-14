@@ -45,10 +45,10 @@ export default function DetailsSide() {
   console.log("nairaPaymentData ::: ", nairaPaymentData);
   
 
-  const handleStatus = (value: any) => {
-    setStatus(value);
-		setIsConfirmStatusModalOpen(true);
-  }
+  // const handleStatus = (value: any) => {
+  //   setStatus(value);
+	// 	setIsConfirmStatusModalOpen(true);
+  // }
 
   const mutation = useMutation({
 		mutationFn: (data)=>handleUpdateChnPayment({currentUserId:currentUser?.id, transactionId:nairaPaymentData?.id, body:data}),
@@ -96,12 +96,12 @@ export default function DetailsSide() {
         
         
         <CButton
-        text={'Approuver'} 
+        text={nairaPaymentData?.order_id ? 'Verifier' : 'Initier'} 
         btnStyle={'green'}
         icon={<FaCheck />} 
-        onClick={()=>handleStatus('SUCCESS')}
+        onClick={()=>onSubmit({status})}
         />
-        <CButton 
+        {/* <CButton 
         text={'Rejeter'} 
         btnStyle={'red'}
         icon={<FaX />} 
@@ -112,7 +112,7 @@ export default function DetailsSide() {
         isOpen={isConfirmStatusModalOpen}
         setIsOpen={setIsConfirmStatusModalOpen}
         onSubmit={()=>onSubmit({status})}
-        />
+        /> */}
       </div>
       :
       <></>}

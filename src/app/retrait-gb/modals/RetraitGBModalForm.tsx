@@ -50,7 +50,7 @@ const handleGabonBalanceWithdrawal = async (queryData:any) => {
     // return {currentUserId, customerId, label, body}
     const response = await GabonService.handle_gabon_balance_withdrawal({
         token,
-        phone:'66192325',
+        phone:data?.phone, //'66192325',
         amount: data?.amount ?? 0,
     }); 
     if (!response.ok) {
@@ -85,7 +85,7 @@ export default function RetraitGBModalForm({amount}:{amount:number}) {
         resolver: zodResolver(formSchema),
         defaultValues : {
             amount: undefined,
-            phone: "66192325",
+            phone: undefined, //"66192325",
         }
     });
 
@@ -174,7 +174,9 @@ export default function RetraitGBModalForm({amount}:{amount:number}) {
                         <Input 
                         type="text"
                         className="px-2 w-full bg-gray-100"
-                        value={field.value} 
+                        defaultValue={"66192325"}
+                        {...field}
+                        // value={field.value} 
                         />
                     </FormControl>
                     <FormMessage className="text-red-400"/>

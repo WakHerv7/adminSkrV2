@@ -174,7 +174,7 @@ export default function RetraitGBModalForm({amount}:{amount:number}) {
                         <Input 
                         type="text"
                         className="px-2 w-full bg-gray-100"
-                        defaultValue={"66192325"}
+                        defaultValue={"77939961"} //{"66192325"}
                         {...field}
                         // value={field.value} 
                         />

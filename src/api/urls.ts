@@ -79,7 +79,7 @@ export const transactionUrlsV2 = {
     UPDATE_CHNPAYMENT_PROOF: (id:any) => `${V2_BASE_URL_CHNPAYMENT}/proof/${id}`,
   };
   /** ------------------------------------ */
-  export const V2_BASE_URL_NAIRAPAYMENT = `${API_V2_BASE_URL}/nairapayment`;
+  export const V2_BASE_URL_NAIRAPAYMENT = `${API_V2_PROD_BASE_URL}/nairapayment`;
   export const nairapaymentUrlsV2 = {  
     GET_ALL_NAIRAPAYMENTS: `${V2_BASE_URL_NAIRAPAYMENT}`,
     GET_ONE_NAIRAPAYMENT: (id:any) => `${V2_BASE_URL_NAIRAPAYMENT}/${id}`,

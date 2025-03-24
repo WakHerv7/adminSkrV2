@@ -30,13 +30,13 @@ import { Autocomplete, Box, Chip, MenuItem, OutlinedInput, TextField } from '@mu
 import _ from 'lodash';
 import { TransactionService } from '@/api/services/transaction';
 import { selectCurrentCustomerDetails, setCurrentCustomerDetails } from '@/redux/slices/customer';
-import { useRef } from 'react';
-import { GabonService } from '@/api/services/gabon';
+import { useRef, useState } from 'react';
+import { CameroonService } from '@/api/services/cameroon';
 import { getCurrentDateTime } from '@/utils/utils';
-import {Select, SelectItem} from "@nextui-org/select";
-
+import CheckBJPayoutStatus from '../components/CheckBJPayoutStatus';
+import { BeninService } from '@/api/services/benin';
+import { Select, SelectItem } from '@nextui-org/select';
 // import { useNavigate } from 'react-router-dom';
-
 export const formSchema = z.object({
     amount: z.string(
         {message:'Entrez un montant'}
@@ -44,17 +44,21 @@ export const formSchema = z.object({
     phone: z.string(
         {message:'Entrez un numero de telephone'}
     ),
+    operator: z.string(
+        {message:'Entrez un numero de telephone'}
+    ),
 });
 
     
-const handleGabonBalanceWithdrawal = async (queryData:any) => {
-    const {token, data} = queryData;
+const handleBalanceWithdrawal = async (queryData:any) => {
+    const {userId, data} = queryData;
     // console.log("handleTransaction : ", {currentUserId, customerId, label, body});
     // return {currentUserId, customerId, label, body}
-    const response = await GabonService.handle_gabon_balance_withdrawal({
-        token,
-        phone:data?.phone, //'66192325',
+    const response = await CameroonService.handle_cameroon_balance_withdrawal({
+        userId,
+        phone: data?.phone,
         amount: data?.amount ?? 0,
+        operator: data?.operator,
     }); 
     if (!response.ok) {
         const responseBody = await response.json();
@@ -70,10 +74,30 @@ const handleGabonBalanceWithdrawal = async (queryData:any) => {
     
 }
 
+const phoneData = [
+    {
+        key:'653292829',
+        label:"653292829",
+    }
+];
+const operatorData = [
+    {
+        key:'MTN_MOMO_CMR',
+        label:"MTN",
+    },
+    {
+        key:'ORANGE_CMR',
+        label:"ORANGE",
+    }
+];
 
-export default function RetraitGBModalForm({amount}:{amount:number}) {
+
+
+export default function RetraitBJModalForm({amount}:{amount:number}) {
     const pathname = usePathname();
     const redirectRef:any = useRef();
+    const [trxId, setTrxId] = useState<string>('');
+    const [trxStatus, setTrxStatus] = useState<string>('');
     
     
     const searchParams = useSearchParams();
@@ -88,43 +112,42 @@ export default function RetraitGBModalForm({amount}:{amount:number}) {
         resolver: zodResolver(formSchema),
         defaultValues : {
             amount: undefined,
-            phone: "66192325",
+            phone: '653292829',
+            operator: 'MTN_MOMO_CMR',
         }
     });
-
-    const phoneData = [
-        {
-            key:'77939961',
-            label:"77939961",
-        },
-        {
-            key:'66192325',
-            label:"66192325",
-        }
-    ];
-
-    const handlePhoneChange = (data: any) => {
-        const value = data.target.value;
-        console.log('phone', value);
-        form.setValue('phone', value);
-      }
 
     const getSekureApiToken = useSelector(selectCurrentGetSekureApiToken);
     const currentUser = useSelector(selectCurrentUser);
     const customerDetails:any = useSelector(selectCurrentCustomerDetails);
 
+    const handlePhoneChange = (data: any) => {
+        const value = data.target.value;
+        console.log('phone', value);
+        form.setValue('phone', value);
+    }
+    const handleOperatorChange = (data: any) => {
+        const value = data.target.value;
+        console.log('operator', value);
+        form.setValue('operator', value);
+    }
+
+
     const mutation = useMutation({
-		mutationFn: (data)=>handleGabonBalanceWithdrawal({token:getSekureApiToken, data}),
+		mutationFn: (data)=>handleBalanceWithdrawal({userId:currentUser.id, data}),
 		onError: (err:any) => {
             console.error("onError : ", err.message);
-            toast.error(`Une erreur est survenue lors du retrait du solde Gabon : ${err.message}`);		
-		},
+            toast.error(`Une erreur est survenue lors du retrait du solde Cameroon : ${err.message}`);		
+		},  
 		onSuccess: (data) => {
             console.log("onSuccess : ", data);
-            localStorage.setItem(`retraitGabon[${getCurrentDateTime()}]`, `Retrait de ${form.getValues('amount')} du solde Gabon effectué avec SUCCES !`);
-            toast.success(`Retrait de ${form.getValues('amount')} du solde Gabon effectué avec SUCCES !`);
-            redirectRef.current.href = window.location.pathname;
-            redirectRef.current.click();
+            localStorage.setItem(`retraitCameroon[${getCurrentDateTime()}]`, `Retrait de ${form.getValues('amount')} du solde Cameroon effectué avec SUCCES !`);
+            toast.success(`Retrait de ${form.getValues('amount')} du solde Cameroon effectué avec SUCCES !`);
+            setTrxId(data?.transaction?.order_id);
+            setTrxStatus('pending');
+            
+            // redirectRef.current.href = window.location.pathname;
+            // redirectRef.current.click();
 		},
 	});
 
@@ -154,13 +177,36 @@ export default function RetraitGBModalForm({amount}:{amount:number}) {
     <div className="bg-white m-auto p-8 rounded-md min-w-[350px] max-w-[700px]">
         <div className="flex justify-between mb-5 gap-10">
             <Title
-            title={`Retrait Gabon`}
+            title={`Retrait Benin`}
             />
             <Link href={pathname}>
                 <FaX size={16} color={"#444"}/>
             </Link>
         </div>
 
+        {trxId && trxStatus==='pending'?
+        <>
+        <CheckBJPayoutStatus
+        trxId={trxId}
+        setTrxStatus={setTrxStatus}
+        />
+        </>
+        :
+        trxStatus==='success'?
+        <>
+        <div className='flex flex-col justify-center items-center my-[30px] w-full'>
+            <div className='text-xl font-bold text-[#18BC7A]'>Payout successful</div>
+        </div>
+        </>
+        :
+        trxStatus==='failed'?
+        <>
+        <div className='flex flex-col justify-center items-center my-[30px] w-full'>
+            <div className='text-xl font-bold text-[##F85D4B]'>Payout failed</div>
+        </div>
+        </>
+        :
+        <>
         <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit, onError)}>
             <div className="space-y-[20px]">
@@ -189,12 +235,11 @@ export default function RetraitGBModalForm({amount}:{amount:number}) {
                 name="phone"
                 render={({ field }) => (
                     <FormItem>
-                    <FormLabel className="text-gray-900 text-sm font-[500] tracking-tight">Numero récepteur au Gabon</FormLabel>
+                    <FormLabel className="text-gray-900 text-sm font-[500] tracking-tight">Numero récepteur au Cameroun</FormLabel>
                     <FormControl>
                         <Input 
                         type="text"
                         className="px-2 w-full bg-gray-100"
-                        defaultValue={"77939961"} //{"66192325"}
                         {...field}
                         // value={field.value} 
                         />
@@ -208,11 +253,11 @@ export default function RetraitGBModalForm({amount}:{amount:number}) {
                 name="phone"
                 render={({ field }) => (
                     <FormItem>
-                    <FormLabel className="text-gray-900 text-sm mb-3">{`Numero récepteur au Gabon`}</FormLabel>
+                    <FormLabel className="text-gray-900 text-sm mb-3">{`Numero récepteur au Cameroun`}</FormLabel>
                     <FormControl>
                         <Select 
                         {...field}
-                        placeholder="Sélectionner la cible" 
+                        placeholder="Sélectionner le telephone" 
                         style={{width:'100%', background: '#F4EFE3'}}
                         className={`rounded-xs text-gray-900 text-md font-normal`}
                         defaultSelectedKeys={[field.value ?? ""]}
@@ -228,7 +273,33 @@ export default function RetraitGBModalForm({amount}:{amount:number}) {
                     <FormMessage className="text-red-400"/>
                     </FormItem>
                     )}
-                />  
+                />
+                <FormField
+                control={form.control}
+                name="operator"
+                render={({ field }) => (
+                    <FormItem>
+                    <FormLabel className="text-gray-900 text-sm mb-3">{`Operateur au Cameroun`}</FormLabel>
+                    <FormControl>
+                        <Select 
+                        {...field}
+                        placeholder="Sélectionner l'operateur" 
+                        style={{width:'100%', background: '#F4EFE3'}}
+                        className={`rounded-xs text-gray-900 text-md font-normal`}
+                        defaultSelectedKeys={[field.value ?? ""]}
+                        onChange={(data) => handleOperatorChange(data)}
+                        >
+                        {operatorData.map((item:any,idx:any) => (
+                        <SelectItem key={item.key} value={item.key}>
+                            {item.label}
+                        </SelectItem>
+                        ))}
+                        </Select>
+                    </FormControl>
+                    <FormMessage className="text-red-400"/>
+                    </FormItem>
+                    )}
+                />
             </div>
             
             <div 
@@ -259,6 +330,8 @@ export default function RetraitGBModalForm({amount}:{amount:number}) {
            
         </form>
         </Form>
+        </>}
+        
         <a ref={redirectRef} hidden href="#"></a>
        
     </div>

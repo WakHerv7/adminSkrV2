@@ -46,7 +46,7 @@ export const formSchema = z.object({
 });
 
     
-const handleGabonBalanceWithdrawal = async (queryData:any) => {
+const handleBalanceWithdrawal = async (queryData:any) => {
     const {userId, data} = queryData;
     // console.log("handleTransaction : ", {currentUserId, customerId, label, body});
     // return {currentUserId, customerId, label, body}
@@ -98,14 +98,14 @@ export default function RetraitBJModalForm({amount}:{amount:number}) {
     const customerDetails:any = useSelector(selectCurrentCustomerDetails);
 
     const mutation = useMutation({
-		mutationFn: (data)=>handleGabonBalanceWithdrawal({userId:currentUser.id, data}),
+		mutationFn: (data)=>handleBalanceWithdrawal({userId:currentUser.id, data}),
 		onError: (err:any) => {
             console.error("onError : ", err.message);
             toast.error(`Une erreur est survenue lors du retrait du solde Gabon : ${err.message}`);		
 		},
 		onSuccess: (data) => {
             console.log("onSuccess : ", data);
-            localStorage.setItem(`retraitGabon[${getCurrentDateTime()}]`, `Retrait de ${form.getValues('amount')} du solde Gabon effectué avec SUCCES !`);
+            localStorage.setItem(`retraitBenin[${getCurrentDateTime()}]`, `Retrait de ${form.getValues('amount')} du solde Benin effectué avec SUCCES !`);
             toast.success(`Retrait de ${form.getValues('amount')} du solde Benin effectué avec SUCCES !`);
             setTrxId(data?.transaction?.order_id);
             setTrxStatus('pending');

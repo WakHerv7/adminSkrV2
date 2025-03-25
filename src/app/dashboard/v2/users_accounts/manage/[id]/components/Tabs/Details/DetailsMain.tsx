@@ -56,6 +56,7 @@ import {DateInput, NextUIProvider} from "@nextui-org/react";
 import useTags from "@/hooks/useTagInput";
 import { TagField } from "@/components/shared/TagField";
 import { CustomerService } from "@/api/services/v2/customer";
+import { hasPermission } from "@/utils/permissions";
 type CountryProps = {
   [key:string]:string
 }
@@ -273,8 +274,9 @@ export default function Details() {
                   :`Modification des informations personnelles de l'utilisateur`}</h1>
                   {/* <p className="text-xs text-gray-500">liste en temps réel des dernieres transactions effectuées avec les cartes</p> */}
                 </div>
+                
+                {hasPermission(currentUser, 'user_account_details:infos', 'edit') ?
                 <div className="">
-                  
                       {!isEditMode ?
                       <div className={`flex gap-3`}>
                       <CButton 
@@ -361,6 +363,9 @@ export default function Details() {
                       }
                     {/* <Modal name={'updatePassword'} modalContent={<BlockUserAccountModalForm customer={customerDetails?.customer}/>}/>         */}
                 </div>
+                :
+                <></>}
+
               </div>
               <div className="w-full flex flex-col gap-7">
                 <FormField

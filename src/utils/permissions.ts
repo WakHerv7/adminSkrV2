@@ -45,7 +45,7 @@ export const permissions:any = {
         user_accounts: {root:['view', 'details']},
         user_account_details: {
             root:['view'],
-            details:{root:['view', 'topup', 'withdraw', 'edit', 'edit_kyc']},
+            details:{root:['view', 'topup', 'withdraw', 'edit', 'edit_kyc', 'edit_infos']},
             cards:{root:['view', 'details', 'topup', 'withdraw', 'edit']},
             transactions:{root:['view', 'details']},
             transfers:{root:['view', 'details']},
@@ -68,7 +68,7 @@ export const permissions:any = {
         user_accounts: {root:['view', 'details']},
         user_account_details: {
             root:['view'],
-            details:{root:['view', 'topup', 'withdraw', 'edit', 'edit_kyc']},
+            details:{root:['view', 'topup', 'withdraw', 'edit', 'edit_kyc', 'edit_infos']},
             cards:{root:['view', 'details', 'topup', 'withdraw', 'edit']},
             transactions:{root:['view', 'details']},
             transfers:{root:['view', 'details']},
@@ -91,7 +91,7 @@ export const permissions:any = {
         user_account_details: {
             root:['view'],
             details:{
-                root:['view', 'edit_kyc']
+                root:['view', 'edit_kyc', 'edit_infos']
             },
             cards:{root:['view', 'details']},
             transactions:{root:['view', 'details']},

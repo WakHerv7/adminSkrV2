@@ -52,6 +52,16 @@ export class CustomerService {
         if(userId) query_params.adminUserId =userId;
         return BaseMethods.putRequest(customerUrlsV2.UPDATE_ONE_CUSTOMER(customerId), body, true, query_params);
     }
+    static update_one_customer_infos = ({ userId, customerId, body }: { userId:string, customerId:string, body:any }) => {
+        let query_params:any = {};
+        if(userId) query_params.adminUserId =userId;
+        return BaseMethods.putRequest(customerUrlsV2.UPDATE_ONE_CUSTOMER_INFOS(customerId), body, true, query_params);
+    }
+    static update_one_customer_password = ({ userId, customerId, body }: { userId:string, customerId:string, body:any }) => {
+        let query_params:any = {};
+        if(userId) query_params.adminUserId =userId;
+        return BaseMethods.putRequest(customerUrlsV2.UPDATE_ONE_CUSTOMER_PASSWORD(customerId), body, true, query_params);
+    }
     static get_one_customer_transactions= (id:string) =>{
         return BaseMethods.getRequest(customerUrlsV2.GET_ONE_CUSTOMER_TRANSACTIONS(id), true);
     }
@@ -69,6 +79,6 @@ export class CustomerService {
     static handle_release_standby_balance = ({ adminUserId, body }: { adminUserId?:string, body:any  }) => {
         let query_params:any = {};
         if(adminUserId) query_params.adminUserId =adminUserId;
-        return BaseMethods.patchRequest(customerUrlsV2.REALEASE_ONE_USER_BALANCE, body, true, query_params);
+        return BaseMethods.patchRequest(customerUrlsV2.RELEASE_ONE_USER_BALANCE, body, true, query_params);
     }
 }

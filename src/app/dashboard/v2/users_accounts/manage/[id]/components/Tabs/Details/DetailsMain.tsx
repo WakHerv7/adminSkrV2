@@ -126,7 +126,7 @@ const handleUpdateUser = async (queryData:any) => {
   const {currentUserId, customerId, body} = queryData;
   // console.log("handleTransaction : ", {currentUserId, customerId, label, body});
   // return {currentUserId, customerId, label, body}
-  const response = await CustomerService.update_one_customer({
+  const response = await CustomerService.update_one_customer_infos({
       userId:currentUserId,
       customerId:customerId,
       body:body
@@ -275,89 +275,89 @@ export default function Details() {
                 </div>
                 <div className="">
                   
-                      {!isEditMode ? '' : ''
-                      // <div className={`flex gap-3`}>
-                      // <CButton 
-                      // text={`Modifier les informations`} 
-                      // btnStyle={"lightGreen"}
-                      // onClick={()=>handleEditMode(true)}
-                      // icon={<FaEdit/>}
-                      // width={'100%'}
-                      // // height={"35px"}
-                      // />
-                      // <CustomDropdown
-                      //   cstyle={'outline'}
-                      //   iconSize={20}
-                      //   hasDropdownIcon={false}
-                      //   icon= {<RxDotsHorizontal/>}
-                      //   items={[
-                      //     <div key={'1'} className='flex justify-between gap-2'>
-                      //       <TbPasswordUser />
-                      //       {/* <RiLockPasswordFill /> */}
-                      //       <span 
-                      //       onClick={()=>setIsChangePasswordModalFormOpen(true)}
-                      //       style={{whiteSpace:'nowrap'}} className='text-sm'>
-                      //         {'Modifier le mot de passe'}
-                      //       </span>
-                      //     </div>,
-                      //     <div key={'2'} className='flex justify-between gap-2 py-1'>
-                      //       <MdAddAPhoto />
-                      //       <span 
-                      //       onClick={()=>setIsUpdatePhotoModalFormOpen(true)}
-                      //       style={{whiteSpace:'nowrap'}} className='text-sm h-fit'>
-                      //         {'Modifier la photo de profil'}
-                      //       </span>
-                      //     </div>,
-                      //     <div key={'2'} className='flex justify-between gap-2 py-1'>
-                      //     <MdAddAPhoto />
-                      //     <span 
-                      //       onClick={()=>setIsUpdateSelfieModalFormOpen(true)}
-                      //       style={{whiteSpace:'nowrap'}} className='text-sm h-fit'>
-                      //         {"Modifier le selfie d'identification"}
-                      //       </span>
-                      //     </div>,
-                      //     <div key={'3'} className='flex justify-between gap-2 py-1'>
-                      //       <IoMdPhotos />
-                      //       <span 
-                      //       onClick={()=>setIsUpdateDocumentImagesModalFormOpen(true)}
-                      //       style={{whiteSpace:'nowrap'}} className='text-sm'>
-                      //       {'Modifier les images de documents'}
-                      //       </span>
-                      //     </div>,
-                      //     <div key={'3'} className='flex justify-between gap-2 py-1'>
-                      //       <MdDomainVerification />
-                      //       <span 
-                      //       onClick={()=>setIsUpdateVerificationStatusModalFormOpen(true)}
-                      //       style={{whiteSpace:'nowrap'}} className='text-sm'>
-                      //       {'Modifier le statut de vérification'}
-                      //       </span>
-                      //     </div>
-                      //   ]}
-                      // />                    
-                      // </div>
-                      // :
-                      // <div className={`flex gap-3 items-center w-fit`} >
-                      //   <CButton 
-                      //   text={`Annuler`} 
-                      //   btnStyle={"outlineDark"}
-                      //   onClick={()=>handleEditMode(false)}
-                      //   width={'100%'}
-                      //   height={"35px"}
-                      //   />
-                      //   <CButton 
-                      //   text={`Enregistrer les informations`} 
-                      //   btnStyle={"green"}
-                      //   type={"submit"}
-                      //   icon={<FaSave/>}
-                      //   width={'100%'}
-                      //   height={"35px"}
-                      //   />
-                      //   <ConfirmSubmitModal
-                      //   isOpen={isConfirmSubmitModalOpen}
-                      //   setIsOpen={setIsConfirmSubmitModalOpen}
-                      //   onSubmit={()=>mutation.mutate(form.getValues() as any)}
-                      //   />
-                      // </div> 
+                      {!isEditMode ?
+                      <div className={`flex gap-3`}>
+                      <CButton 
+                      text={`Modifier les informations`} 
+                      btnStyle={"lightGreen"}
+                      onClick={()=>handleEditMode(true)}
+                      icon={<FaEdit/>}
+                      width={'100%'}
+                      height={"35px"}
+                      />
+                      <CustomDropdown
+                        cstyle={'outline'}
+                        iconSize={20}
+                        hasDropdownIcon={false}
+                        icon= {<RxDotsHorizontal/>}
+                        items={[
+                          <div key={'1'} className='flex justify-between gap-2'>
+                            <TbPasswordUser />
+                            {/* <RiLockPasswordFill /> */}
+                            <span 
+                            onClick={()=>setIsChangePasswordModalFormOpen(true)}
+                            style={{whiteSpace:'nowrap'}} className='text-sm'>
+                              {'Modifier le mot de passe'}
+                            </span>
+                          </div>,
+                          // <div key={'2'} className='flex justify-between gap-2 py-1'>
+                          //   <MdAddAPhoto />
+                          //   <span 
+                          //   onClick={()=>setIsUpdatePhotoModalFormOpen(true)}
+                          //   style={{whiteSpace:'nowrap'}} className='text-sm h-fit'>
+                          //     {'Modifier la photo de profil'}
+                          //   </span>
+                          // </div>,
+                          // <div key={'2'} className='flex justify-between gap-2 py-1'>
+                          // <MdAddAPhoto />
+                          // <span 
+                          //   onClick={()=>setIsUpdateSelfieModalFormOpen(true)}
+                          //   style={{whiteSpace:'nowrap'}} className='text-sm h-fit'>
+                          //     {"Modifier le selfie d'identification"}
+                          //   </span>
+                          // </div>,
+                          // <div key={'3'} className='flex justify-between gap-2 py-1'>
+                          //   <IoMdPhotos />
+                          //   <span 
+                          //   onClick={()=>setIsUpdateDocumentImagesModalFormOpen(true)}
+                          //   style={{whiteSpace:'nowrap'}} className='text-sm'>
+                          //   {'Modifier les images de documents'}
+                          //   </span>
+                          // </div>,
+                          // <div key={'3'} className='flex justify-between gap-2 py-1'>
+                          //   <MdDomainVerification />
+                          //   <span 
+                          //   onClick={()=>setIsUpdateVerificationStatusModalFormOpen(true)}
+                          //   style={{whiteSpace:'nowrap'}} className='text-sm'>
+                          //   {'Modifier le statut de vérification'}
+                          //   </span>
+                          // </div>
+                        ]}
+                      />                    
+                      </div>
+                      :
+                      <div className={`flex gap-3 items-center w-fit`} >
+                        <CButton 
+                        text={`Annuler`} 
+                        btnStyle={"outlineDark"}
+                        onClick={()=>handleEditMode(false)}
+                        width={'100%'}
+                        height={"35px"}
+                        />
+                        <CButton 
+                        text={`Enregistrer les informations`} 
+                        btnStyle={"green"}
+                        type={"submit"}
+                        icon={<FaSave/>}
+                        width={'100%'}
+                        height={"35px"}
+                        />
+                        <ConfirmSubmitModal
+                        isOpen={isConfirmSubmitModalOpen}
+                        setIsOpen={setIsConfirmSubmitModalOpen}
+                        onSubmit={()=>mutation.mutate(form.getValues() as any)}
+                        />
+                      </div> 
                       }
                     {/* <Modal name={'updatePassword'} modalContent={<BlockUserAccountModalForm customer={customerDetails?.customer}/>}/>         */}
                 </div>
@@ -422,8 +422,11 @@ export default function Details() {
                     <FormItem>
                       <FormLabel className="text-gray-900 text-sm font-semibold tracking-tight">Date de naissance</FormLabel>
                       <FormControl>
-                      
-                      {isEditMode?
+                      <Input 
+                        className={`px-6 text-gray-900 font-normal bg-gray-200`} 
+                        value={field?.value ? getTextFormattedDate(parseDateObject(field.value)) :''}
+                        readOnly />
+                      {/* {isEditMode?
                         
                           <DatePicker
                             className={`text-gray-900 font-normal ${cstyles['datepicker_yellow_bg']}`} 
@@ -443,7 +446,7 @@ export default function Details() {
                         className={`px-6 text-gray-900 font-normal ${isEditMode? 'bg-[#F4EFE3]': 'bg-gray-200'}`} 
                         value={field?.value ? getTextFormattedDate(parseDateObject(field.value)) :''}
                         readOnly={!isEditMode} />
-                      }
+                      } */}
                       </FormControl>
                     </FormItem>
                   )}
@@ -502,7 +505,10 @@ export default function Details() {
                     <FormItem>
                       <FormLabel className="text-gray-900 text-sm font-semibold tracking-tight">Sexe</FormLabel>
                       <FormControl>
-                        {isEditMode?
+                        
+                        <Input className={`px-6 text-gray-900 font-normal bg-gray-200`} value={form.watch('sex')} />
+                        
+                        {/* {isEditMode?
                         <Select 
                           {...field}
                           placeholder="Sélectionner la plage de revenus" 
@@ -519,7 +525,7 @@ export default function Details() {
                         </Select>
                         :
                         <Input className={`px-6 text-gray-900 font-normal bg-gray-200`} value={form.watch('sex')} />
-                        }
+                        } */}
                       </FormControl>
                     </FormItem>
                   )}
@@ -531,7 +537,10 @@ export default function Details() {
                     <FormItem>
                       <FormLabel className="text-gray-900 text-sm font-semibold tracking-tight">Pays de résidence</FormLabel>
                       <FormControl>
-                        {isEditMode?
+                        
+                        <Input className={`px-6 text-gray-900 font-normal bg-gray-200`} value={form.watch('country')} />
+
+                        {/* {isEditMode?
                         <Select 
                           {...field}
                           placeholder="Sélectionner le pays" 
@@ -548,7 +557,7 @@ export default function Details() {
                         </Select>
                         :
                         <Input className={`px-6 text-gray-900 font-normal bg-gray-200`} value={form.watch('country')} />
-                        }
+                        } */}
                       </FormControl>
                     </FormItem>
                   )}
@@ -575,7 +584,7 @@ export default function Details() {
                     <FormItem>
                       <FormLabel className="text-gray-900 text-sm font-semibold tracking-tight">Ville de résidence</FormLabel>
                       <FormControl>
-                        <Input className={`px-6 text-gray-900 font-normal ${isEditMode? 'bg-[#F4EFE3]': 'bg-gray-200'}`} {...field} readOnly={!isEditMode} />
+                        <Input className={`px-6 text-gray-900 font-normal bg-gray-200`} {...field} readOnly />
                       </FormControl>
                     </FormItem>
                   )}
@@ -587,7 +596,7 @@ export default function Details() {
                     <FormItem>
                       <FormLabel className="text-gray-900 text-sm font-semibold tracking-tight">Adresse</FormLabel>
                       <FormControl>
-                        <Input className={`px-6 text-gray-900 font-normal ${isEditMode? 'bg-[#F4EFE3]': 'bg-gray-200'}`} {...field} readOnly={!isEditMode} />
+                        <Input className={`px-6 text-gray-900 font-normal bg-gray-200`} {...field} readOnly />
                       </FormControl>
                     </FormItem>
                   )}
@@ -602,7 +611,7 @@ export default function Details() {
                     <FormItem>
                       <FormLabel className="text-gray-900 text-sm font-semibold tracking-tight">Profession</FormLabel>
                       <FormControl>
-                        <Input className={`px-6 text-gray-900 font-normal ${isEditMode? 'bg-[#F4EFE3]': 'bg-gray-200'}`} {...field} readOnly={!isEditMode} />
+                        <Input className={`px-6 text-gray-900 font-normal bg-gray-200`} {...field} readOnly />
                       </FormControl>
                     </FormItem>
                   )}
@@ -614,7 +623,9 @@ export default function Details() {
                     <FormItem>
                       <FormLabel className="text-gray-900 text-sm font-semibold tracking-tight">Plage de revenu</FormLabel>
                       <FormControl>
-                        {isEditMode?
+                        <Input className={`px-6 text-gray-900 font-normal bg-gray-200`} value={form.watch('income')} />
+                        
+                        {/* {isEditMode?
                         <Select 
                           {...field}
                           placeholder="Sélectionner la plage de revenus" 
@@ -631,7 +642,7 @@ export default function Details() {
                         </Select>
                         :
                         <Input className={`px-6 text-gray-900 font-normal bg-gray-200`} value={form.watch('income')} />
-                        }
+                        } */}
                       </FormControl>
                     </FormItem>
                   )}
@@ -646,7 +657,7 @@ export default function Details() {
                     <FormItem>
                       <FormLabel className="text-gray-900 text-sm font-semibold tracking-tight">{`Numéro d'identification`}</FormLabel>
                       <FormControl>
-                        <Input className={`px-6 text-gray-900 font-normal ${isEditMode? 'bg-[#F4EFE3]': 'bg-gray-200'}`} {...field} readOnly={!isEditMode} />
+                        <Input className={`px-6 text-gray-900 font-normal bg-gray-200`} {...field} readOnly />
                       </FormControl>
                     </FormItem>
                   )}
@@ -659,7 +670,8 @@ export default function Details() {
                     <FormItem>
                       <FormLabel className="text-gray-900 text-sm font-semibold tracking-tight">{`Document d'identification`}</FormLabel>
                       <FormControl>
-                      {isEditMode?
+                        <Input className={`px-6 text-gray-900 font-normal bg-gray-200`} {...field} readOnly/>
+                      {/* {isEditMode?
                         <Select 
                           {...field}
                           placeholder="Sélectionner le type de document" 
@@ -676,7 +688,7 @@ export default function Details() {
                         </Select>
                         :
                         <Input className={`px-6 text-gray-900 font-normal bg-gray-200`} {...field} readOnly/>
-                        }
+                        } */}
                       </FormControl>
                     </FormItem>
                   )}
@@ -691,7 +703,11 @@ export default function Details() {
                         {isExpired(parseDateStr(field.value)) ? <span style={{color:'red'}}>{` (expiré)`}</span> : <></>}
                         </FormLabel>
                       <FormControl>
-                      {isEditMode?
+                      <Input 
+                        className={`px-6 text-gray-900 font-normal bg-gray-200`} 
+                        value={field.value ? getTextFormattedDate(parseDateObject(field.value)) :''}
+                        readOnly/>
+                      {/* {isEditMode?
                         <DatePicker
                           className={`text-gray-900 font-normal ${cstyles['datepicker_yellow_bg']}`} 
                           defaultValue={field.value ? parseDate(parseDateStr(field.value)) : null}
@@ -705,7 +721,7 @@ export default function Details() {
                         className={`px-6 text-gray-900 font-normal ${isEditMode? 'bg-[#F4EFE3]': 'bg-gray-200'}`} 
                         value={field.value ? getTextFormattedDate(parseDateObject(field.value)) :''}
                         readOnly={!isEditMode} />
-                      }
+                      } */}
                         
                       </FormControl>
                     </FormItem>

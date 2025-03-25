@@ -28,6 +28,7 @@ import { useQuery } from "react-query";
 import toast from "react-hot-toast";
 import { BeninService } from "@/api/services/benin";
 import { CameroonService } from "@/api/services/cameroon";
+import RetraitCMModalForm from "./modals/RetraitCMModalForm";
 
 const getGabonBalance = async ({queryKey}:any) => {
   const [_key, token] = queryKey;
@@ -173,14 +174,14 @@ export default function RetraitGBPage() {
           text={"Retirer"}
           btnStyle={"green"}
           icon={<FourDots />}
-          href="?withdrawBJ=true"
+          href="?withdrawCM=true"
           />          
         </div>
       </div>
 
       <Modal name={'withdrawGB'} modalContent={<RetraitGBModalForm amount={Number(gabonBalanceQueryRes?.data?.amount || 0)}/>}/>
       <Modal name={'withdrawBJ'} modalContent={<RetraitBJModalForm amount={Number(beninBalanceQueryRes?.data?.balances?.[0]?.balance || 0)}/>}/>
-      <Modal name={'withdrawCM'} modalContent={<RetraitBJModalForm amount={Number(cameroonBalanceQueryRes?.data?.balances?.[0]?.balance || 0)}/>}/>
+      <Modal name={'withdrawCM'} modalContent={<RetraitCMModalForm amount={Number(cameroonBalanceQueryRes?.data?.balances?.[0]?.balance || 0)}/>}/>
     </Layout>
   )
 }

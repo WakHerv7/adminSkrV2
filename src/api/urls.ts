@@ -33,10 +33,12 @@ export const customerUrlsV2 = {
   GET_KYC_STATS: `${V2_BASE_URL_CUSTOMER}/kyc-stats`,
   GET_ONE_CUSTOMER: (id:any) => `${V2_BASE_URL_CUSTOMER}/${id}`,
   UPDATE_ONE_CUSTOMER: (id:any) => `${V2_BASE_URL_CUSTOMER}/${id}`,
+  UPDATE_ONE_CUSTOMER_INFOS: (id:any) => `${V2_BASE_URL_CUSTOMER}/infos/${id}`,
+  UPDATE_ONE_CUSTOMER_PASSWORD: (id:any) => `${V2_BASE_URL_CUSTOMER}/password/${id}`,
   GET_ONE_CUSTOMER_TRANSACTIONS: (id:any) => `${V2_BASE_URL_CUSTOMER}/${id}/transactions`,
   GET_ONE_CUSTOMER_TRANSFERS: (id:any) => `${V2_BASE_URL_CUSTOMER}/${id}/transfers`,
   STATS_PER_COUNTRY: `${V2_BASE_URL_CUSTOMER}/stats/per-country`,
-  REALEASE_ONE_USER_BALANCE: `${V2_BASE_URL_CUSTOMER}/release-one-user-balance`,
+  RELEASE_ONE_USER_BALANCE: `${V2_BASE_URL_CUSTOMER}/release-one-user-balance`,
 };
 /** ------------------------------------ */
 export const V2_BASE_URL_CARD = `${API_V2_BASE_URL}/cards`;

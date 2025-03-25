@@ -93,7 +93,7 @@ const operatorData = [
 
 
 
-export default function RetraitBJModalForm({amount}:{amount:number}) {
+export default function RetraitCMModalForm({amount}:{amount:number}) {
     const pathname = usePathname();
     const redirectRef:any = useRef();
     const [trxId, setTrxId] = useState<string>('');

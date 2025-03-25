@@ -34,6 +34,7 @@ import { useRef } from 'react';
 import { User } from 'lucide-react';
 import { UserService } from '@/api/services/user';
 import DialogWrapper from '@/components/shared/DialogWrapper';
+import { CustomerService } from '@/api/services/v2/customer';
 // import { useNavigate } from 'react-router-dom';
 export const formSchema:any = z.object({
     password: z.string(
@@ -51,7 +52,7 @@ const handleUpdate = async (queryData:any) => {
     const {currentUserId, customerId, body} = queryData;
     // console.log("handleTransaction : ", {currentUserId, customerId, label, body});
     // return {currentUserId, customerId, label, body}
-    const response = await UserService.update_user_password({
+    const response = await CustomerService.update_one_customer_password({
         userId:currentUserId,
         customerId:customerId,
         body:body

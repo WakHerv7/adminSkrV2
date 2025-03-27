@@ -112,6 +112,8 @@ export const headerNairaPaymentDataV2: ITableHeader = {
   "edit": ""
 };
 
+
+
 export const tableTransactionData: IGenericRow[] = [
 {
   type: 'Recharge',

@@ -3,7 +3,7 @@ import Title from '@/components/shared/Title';
 import cstyle from'../styles/style.module.scss';
 import Link from 'next/link';
 import { FaX } from 'react-icons/fa6';
-import { usePathname } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import { TDataList } from "@/components/cards/InfoCard";
 import {
     checkCircleIcon,
@@ -26,6 +26,14 @@ import { FourDots } from '@/components/shared/icons';
 import { IoCopyOutline } from 'react-icons/io5';
 import { getFormattedDate, getFormattedDateTime, getFormattedTime } from '@/utils/DateFormat';
 import { categoryType, getCategoryMode, getCategoryModeV2, getCategoryTypeV2 } from '@/utils/graphs';
+import { HashLoader } from 'react-spinners';
+import classNames from 'classnames';
+import { useMutation } from 'react-query';
+import { useRef, useState } from 'react';
+import toast from 'react-hot-toast';
+import { TransactionService } from '@/api/services/v2/transaction';
+import CustomDropdown from '@/components/shared/CustomDropdown';
+import { RxDotsHorizontal } from 'react-icons/rx';
 
   const infoData: TDataList[] = [
     [
@@ -182,8 +190,39 @@ import { categoryType, getCategoryMode, getCategoryModeV2, getCategoryTypeV2 } f
 ];
 
 
+
+const handleVerifyTrxStatus = async (queryData:any) => {
+    const {trxId} = queryData;
+    // console.log("handleTransaction : ", {currentUserId, customerId, label, body});
+    // return {currentUserId, customerId, label, body}
+    const response = await TransactionService.verify_trx_status({
+        trxId
+    }); 
+    if (!response.ok) {
+        const responseBody = await response.json();
+        throw new Error(responseBody.message);  
+    }
+    const responseJson = await response.json();
+    return responseJson;
+}
+
+const handleCheckPartnerTrx = async (queryData:any) => {
+    const {trxId} = queryData;
+    // console.log("handleTransaction : ", {currentUserId, customerId, label, body});
+    // return {currentUserId, customerId, label, body}
+    const response = await TransactionService.check_partner_trx({
+        trxId
+    }); 
+    if (!response.ok) {
+        const responseBody = await response.json();
+        throw new Error(responseBody.message);  
+    }
+    const responseJson = await response.json();
+    return responseJson;
+}
+
 interface TransferModalProps {
-    item: object,
+    item: any,
     customer:any,
 }
 interface ItmInterface {
@@ -191,6 +230,13 @@ interface ItmInterface {
 }
 export default function TransactionModal({item, customer}:TransferModalProps) {
     const pathname = usePathname();
+    const searchParams = useSearchParams();
+    // const dispatch = useDispatch();
+    // const router = useRouter();
+    // const cardSearchTerm:any = useSelector(selectCardSearchTerm);
+    const [diagnosisOpen, setDiagnosisOpen] = useState<boolean>(false);
+    const [partnerTrx, setPartnerTrx] = useState<any>(null);
+    const redirectRef:any = useRef();
     
     const itemData = (itm: ItmInterface, infoData: TDataList[], customer:any): TDataList[] => {
         // Assuming TDataList is an array of arrays or a similar structure that supports forEach
@@ -223,7 +269,7 @@ export default function TransactionModal({item, customer}:TransferModalProps) {
                                 x.value.text = itm?.cardDetails?.masked_number;
                             }
                             else if (key.toString() === 'customer_phone') {
-                                x.value.text = `${itm?.customerDetails?.phone}`;
+                                x.value.text = `${itm?.phone}`;
                             }
                             else if (key.toString() === 'customer_name') {
                                 x.value.text = `${itm?.customerDetails?.last_name} ${itm?.customerDetails?.first_name}`;
@@ -328,6 +374,62 @@ export default function TransactionModal({item, customer}:TransferModalProps) {
         return modifiedInfoData; // Consider adjusting the return type if necessary
     };
 
+
+    const mutationVerifyTrxStatus = useMutation({
+		mutationFn: (data)=>handleVerifyTrxStatus({trxId:item?.id}),
+		onError: (err:any) => {
+            console.error("onError : ", err.message);
+            toast.error(`Erreur lors de la verification de la transaction : ${err.message}`);		
+		},
+		onSuccess: (data) => {
+            console.log("onSuccess : ", data);
+            toast.success(`La verification de la transaction a été effectuée avec succès`);
+            redirectRef.current.href = `${window.location.pathname}?${searchParams}`;
+            redirectRef.current.click();
+        }
+	});
+
+    const handleVerifyTransactionStatus = (trxId:any) => {
+        const data:any = {trxId};
+		mutationVerifyTrxStatus.mutate(data);
+	};
+
+    const mutationCheckPartnerTrx = useMutation({
+		mutationFn: (data)=>handleCheckPartnerTrx({trxId:item?.id}),
+		onError: (err:any) => {
+            console.error("onError : ", err.message);
+            toast.error(`Erreur lors de la verification de la transaction : ${err.message}`);		
+		},
+		onSuccess: (data) => {
+            console.log("onSuccess : ", data);
+            toast.success(`La verification de la transaction a été effectuée avec succès`);
+            setPartnerTrx(data);
+            // redirectRef.current.href = `${window.location.pathname}${searchParams}`;
+            // redirectRef.current.click();
+        }
+	});
+
+    const handleCheckPartnerTransaction = (trxId:any) => {
+        if (!diagnosisOpen) {
+            const data:any = {trxId};
+            setDiagnosisOpen(true);
+            if(!partnerTrx) mutationCheckPartnerTrx.mutate(data);
+        }
+        else {
+            setDiagnosisOpen(false);
+        }
+        
+
+	};
+
+	const onError = (err: any) => {
+		console.error("any", err);
+	};
+
+    console.log(`window.location.pathname :: ${window.location.pathname}`);
+    console.log(`searchParams :: ${searchParams}`);
+    console.log(`window.location.pathname - searchParams ::${window.location.pathname}?${searchParams}`);    
+
     return (
     <div className="bg-white m-auto p-8 rounded-md">
         <div className="flex justify-between mb-5">
@@ -335,10 +437,59 @@ export default function TransactionModal({item, customer}:TransferModalProps) {
             title={"Details de la transaction"}
             />
             {/* {customer.name} */}
-            <Link href={pathname}>
-                <FaX size={16} color={"#444"}/>
-            </Link>
+            <div className="flex justify-end items-center gap-5">
+                {(item?.category === 'wallet' || item?.category === 'service' || item?.category === 'card') ?
+                
+                <div className={`flex gap-3`}>
+                    <CButton 
+                    text={diagnosisOpen ? 'Retour' : `Diagnostiquer la transaction`} 
+                    btnStyle={"lightGreen"}
+                    onClick={()=>handleCheckPartnerTransaction(item?.id)}                    
+                    // icon={<FaEdit/>}
+                    width={'100%'}
+                    height={"35px"}
+                    />
+                    <CustomDropdown
+                    cstyle={'outline'}
+                    iconSize={20}
+                    hasDropdownIcon={false}
+                    icon= {<RxDotsHorizontal/>}
+                    items={[
+                        <div key={'1'} className='flex justify-between gap-2'>
+                        <span 
+                        onClick={()=>handleVerifyTransactionStatus(item?.id)}
+                        style={{whiteSpace:'nowrap'}} className='text-sm'>
+                            {'Verifier le statut'}
+                        </span>
+                        </div>,
+                    ]}
+                    />                    
+                </div>
+                :<></>}
+                <Link href={pathname}>
+                    <FaX size={16} color={"#444"}/>
+                </Link>
+            </div>
         </div>
+        
+        {diagnosisOpen ?
+        <>
+        <div className="grid grid-cols-2 gap-3 w-full">
+            <div>
+                <span className={'mb-3'}>SEKURE</span>
+                <div className="bg-gray-100 overflow-scroll max-h-[500px]">
+                    <pre>{JSON.stringify(item, null, 2)}</pre>
+                </div>
+            </div>
+            <div>
+                <span className={'mb-3'}>{item?.provider?.toUpperCase()}</span>
+                <div className="bg-gray-100 overflow-scroll  max-h-[500px]">
+                    <pre>{JSON.stringify(partnerTrx?.data, null, 2)}</pre>
+                </div>
+            </div>
+        </div>
+        </>
+        :
         <div className={`${cstyle['dualGrid']}`}>
             {itemData(item, infoData, customer).map((data, index) => (
                 <div key={index} className={``}>
@@ -358,7 +509,23 @@ export default function TransactionModal({item, customer}:TransferModalProps) {
                 ))}
                 </div>
             ))}
+        </div>}
+
+        <div
+            className={classNames(
+                "transition-all invisible z-20 bg-blue-900/30 opacity-0 absolute top-0 left-0 h-full w-full flex items-center justify-center",
+                {
+                    "!opacity-100 !visible z-20": mutationVerifyTrxStatus.isLoading,
+                }
+            )}
+        >
+            <HashLoader
+                className="shrink-0"
+                size={50}
+                color="#18BC7A"
+            />
         </div>
+        <a ref={redirectRef} hidden href="#"></a>
         {/* <div className='flex gap-5 mt-8'>
                 <CButton
                 text={'Voir utilisateur'}

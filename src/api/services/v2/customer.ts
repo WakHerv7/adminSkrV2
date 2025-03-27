@@ -34,11 +34,17 @@ export class CustomerService {
     // static get_customers_excel = () => {
     //     return BaseMethods.getRequest(customerUrlsV2.GENERATE_CUSTOMERS_EXCEL, true);
     // }
-    static get_kyc_customers = ({kyc_result, kyc_status, searchTerm}: {kyc_result?:string, kyc_status?:string, searchTerm?:string}) =>{
+    static get_kyc_customers = (params:any) =>{
+        // {kyc_result, kyc_status, searchTerm}: {kyc_result?:string, kyc_status?:string, searchTerm?:string}
         let query_params:any = {};
-        if(kyc_result) query_params.kyc_result =kyc_result;
-        if(kyc_status) query_params.kyc_status =kyc_status;
-        if(searchTerm) query_params.searchTerm =searchTerm;
+        // if(kyc_result) query_params.kyc_result =kyc_result;
+        // if(kyc_status) query_params.kyc_status =kyc_status;
+        // if(searchTerm) query_params.searchTerm =searchTerm;
+        if(isObject(params)){
+            Object.entries(params).map(([key, value]:any[]) => {
+                if(value) query_params[key] = value;
+            });
+        }
         return BaseMethods.getRequest(customerUrlsV2.GET_KYC_CUSTOMERS, true, query_params);
     }
     static get_kyc_stats = () => {

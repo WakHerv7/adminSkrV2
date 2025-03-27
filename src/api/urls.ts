@@ -2,10 +2,10 @@
 export const BASE_URL = `https://adminskrapi.fly.dev/api/v1`;
 export const GETSEKURE_API_URL = `https://api.getsekure.com/api/v1`; 
 
-// export const API_V2_BASE_URL = `http://localhost:3000/api/v2/admin`;
+export const API_V2_BASE_URL = `http://localhost:3000/api/v2/admin`;
 // export const API_V2_BASE_URL = `https://apigetsekure.com/api/v2/admin`;
 export const API_V2_PROD_BASE_URL = `https://apigetsekure.com/api/v2/admin`;
-export const API_V2_BASE_URL = `https://skr-api-v2.fly.dev/api/v2/admin`;
+// export const API_V2_BASE_URL = `https://skr-api-v2.fly.dev/api/v2/admin`;
 
 
 
@@ -58,7 +58,10 @@ export const transactionUrlsV2 = {
   STATS_PER_COUNTRY: `${V2_BASE_URL_TRANSACTION}/stats/per-country`,
   STATS_PER_CATEGORY_TYPE: `${V2_BASE_URL_TRANSACTION}/stats/per-category-type`,
   STATS_DAILY_PER_CATEGORY_TYPE: `${V2_BASE_URL_TRANSACTION}/stats/daily-per-category-type`,
-  
+  // VERIFY_TRX_STATUS: (id:any) => `${V2_BASE_URL_TRANSACTION}/verify-trx-status/${id}`,
+  // CHECK_PARTNER_TRX: (id:any) => `${V2_BASE_URL_TRANSACTION}/check-partner-trx/${id}`,
+  VERIFY_TRX_STATUS: (id:any) => `${API_V2_PROD_BASE_URL}/transactions/verify-trx-status/${id}`,
+  CHECK_PARTNER_TRX: (id:any) => `${API_V2_PROD_BASE_URL}/transactions/check-partner-trx/${id}`,
 
   // GET_ALL_TRANSACTIONS: `${BASE_URL_TRANSACTION}`,
   // GET_PERIODIC_TRANSACTIONS: `${BASE_URL_TRANSACTION}/periodic`,
@@ -92,6 +95,17 @@ export const transactionUrlsV2 = {
   export const notificationUrlsV2 = {
     GET_NOTIFICATIONS: `${V2_BASE_URL_NOTIFICATION}`,
     SEND_NOTIFICATION: `${V2_BASE_URL_NOTIFICATION}`,
+  };
+  /** ------------------------------------ */
+  export const V2_BASE_URL_CUSTOMER_TICKET = `${API_V2_BASE_URL}/customertickets`;
+  export const customerTicketUrlsV2 = {  
+    GET_ALL_CUSTOMER_TICKETS: `${V2_BASE_URL_CUSTOMER_TICKET}`,
+    GET_ONE_CUSTOMER_TICKET: (id:any) => `${V2_BASE_URL_CUSTOMER_TICKET}/${id}`,
+    CREATE_CUSTOMER_TICKET: `${V2_BASE_URL_CUSTOMER_TICKET}`,
+    UPDATE_CUSTOMER_TICKET: (id:any) => `${V2_BASE_URL_CUSTOMER_TICKET}/${id}`,
+    DELETE_CUSTOMER_TICKET: (id:any) => `${V2_BASE_URL_CUSTOMER_TICKET}/${id}`,
+    // UPDATE_CUSTOMER_TICKET: (id:any) => `${V2_BASE_URL_CUSTOMER_TICKET}/status/${id}`,
+    // UPDATE_CUSTOMER_TICKET_PROOF: (id:any) => `${V2_BASE_URL_CUSTOMER_TICKET}/proof/${id}`,
   };
 
 

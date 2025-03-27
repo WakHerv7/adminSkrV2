@@ -231,7 +231,7 @@ export default function TransactionModal({item, customer, recipient}:TransferMod
                                 x.value.text = getFormattedTime(itm['created_at']);
                             }
                             else if (key.toString() === 'phone') {
-                                x.value.text = customer.phone;
+                                x.value.text = itm.phone;       // customer.phone;
                             }
                             else if (key.toString() === 'recipientName') {
                                 x.value.text = `${recipient?.last_name} ${recipient?.first_name}`;

@@ -34,4 +34,12 @@ export class TransactionService {
         if(limitDate) query_params.limitDate =limitDate;
         return BaseMethods.getRequest(transactionUrlsV2.STATS_DAILY_PER_CATEGORY_TYPE, true, query_params);
     }
+    static verify_trx_status = ({ trxId }: { trxId:string }) => {
+        let query_params:any = {};
+        return BaseMethods.putRequest(transactionUrlsV2.VERIFY_TRX_STATUS(trxId), {}, true, query_params);
+    }
+    static check_partner_trx = ({ trxId }: { trxId:string }) => {
+        let query_params:any = {};
+        return BaseMethods.getRequest(transactionUrlsV2.CHECK_PARTNER_TRX(trxId), true, query_params);
+    }
 }

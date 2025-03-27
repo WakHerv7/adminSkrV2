@@ -58,6 +58,10 @@ const URLConfig = {
     payment_services: {
         ...payment_services(),
     },
+    //   Notifications
+    customer_tickets: {
+        ...customer_tickets(),
+    },
 
     // Admin Module
     // ADMIN: {
@@ -143,6 +147,13 @@ function generalSettings(prefix:string='') {
 
 function payment_services(prefix:string='') {
     const PATH = `${dashboardRootUrlV2}/payment_services`;        
+    return {
+        root:PATH,                    
+    }
+}
+
+function customer_tickets(prefix:string='') {
+    const PATH = `${dashboardRootUrlV2}/customer_tickets`;        
     return {
         root:PATH,                    
     }

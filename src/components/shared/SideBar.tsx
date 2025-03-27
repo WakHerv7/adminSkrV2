@@ -4,7 +4,7 @@ import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import Logo from '../shared/Logo';
 import { Accueil, Cards, Gains, Kyc, Logout, Notifications, Parameters, Transfert, Users, UsersV2, Wallet } from './icons';
-import { FaChevronLeft, FaChevronRight, FaUserCheck, FaHandHoldingUsd } from 'react-icons/fa';
+import { FaChevronLeft, FaChevronRight, FaUserCheck, FaHandHoldingUsd, FaTicketAlt } from 'react-icons/fa';
 
 import { IoIosSend } from "react-icons/io";
 import cstyle from './styles/sidebar-style.module.scss'
@@ -165,6 +165,14 @@ const SideBar = (props: Props) => {
       path: urlsV2.notifications.root,
       count: null,
       icon: <IoIosSend size={18}/>,    
+    },
+    {
+      title: 'Requêtes clients',
+      slug:'customer_tickets',
+      canSee: true,
+      path: urlsV2.customer_tickets.root,
+      count: null,
+      icon: <FaTicketAlt size={18}/>,    
     },
     
   ]

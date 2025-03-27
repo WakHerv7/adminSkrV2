@@ -190,7 +190,7 @@ export default function Details() {
   });
 
   const mutation = useMutation({
-		mutationFn: (data)=>handleUpdateUser({currentUserId:currentUser?._id, customerId:customerDetails?.customer?._id, body:data}),
+		mutationFn: (data)=>handleUpdateUser({currentUserId:currentUser?.id, customerId:customerDetails?.customer?.id, body:data}),
 		onError: (err:any) => {
             console.error("onError : ", err.message);
             toast.error(`Erreur lors de la modification des informations du compte : ${err.message}`);		
@@ -275,7 +275,7 @@ export default function Details() {
                   {/* <p className="text-xs text-gray-500">liste en temps réel des dernieres transactions effectuées avec les cartes</p> */}
                 </div>
                 
-                {hasPermission(currentUser, 'user_account_details:infos', 'edit') ?
+                {hasPermission(currentUser, 'user_account_details:details', 'edit_infos') ?
                 <div className="">
                       {!isEditMode ?
                       <div className={`flex gap-3`}>
@@ -365,7 +365,7 @@ export default function Details() {
                 </div>
                 :
                 <></>}
-
+                
               </div>
               <div className="w-full flex flex-col gap-7">
                 <FormField

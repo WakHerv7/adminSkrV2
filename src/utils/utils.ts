@@ -105,6 +105,10 @@ export const generateRandomCode = (length:number) => {
   return result;
 }
 
+export function removeAllSpaces(text: string): string {
+  return text.replace(/\s+/g, '');
+}
+
 
 export function getFileExtension(filename:string) {
   return filename.slice((filename.lastIndexOf(".") - 1 >>> 0) + 2);

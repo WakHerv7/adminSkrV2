@@ -2,10 +2,10 @@
 export const BASE_URL = `https://adminskrapi.fly.dev/api/v1`;
 export const GETSEKURE_API_URL = `https://api.getsekure.com/api/v1`; 
 
-export const API_V2_BASE_URL = `http://localhost:3000/api/v2/admin`;
+// export const API_V2_BASE_URL = `http://localhost:3000/api/v2/admin`;
 // export const API_V2_BASE_URL = `https://apigetsekure.com/api/v2/admin`;
 export const API_V2_PROD_BASE_URL = `https://apigetsekure.com/api/v2/admin`;
-// export const API_V2_BASE_URL = `https://skr-api-v2.fly.dev/api/v2/admin`;
+export const API_V2_BASE_URL = `https://skr-api-v2.fly.dev/api/v2/admin`;
 
 
 

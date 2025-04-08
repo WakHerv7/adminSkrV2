@@ -33,6 +33,7 @@ export const headerUserAccountDataV2: ITableHeader = {
   "nbCartes": "Nbre Cartes",
   "totalTrx": "Total Trans.",
   "avgTrx": "Moy. Trans.",
+  "oldNew": "A/N",
   "kyc": "KYC",
   "status": "Statut",
   "locked": "Bloqué",

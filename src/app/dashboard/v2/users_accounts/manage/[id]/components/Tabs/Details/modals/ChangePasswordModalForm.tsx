@@ -138,7 +138,7 @@ export default function ChangePasswordModalForm({isOpen, setIsOpen, customer}:Mo
     // const customerDetails:any = useSelector(selectCurrentCustomerDetails);
 
     const mutation = useMutation({
-		mutationFn: (data)=>handleUpdate({currentUserId:currentUser?._id, customerId:customer?._id, body:data}),
+		mutationFn: (data)=>handleUpdate({currentUserId:currentUser?.id, customerId:customer?.id, body:data}),
 		onError: (err:any) => {
             console.error("onError : ", err.message);
             toast.error(`Erreur mise a jour du mot de passe : ` + err.message);		

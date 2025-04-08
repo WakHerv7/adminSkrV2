@@ -266,7 +266,7 @@ export default function Details() {
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit, onError)} 
             className="space-y-3">
-              <div className="mb-7 w-full flex gap-10 justify-between items-center">
+              <div className="mb-7 w-full flex flex-col md:flex-row gap-10 justify-between items-center">
                 <div className="w-full">
                   <h1 className="text-lg text-gray-700 font-bold">{
                   !isEditMode ?
@@ -393,7 +393,7 @@ export default function Details() {
                   )}
                 />
                 
-                <div className="grid grid-cols-2 gap-x-7 gap-y-7">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-7 gap-y-7">
                 <FormField
                   control={form.control}
                   name="email"
@@ -419,7 +419,7 @@ export default function Details() {
                   )}
                 />
                 </div>
-                <div className="grid grid-cols-2 gap-x-7 gap-y-7">                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-7 gap-y-7">                
                 <FormField
                   control={form.control}
                   name="birthday"
@@ -490,7 +490,7 @@ export default function Details() {
                   )}
                 />
                 </div>
-                <div className="grid grid-cols-2 gap-x-7 gap-y-7">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-7 gap-y-7">
                 <FormField
                   control={form.control}
                   name="age"
@@ -581,7 +581,7 @@ export default function Details() {
                 />              
                 </div>
                 
-                <div className="grid grid-cols-2 gap-x-7 gap-y-7">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-7 gap-y-7">
                 <FormField
                   control={form.control}
                   name="city"
@@ -608,7 +608,7 @@ export default function Details() {
                 />
                 </div>
 
-                <div className="grid grid-cols-2 gap-x-7 gap-y-7">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-7 gap-y-7">
                 <FormField
                   control={form.control}
                   name="job"
@@ -667,7 +667,7 @@ export default function Details() {
                     </FormItem>
                   )}
                 />
-                <div className="grid grid-cols-2 gap-x-7 gap-y-7">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-7 gap-y-7">
                 <FormField
                   control={form.control}
                   name="idPaper"
@@ -734,7 +734,7 @@ export default function Details() {
                 />
                 
                 </div>
-                <div className="grid grid-cols-2 gap-x-7 gap-y-7">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-7 gap-y-7">
                 <FormField
                   control={form.control}
                   name="codeParrainage"
@@ -817,7 +817,7 @@ export default function Details() {
                       </FormItem>
                     )}
                   />
-                  <div className="grid grid-cols-2 gap-x-7 gap-y-7">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-x-7 gap-y-7">
                   <FormItem>
                     <FormLabel className="text-gray-900 text-sm font-semibold tracking-tight">{`RECTO Document d'identification`}</FormLabel>
                     <div style={{width: '100%', height: 400, borderRadius:'20px', position: 'relative', overflow:'hidden'}}>

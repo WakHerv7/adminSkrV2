@@ -30,6 +30,7 @@ import { hasPermission } from "@/utils/permissions";
 import { IoIosSend } from "react-icons/io";
 import NotificationModalForm from "./modals/NotificationModalForm";
 import ReleaseStandByAccountBalanceModalForm from "./modals/ReleaseStandByAccountBalanceModalForm";
+import EditRegStatusModalForm from "./modals/EditRegStatusModalForm";
 
 
 const getKYCWarningsList = async () => {
@@ -63,7 +64,7 @@ export default function DetailsSide() {
   dispatch(setKYCWarningsList(allKYCWarningsListRes.data));
   
   return (
-    <div className="w-64 flex flex-col gap-y-[25px]">
+    <div className="w-full md:w-64 flex flex-col gap-y-[25px]">
         
         <div>
           <h1 className="text-lg text-gray-700 font-bold">Informations de compte</h1>
@@ -85,6 +86,48 @@ export default function DetailsSide() {
           </p>
           <span className="">{getFormattedDateTime(customerDetails?.customer?.created_at)}</span>
         </div>
+            {(customerDetails?.customer?.regularisation_status) ?
+            <>
+            <div>
+              <p className="text-gray-800 text-sm font-normal tracking-tight">
+                Methode regularisation
+              </p>
+              <span className="">{customerDetails?.customer?.regularisation_method}</span>
+            </div>
+
+            <div>
+              <p className="text-gray-800 text-sm font-normal tracking-tight">
+                Numero telephone regularisation
+              </p>
+              <span className="">{customerDetails?.customer?.regularisation_phone}</span>
+            </div>
+
+            <div>
+              <p className="text-gray-800 text-sm font-normal tracking-tight">
+                Statut regularisation
+              </p>
+              <span className="">{customerDetails?.customer?.regularisation_status}</span>
+            </div>
+            
+            { hasPermission(currentUser, 'user_account_details:details', 'edit') &&
+              (customerDetails?.customer?.regularisation_status!=='PAID') ?
+            <>
+              <CButton
+              text={`Modifier statut regularisation`} //{'Reverser vers solde actif'}
+              href={`?editRegStatus=true`}
+              btnStyle={'dark'}
+              icon={<FourDots />}
+              width={'100%'}            
+              />
+              <Modal name={'editRegStatus'} modalContent={<EditRegStatusModalForm customer={customerDetails?.customer}/>}/>
+            </>
+            :
+            <>
+            </>}
+            
+            </>
+          :<></>}
+        
         
         <div className="">
           <p className="text-gray-800 text-sm font-normal tracking-tight">
@@ -133,14 +176,26 @@ export default function DetailsSide() {
           { hasPermission(currentUser, 'user_account_details:details', 'edit') &&
           (customerDetails?.customer?.old_balance_xaf || 0)>0 ?
           <>
+            {customerDetails?.customer?.regularisation_status==='PROCESSING' ?
+            <>
             <CButton
-            text={'Reverser vers solde actif'}
+            text={`Regulariser`} //{'Reverser vers solde actif'}
             href={`?releaseStandByAccount=true`}
-            btnStyle={'dark'}
+            btnStyle={'red'}
             icon={<FourDots />}
             width={'100%'}            
             />
             <Modal name={'releaseStandByAccount'} modalContent={<ReleaseStandByAccountBalanceModalForm customer={customerDetails?.customer}/>}/>
+            </>
+            :
+            <>
+            <CButton
+            text={`Regulariser`}
+            btnStyle={'grey'}
+            icon={<FourDots />}
+            width={'100%'}            
+            />
+            </>}
           </>
           : <></> }
         </div>

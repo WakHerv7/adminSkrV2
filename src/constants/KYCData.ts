@@ -27,10 +27,27 @@ export const headerKYCDataV2: ITableHeader = {
   "phone": "Numero",
   "email": "Email",
   "oldNew": "A/N",
-  "status": "Statut KYC",
+  "status": "Statut",
   "date": "Date de création",
   "edit": "",
 };
+
+
+export const headerRegularisationDataV2: ITableHeader = {
+  "serial": "S/N",
+  // "id": "ID",
+  "name": "Nom",
+  "country": "Pays",
+  "phone": "Numero",
+  "email": "Email",
+  "oldNew": "A/N",
+  "status": "Statut",
+  "method": "Methode",
+  "amount": "Montant",
+  "date": "Date de création",
+  "edit": "",
+};
+
 
 export const tableKYCData: IGenericRow[] = [
   {

@@ -52,7 +52,7 @@ const cartes = [
 
 export default function index() {
   return (
-    <section className="pl-4 flex justify-start items-start gap-10 overflow-hidden">
+    <section className="pl-4 flex flex-col md:flex-row justify-start items-start gap-10 overflow-hidden">
       <CartesMain cards={cartes}/>
       <CartesSide nbCards={cartes.length}/>
     </section>

@@ -62,6 +62,10 @@ const URLConfig = {
     customer_tickets: {
         ...customer_tickets(),
     },
+    //   Regularisations
+    regularisations: {
+        ...regularisations(),
+    },
 
     // Admin Module
     // ADMIN: {
@@ -154,6 +158,13 @@ function payment_services(prefix:string='') {
 
 function customer_tickets(prefix:string='') {
     const PATH = `${dashboardRootUrlV2}/customer_tickets`;        
+    return {
+        root:PATH,                    
+    }
+}
+
+function regularisations(prefix:string='') {
+    const PATH = `${dashboardRootUrlV2}/regularisations`;        
     return {
         root:PATH,                    
     }

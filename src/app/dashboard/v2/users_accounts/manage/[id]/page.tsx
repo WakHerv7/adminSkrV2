@@ -125,7 +125,7 @@ export default function ManageUserAccount() {
             {userData ?
             <div className="pl-5 flex gap-5 justify-center items-center pb-5">
                 <div>
-                    <div style={{width: 100, height: 100, borderRadius:'50%', position: 'relative', overflow:'hidden'}}>
+                    <div style={{width: window.innerWidth>800 ? 100 : 60, height: window.innerWidth>800 ? 100 : 60, borderRadius:'50%', position: 'relative', overflow:'hidden'}}>
                         <Image
                             alt='photo'
                             src={userData?.customer?.profile_picture?.startsWith('http') ? userData?.customer?.profile_picture : `https://ui-avatars.com/api/?size=250&name=${`${userData?.customer?.first_name} ${userData?.customer?.last_name}`?.toLowerCase()?.replace(/\s+/g, '+')}&background=FFDB5A&color=18BC7A`}
@@ -145,12 +145,12 @@ export default function ManageUserAccount() {
             }
             
             
-            <div className="border-b-1">
-            <TabsList defaultValue={"Details"} className="TabsList">
-              <TabsTrigger className="TabsTrigger" value="Details">Details</TabsTrigger>
-              <TabsTrigger className="TabsTrigger" value="Cartes">Cartes</TabsTrigger>              
-              <TabsTrigger className="TabsTrigger" value="Transactions">Transactions</TabsTrigger>
-              <TabsTrigger className="TabsTrigger" value="Transferts">Transferts</TabsTrigger>
+            <div className="border-b-0 md:border-b-1">
+            <TabsList defaultValue={"Details"} className="TabsList grid grid-cols-2 md:block mb-[120px] md:mb-0">
+              <TabsTrigger className="TabsTrigger border-b-1 md:border-b-0" value="Details">Details</TabsTrigger>
+              <TabsTrigger className="TabsTrigger border-b-1 md:border-b-0" value="Cartes">Cartes</TabsTrigger>              
+              <TabsTrigger className="TabsTrigger border-b-1 md:border-b-0" value="Transactions">Transactions</TabsTrigger>
+              <TabsTrigger className="TabsTrigger border-b-1 md:border-b-0" value="Transferts">Transferts</TabsTrigger>
             </TabsList>
             </div>
             {oneUserQueryRes?.status === 'loading' ? 

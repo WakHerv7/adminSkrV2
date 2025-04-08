@@ -8,7 +8,7 @@ export interface ButtonProps
 	btnStyle:
 		| "outlineDark"
 		| "outlineGreen"
-		| "dark"
+		| "dark" | "grey"
 		| "green"
     | "red"
 		| "yellow"
@@ -61,7 +61,7 @@ const CButton = React.forwardRef<HTMLButtonElement, ButtonProps>(({
 	const iconColor =
 		btnStyle === "lightGreen" || btnStyle === "outlineGreen"
 			? "#18BC7A"
-			: btnStyle === "green" || btnStyle === "red" || btnStyle === "dark"
+			: btnStyle === "green" || btnStyle === "red" || btnStyle === "dark" || btnStyle === "grey"
 			? "#fff"
 			: btnStyle === "lightYellow"
 			? "#FFDB5A"
@@ -83,6 +83,9 @@ const CButton = React.forwardRef<HTMLButtonElement, ButtonProps>(({
       bg-transparent hover:bg-[#18BC7A]/20 text-[#18BC7A]`,
 		dark: `
       border-[#202020] hover:border-[#202020]/80   bg-[#202020] hover:bg-[#202020]/80
+      text-white`,
+	  	grey: `
+      border-gray-300  bg-gray-300
       text-white`,
 		green: `
       border-[#18BC7A] hover:border-[#18BC7A]/80   bg-[#18BC7A] hover:bg-[#18BC7A]/80

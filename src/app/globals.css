@@ -207,6 +207,14 @@
   /* display: inline; */
   /* border-bottom: 1px solid #999; */
 }
+
+/* @media (max-width: 720px) {
+  .TabsList {
+    display: flex;
+    flex-direction: column;
+  }
+} */
+
 .TabsTrigger {
   /* font-family: inherit; */
   /* background-color: white; */

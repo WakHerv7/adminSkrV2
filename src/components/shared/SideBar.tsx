@@ -7,13 +7,15 @@ import { Accueil, Cards, Gains, Kyc, Logout, Notifications, Parameters, Transfer
 import { FaChevronLeft, FaChevronRight, FaUserCheck, FaHandHoldingUsd, FaTicketAlt } from 'react-icons/fa';
 
 import { IoIosSend } from "react-icons/io";
-import cstyle from './styles/sidebar-style.module.scss'
+import cstyle from './styles/sidebar-style.module.scss';
 import urls from '@/config/urls';
 import urlsV2 from '@/config/urls_v2';
 import urlsV1V2 from '@/config/urlsv1v2';
 import { hasPermission } from '@/utils/permissions';
 import { selectCurrentVersion } from '@/redux/slices_v2/settings';
 import { useSelector } from 'react-redux';
+import { FaFilterCircleDollar } from 'react-icons/fa6';
+import { HiOutlineMenu } from 'react-icons/hi';
 
 interface ISideBarLinks {
   title: string;
@@ -35,7 +37,10 @@ const SideBar = (props: Props) => {
 
   const currentVersion = useSelector(selectCurrentVersion);
 
-  // const [isExpanded, setIsExpanded] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+
+  console.log("window.innerWidth :: ", window.innerWidth);
+  
 
   const SideBarLinksV1 = [
     {
@@ -174,6 +179,14 @@ const SideBar = (props: Props) => {
       count: null,
       icon: <FaTicketAlt size={18}/>,    
     },
+    {
+      title: 'Régularisations',
+      slug:'regularisations',
+      canSee: true,
+      path: urlsV2.regularisations.root,
+      count: null,
+      icon: <FaFilterCircleDollar size={18}/>,    
+    },
     
   ]
 
@@ -190,13 +203,30 @@ const SideBar = (props: Props) => {
 
   
   return (
-    <div className='relative'>      
+    <div className='relative'>    
+      <div className={`${'absolute z-[2000] w-[50px] h-[30px] top-[15px] right-[0px]'} text-[34px] ml-[15px] mt-[30px] mb-[20px]`}>        
+      <div className={`pb-[30px] md:hidden block ${cstyle['hamburger-menu']}`}>
+          <input 
+        id="menuToggle" 
+        className={`${cstyle['menu__toggle']}`} 
+        type="checkbox"
+        checked={isOpen} 
+        onChange={(e)=> setIsOpen(e.target.checked)} 
+        />
+        <label className={`${cstyle['menu__btn']}`} htmlFor="menuToggle">
+          <span></span>
+        </label>
+      </div>
+      </div> 
+      
+
+      {isOpen || window.innerWidth>760 ?
       <div 
       style={{zIndex:10, width: isExpanded? '250px' : '80px'}}
       className={`${cstyle['sidebar-container']}`}>
         <div 
         style={{width: isExpanded? '250px' : '80px'}}
-        className='fixed pt-[22px] pb-[20px] h-full flex flex-col gap-0 border-r-4 border-gray-200'>
+        className='fixed pt-[22px] pb-[20px] h-full flex flex-col gap-0 border-t-4 border-r-4 border-gray-200'>
           <div>
             <input type="checkbox" 
             hidden 
@@ -316,6 +346,7 @@ const SideBar = (props: Props) => {
           </div>
         </div>
       </div>
+      :<></>}
     </div>
     
   )

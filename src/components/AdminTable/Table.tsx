@@ -239,7 +239,7 @@ useEffect(() => {
       {isLoading ? <div className={'loadingSpinner'}></div> : <></>}
     </div>
     </div>
-    <div className='py-10 text-sm flex justify-between items-center'>
+    <div className='py-10 text-sm flex flex-col md:flex-row  gap-10 md:gap-0 justify-between items-center'>
       
       {filteredData ? 
       <>

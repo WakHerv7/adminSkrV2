@@ -93,26 +93,26 @@ export default function Navbar(props:Props) {
     scrollPositionY = useScrollYPosition();
 
   return (
-    <div className={`${cstyle['navbar-container']}`}>
+    <div className={`w-full pl-0 md:pl-[25px] md:pl-0 ${cstyle['navbar-container']}`}>
         <div 
         style={{width: isExpanded ? 'calc(100% - 250px)' : 'calc(100% - 80px)', zIndex:'1000', 
             boxShadow:`${scrollPositionY > 0 ? '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)' : ''}`
         }}
-        className={`fixed bg-white flex justify-between items-center h-fit px-10 py-5`}>
-            <div className="relative flex justify-start items-center gap-3">
+        className={`fixed w-full bg-white flex justify-between items-center h-fit pl-[60px] md:pl-0 px-5 md:px-10 py-5 ${cstyle['navbar-subcontainer']}`}>
+            <div className="relative w-full flex justify-start items-center gap-3">
             {backLink ?
-            <Link href={backLink} className="absolute top-1 left-[-30px]">
+            <Link href={backLink} className="absolute top-1 left-[-30px] hidden md:block">
                 <FaArrowLeft color="#000" size={20} />
             </Link>
             :
             goBack ?
-            <div onClick={goBack} className="absolute top-1 left-[-30px] cursor-pointer">
+            <div onClick={goBack} className="absolute top-1 left-[-30px] cursor-pointer hidden md:block">
                 <FaArrowLeft color="#000" size={20} />
             </div>
             :<></>}
 
             <h1 
-            className="font-semibold text-2xl pl-1 py-0">
+            className="font-semibold text-xl md:text-2xl pl-1 py-0">
                 {title}
             </h1>
             </div>
@@ -155,7 +155,7 @@ export default function Navbar(props:Props) {
                 </div> */}
 
                 {(currentUser.admin_role==='owner' || currentUser.admin_role==='manager') ?
-                <div className="mr-10">
+                <div className="hidden md:block mr-10">
                     <div className="flex gap-3 text-xs items-center cursor-pointer hover:text-[#18BC7A]"
                     onClick={()=>setIsChangeLimitDateModalFormOpen(true)}
                     >
@@ -283,7 +283,7 @@ export default function Navbar(props:Props) {
             </div>
 
             {(currentUser.admin_role==='owner' || currentUser.admin_role==='manager') ?
-            <div className="pl-2">
+            <div className="hidden md:block pl-2">
                 <label htmlFor="modeToggle" className="flex items-center cursor-pointer">                
                     <div className="relative">                
                         <input 

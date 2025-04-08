@@ -29,16 +29,20 @@ export const customerUrlsV2 = {
   GET_CUSTOMERS: `${V2_BASE_URL_CUSTOMER}`,
   GET_CUSTOMERS_STATS: `${V2_BASE_URL_CUSTOMER}/stats`,
   GENERATE_CUSTOMERS_EXCEL: `${V2_BASE_URL_CUSTOMER}/excel`,
+  GET_REGULARISATIONS: `${V2_BASE_URL_CUSTOMER}/regularisations`,
+  GET_REGULARISATION_STATS: `${V2_BASE_URL_CUSTOMER}/regularisations-stats`,
   GET_KYC_CUSTOMERS: `${V2_BASE_URL_CUSTOMER}/kyc`,
   GET_KYC_STATS: `${V2_BASE_URL_CUSTOMER}/kyc-stats`,
   GET_ONE_CUSTOMER: (id:any) => `${V2_BASE_URL_CUSTOMER}/${id}`,
   UPDATE_ONE_CUSTOMER: (id:any) => `${V2_BASE_URL_CUSTOMER}/${id}`,
   UPDATE_ONE_CUSTOMER_INFOS: (id:any) => `${V2_BASE_URL_CUSTOMER}/infos/${id}`,
   UPDATE_ONE_CUSTOMER_PASSWORD: (id:any) => `${V2_BASE_URL_CUSTOMER}/password/${id}`,
+  UPDATE_ONE_CUSTOMER_REG_STATUS: (id:any) => `${API_V2_PROD_BASE_URL}/customers/reg-status/${id}`,
+
   GET_ONE_CUSTOMER_TRANSACTIONS: (id:any) => `${V2_BASE_URL_CUSTOMER}/${id}/transactions`,
   GET_ONE_CUSTOMER_TRANSFERS: (id:any) => `${V2_BASE_URL_CUSTOMER}/${id}/transfers`,
   STATS_PER_COUNTRY: `${V2_BASE_URL_CUSTOMER}/stats/per-country`,
-  RELEASE_ONE_USER_BALANCE: `${V2_BASE_URL_CUSTOMER}/release-one-user-balance`,
+  RELEASE_ONE_USER_BALANCE: `${API_V2_PROD_BASE_URL}/customers/release-one-user-balance`,
 };
 /** ------------------------------------ */
 export const V2_BASE_URL_CARD = `${API_V2_BASE_URL}/cards`;

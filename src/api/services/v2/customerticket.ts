@@ -17,11 +17,11 @@ export class CustomerTicketService {
         if(userId) query_params.adminUserId =userId;
         return BaseMethods.postFileRequest(customerTicketUrlsV2.CREATE_CUSTOMER_TICKET, body, true, query_params);
     }    
-    static update_customer_ticket = ({ userId, responsibility, ticketId, body }: { userId:string, responsibility?:boolean, ticketId:string, body:any }) => {
+    static update_customer_ticket = ({ userId, action, ticketId, body }: { userId:string, action?:boolean, ticketId:string, body:any }) => {
         let query_params:any = {};
         if(userId) query_params.adminUserId =userId;
-        if(responsibility) query_params.responsibility =responsibility;
-        return BaseMethods.putRequest(customerTicketUrlsV2.UPDATE_CUSTOMER_TICKET(ticketId), body, true, query_params);
+        if(action) query_params.action =action;
+        return BaseMethods.putFileRequest(customerTicketUrlsV2.UPDATE_CUSTOMER_TICKET(ticketId), body, true, query_params);
     }
     static delete_one_customer_ticket = (id:string) =>{
         return BaseMethods.deleteRequest(customerTicketUrlsV2.GET_ONE_CUSTOMER_TICKET(id), {}, true);

@@ -14,7 +14,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import classNames from "classnames";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 import { HashLoader } from "react-spinners";
@@ -31,6 +31,8 @@ import { CustomerTicketService } from "@/api/services/v2/customerticket";
 import { BsFillHandThumbsDownFill, BsFillHandThumbsUpFill } from "react-icons/bs";
 import { MdClose } from "react-icons/md";
 import LabelWithBadge from "@/components/shared/LabelWithBadge";
+import { removeAllSpaces } from "@/utils/utils";
+import { NotificationService } from "@/api/services/v2/notification";
 
 declare global {
   interface Window {
@@ -172,22 +174,87 @@ const countryData = [
 	// },
 ];
 
+
+const sendNotification = async (queryData:any) => {
+  const {adminUserId, body} = queryData;
+
+  if(!body?.target && (!body?.users || body?.users?.length<=0)) {
+    throw new Error("Veuillez selectionner une cible");
+  }
+
+  const response = await NotificationService.send_notifcation({
+  adminUserId:adminUserId,
+  body:body
+}); 
+  
+  if (!response.ok) {
+      const responseBody = await response.json();
+      throw new Error(responseBody.message);
+  }
+
+  const responseJson = await response.json();
+  return responseJson;
+}
+
 const handleUpdateCustomerTicket = async (queryData:any) => {
-  const {ticketId, body, currentUserId} = queryData;
+  const {ticketId, body, currentUserId, action} = queryData;
+
+  const formData = new FormData();
+
+  Object.entries(body || {})?.map(([key, value]:any[]) => {
+    console.log({key}, {value});
+    if(key==='user_phone'){
+      formData.append(`${key}`, value ? removeAllSpaces(value) : '');
+    } else {
+      formData.append(`${key}`, value || '');
+    }
+  })
 
   const response = await CustomerTicketService.update_customer_ticket({
       userId:currentUserId,
-      responsibility: body.responsibility,
+      action,
       ticketId,
-      body:{
-        status: body.status
-      }
+      body:formData
   }); 
+  
   if (!response.ok) {
     const responseBody = await response.json();
     throw new Error(responseBody.message);  
   }
+  
   const responseJson = await response.json();
+  
+  if(responseJson) {
+    const cTicket = responseJson.data
+    let notifTitle:string = '';
+    let notifMsg:string = '';
+    
+    console.log({cTicket});
+    
+    if(cTicket.status==='SUCCESS') {
+      notifTitle = `✅ La requête ${cTicket.reference} est résolue.`;
+      notifMsg = `La requête ${cTicket.reference}: "${cTicket.title}" pour le client ${cTicket.user_name ? `${cTicket.user_name} ${cTicket.user_phone ? `(${cTicket.user_phone})` : cTicket.user_email ? `(${cTicket.user_email})` : ''}` : cTicket.user_phone ? cTicket.user_phone : cTicket.user_email ? cTicket.user_email : ''} est résolue.`;
+      // if(){notifMsg+=``;}
+      if(cTicket.notes && cTicket.notes?.length>0) {notifMsg+=`Veuillez lire les ${cTicket.notes?.length} notes qui l'accompagnent pour plus de details.`}
+    }
+
+    if(cTicket.status==='FAILED') {
+      notifTitle = `❌ La requête ${cTicket.reference} n'a pas pu être résolue.`;
+      notifMsg = `La requête ${cTicket.reference}: "${cTicket.title}" pour le client ${cTicket.user_name ? `${cTicket.user_name} ${cTicket.user_phone ? `(${cTicket.user_phone})` : cTicket.user_email ? `(${cTicket.user_email})` : ''}` : cTicket.user_phone ? cTicket.user_phone : cTicket.user_email ? cTicket.user_email : ''} n'a pas pu être résolue.`;
+      // if(){notifMsg+=``;}
+      if(cTicket.notes && cTicket.notes?.length>0) {notifMsg+=`Veuillez lire les ${cTicket.notes?.length} notes qui l'accompagnent pour plus de details.`}
+    }
+    if(cTicket.status==='SUCCESS' || cTicket.status==='FAILED') {
+      const resNotif = await sendNotification({adminUserId:currentUserId, body:{
+        title: notifTitle,
+        content: notifMsg,
+        target: "customer-support", // "custom",
+        // users: ["676633724"]
+        // users: ["e852f3aa-79bf-4fcc-bc51-7e0eb50b93ef"]
+      }});
+    }
+  }
+  
   return responseJson;
 }
 
@@ -198,7 +265,7 @@ export default function Details() {
   const [isDisplayImageModalOpen, setIsDisplayImageModalOpen] = useState(false);
   const redirectRef:any = useRef();
   const cTicketData:any = useSelector(selectCurrentCustomerTicket);
-  const [isUpdateProofModalFormOpen, setIsUpdateProofModalFormOpen] = useState(false);
+  const [action, setAction] = useState('responsibility');
   const MAX_TAGS = 5;
   //Retrieve all the returned items from the hook
   // const { tags, handleAddTag, handleRemoveTag } = useTags(MAX_TAGS); // pass the maximum tags
@@ -232,7 +299,12 @@ export default function Details() {
     });
 
   const mutation = useMutation({
-      mutationFn: (data)=>handleUpdateCustomerTicket({ticketId:cTicketData?.id, currentUserId:currentUser?.id, body:data}),
+      mutationFn: (data)=>handleUpdateCustomerTicket({
+        ticketId:cTicketData?.id, 
+        currentUserId:currentUser?.id, 
+        body:data, 
+        action:action
+      }),
       onError: (err:any) => {
               console.error("onError : ", err.message);
               toast.error(`Erreur lors de la modification : ${err.message}`);		
@@ -278,6 +350,21 @@ export default function Details() {
     };
   }, []);
   /** ------------------------------------------------- */
+
+  // const removeTicketImage = (imgIndex: any) => {
+  //   const newImages = ticketImages.filter((_:any, index:any) => index !== imgIndex);
+  //   const newImagesToSubmit = ticketImagesToSubmit.filter((_:any, index:any) => index !== imgIndex);
+  //   setTicketImages(newImages)
+  //   setTicketImagesToSubmit(newImagesToSubmit)
+  // };
+
+  const handleImageClick = useCallback((index:any) => {
+    setIsDisplayImageModalOpen(index);
+  }, [setIsDisplayImageModalOpen]);
+
+  // const handleRemoveImage = useCallback((index:any) => {
+  //   removeTicketImage(index);
+  // }, [removeTicketImage]);
 
   return (
     
@@ -592,15 +679,17 @@ export default function Details() {
                 {cTicketData?.images?.map((item:any, index:any) => (
                   <>
                   <div 
+                  key={index}
                   className="mt-3" 
                   style={{width: 400, height: 400, borderRadius:'20px', position: 'relative', overflow:'hidden'}}
+                  onClick={() => handleImageClick(index)}
                   >
                     <Image
                       alt='vector background'
                       src={item}
                       layout='fill'
                       objectFit='cover'
-                      onClick={()=>setIsDisplayImageModalOpen(true)}
+                      // onClick={()=>setIsDisplayImageModalOpen(true)}
                     />
                     {/* <span 
                     style={{top:5, right:5, width: 40, height: 40, borderRadius:'20px', position: 'absolute', overflow:'hidden', background:'#ff000033', color:'white', display:'flex', justifyContent:'center', alignItems:'center', cursor:'pointer'}}
@@ -608,7 +697,7 @@ export default function Details() {
                       <MdClose size={24}/>
                     </span> */}
                     <DisplayImageModal
-                    isOpen={isDisplayImageModalOpen}
+                    isOpen={isDisplayImageModalOpen === index}
                     setIsOpen={setIsDisplayImageModalOpen}
                     image={item}
                     />

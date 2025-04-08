@@ -13,6 +13,7 @@ import CButton from './CButton';
 import { useDispatch, useSelector } from 'react-redux';
 import { setSearchTerm, selectSearchTerm } from '@/redux/slices/search';
 import CustomersFilterForm from './CustomTableFilters/CustomersFilterForm';
+import RegularisationFilterForm from './CustomTableFilters/RegularisationFilterForm';
 
 
 
@@ -75,13 +76,13 @@ const CustomTable: React.FC<CustomTableProps> = ({
 
   return (
     <>
-    <div className='flex justify-between items-center'>
+    <div className='flex flex-col md:flex-row justify-between items-center'>
       <SearchBar
       search={search}
       setSearch={setSearch}
       searchTerm={searchTerm}
       />
-      <div className='flex items-center gap-5 ml-[100px]'>        
+      <div className='flex items-center gap-5 ml-0 md:ml-[100px] mt-5 md:mt-0'>        
        
        {btn}
 
@@ -157,6 +158,10 @@ const CustomTable: React.FC<CustomTableProps> = ({
     <div className='mt-3'>
       {filterType === 'user' ? 
       <CustomersFilterForm
+      filterContent={filterContent}
+      setFilterContent={setFilterContent}/>
+      : filterType === 'regularisation' ?
+      <RegularisationFilterForm
       filterContent={filterContent}
       setFilterContent={setFilterContent}/>
       :<></>}

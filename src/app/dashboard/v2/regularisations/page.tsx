@@ -27,123 +27,78 @@ import { setKYCAccepted, setKYCAll, setKYCDeclined, setKYCNone, setKYCPending } 
 import { selectSearchTerm } from "@/redux/slices/search";
 import { useState } from "react";
 import { CustomerService } from "@/api/services/v2/customer";
+import { isObject } from "@/utils/utils";
 
 
-const infoData: TDataList[] = [
-    [
-        [{
-            label:{
-                text: "KYC aujourd'hui",
-                tooltip:"KYC aujourd'hui", 
-                fw:"bold", 
-                color:"#444"
-            },
-            value:{text:"75/120 comptes", fw:"bold", color:"#444"}
-        }],
-        [         
-            {
-                label:{text:checkCircleIcon, tooltip:"KYC Approuvés", fw:"", color:"#444", fs:'11px'},
-                value:{text:"65", fw:"bold", color:"#18BC7A", fs:'14px', tooltip:"KYC Approuvés",}
-            },
-            {
-              label:{text:waitCircleIcon, tooltip:"KYC En attente", fw:"", color:"#444", fs:'11px'},
-              value:{text:"4", fw:"bold", color:"#888", fs:'14px', tooltip:"En cours",}
-            },
-            {
-                label:{text:haltCircleIcon, tooltip:"KYC Rejetés", fw:"", color:"#444", fs:'11px'},
-                value:{text:"6", fw:"bold", color:"#F85D4B", fs:'14px', tooltip:"KYC Rejetés",}
-            },
-            {
-                label:{text:stopIcon, tooltip:"Pas de KYC", fw:"", color:"#444", fs:'11px'},
-                value:{text:"0", fw:"bold", color:"#888", fs:'14px', tooltip:"Pas de KYC",}
-            },
-        ]
-    ],
-    [
+let infoData: TDataList[] = [
+  [
       [{
-          label:{
-              text: "Total KYC",
-              tooltip:"Total KYC", 
-              fw:"bold", 
-              color:"#444"
-          },
-          value:{text:"5780/8852", fw:"bold", color:"#444"}
+          label:{text:"Regularisations aujourd'hui", fw:"bold", color:"#444"},
+          value:{text:"42", fw:"bold", color:"#444"}
       }],
-      [          
-          // {
-          //     label:{text:verifiedIcon, tooltip:"KYC Vérifiés", fw:"", color:"#444", fs:'11px'},
-          //     value:{text:"2781", fw:"bold", color:"#888", fs:'14px', tooltip:"KYC Vérifiés",}
-          // },
-          {
-              label:{text:checkCircleIcon, tooltip:"KYC Approuvés", fw:"", color:"#444", fs:'11px'},
-              value:{text:"2500", fw:"bold", color:"#18BC7A", fs:'14px', tooltip:"KYC Approuvés",}
-          },
-          {
-            label:{text:waitCircleIcon, tooltip:"KYC En attente", fw:"", color:"#444", fs:'11px'},
-            value:{text:"399", fw:"bold", color:"#888", fs:'14px', tooltip:"En cours",}
-          },
-          {
-              label:{text:haltCircleIcon, tooltip:"KYC Rejetés", fw:"", color:"#444", fs:'11px'},
-              value:{text:"281", fw:"bold", color:"#F85D4B", fs:'14px', tooltip:"KYC Rejetés",}
-          },
-          {
-              label:{text:stopIcon, tooltip:"Pas de KYC", fw:"", color:"#444", fs:'11px'},
-              value:{text:"0", fw:"bold", color:"#888", fs:'14px', tooltip:"Pas de KYC",}
-          },
-      ]
-    ],
-    [
       [{
-          label:{
-              text: "KYC traités aujourd'hui",
-              tooltip:"KYC traités aujourd'hui", 
-              fw:"bold", 
-              color:"#444"
-          },
-          value:{text:"5780/8852", fw:"bold", color:"#444"}
-      }],
-      [          
-          // {
-          //     label:{text:verifiedIcon, tooltip:"KYC Vérifiés", fw:"", color:"#444", fs:'11px'},
-          //     value:{text:"2781", fw:"bold", color:"#888", fs:'14px', tooltip:"KYC Vérifiés",}
-          // },
-          {
-              label:{text:checkCircleIcon, tooltip:"KYC Approuvés", fw:"", color:"#444", fs:'11px'},
-              value:{text:"2500", fw:"bold", color:"#18BC7A", fs:'14px', tooltip:"KYC Approuvés",}
-          },
-          {
-              label:{text:haltCircleIcon, tooltip:"KYC Rejetés", fw:"", color:"#444", fs:'11px'},
-              value:{text:"281", fw:"bold", color:"#F85D4B", fs:'14px', tooltip:"KYC Rejetés",}
-          },
-      ]
-    ],
+          label:{text:"Total Regularisations", fw:"", color:"#444"},
+          value:{text:"80", fw:"bold", color:"#444"}
+      }]
+  ],
+  [
+    [{
+        label:{text:"MOMO aujourd'hui", fw:"bold", color:"#444"},
+        value:{text:"42", fw:"bold", color:"#444"}
+    }],
+    [{
+        label:{text:"Total MOMO", fw:"", color:"#444"},
+        value:{text:"80", fw:"bold", color:"#444"}
+    }]
+  ],
+  [
+    [{
+        label:{text:"SEKURE aujourd'hui", fw:"bold", color:"#444"},
+        value:{text:"42", fw:"bold", color:"#444"}
+    }],
+    [{
+        label:{text:"Total SEKURE", fw:"", color:"#444"},
+        value:{text:"80", fw:"bold", color:"#444"}
+    }]
+  ]
 ];
 
-
-infoData[0][0][0].value.text = `${0}/${0} comptes`;
+infoData[0][0][0].value.text = 0;
 infoData[0][1][0].value.text = 0;
-infoData[0][1][1].value.text = 0;
-infoData[0][1][2].value.text = 0;
-infoData[0][1][3].value.text = 0;
-//
-infoData[1][0][0].value.text = `${0}/${0} comptes`;
-infoData[1][1][0].value.text = 0;
-infoData[1][1][1].value.text = 0;
-infoData[1][1][2].value.text = 0;
-infoData[1][1][3].value.text = 0;
-//
-infoData[2][0][0].value.text = 0;
-infoData[2][1][0].value.text = 0;
-infoData[2][1][1].value.text = 0;
+infoData[1][0][0].value.text = 0 + "  XAF";
+infoData[1][1][0].value.text = 0 + "  XAF";
+infoData[2][0][0].value.text = 0 + "  XAF";
+infoData[2][1][0].value.text = 0 + "  XAF";
+// infoData[3][0][0].value.text = 0;
+// infoData[3][1][0].value.text = 0 + "  XAF";
+// infoData[4][0][0].value.text = 0;
+// infoData[4][1][0].value.text = 0 + "  XAF";
+// infoData[3][1][1].value.text = 0;
+// infoData[3][1][2].value.text = 0;
+
+
 
 const getAllKYC = async ({queryKey}:any) => {
-  const [_key, filter, st] = queryKey;
+  const [_key, filter, filterContent, st] = queryKey;
   let params:any = {};
   if(st) params.searchTerm = st;
-  if(filter?.kyc_result) params.kyc_result = filter?.kyc_result;
-  if(filter?.kyc_status) params.kyc_status = filter?.kyc_status;
 
-  const response = await CustomerService.get_kyc_customers(params);
+  if(isObject(filter)){
+      Object.entries(filter).map(([key, value]:any[]) => {
+          if(value && value!== 'all') params[key] = value;
+      });
+  }
+  if(isObject(filterContent)){
+    Object.entries(filterContent).map(([key, value]:any[]) => {
+        if(value && value!== 'all') params[key] = value;
+    });
+}
+  
+  // if(filter?.kyc_result) params.kyc_result = filter?.kyc_result;
+  // if(filter?.kyc_status) params.kyc_status = filter?.kyc_status;
+  // if(filter?.regularisation_status) params.regularisation_status = filter?.regularisation_status;
+
+  const response = await CustomerService.get_regularisations(params);
   const responseJson = await response.json();
   if (!response.ok) {
     throw new Error(responseJson.message || 'Failed to get users'); 
@@ -153,7 +108,7 @@ const getAllKYC = async ({queryKey}:any) => {
   return responseJson.data; 
 };
 const getKYCStats = async () => {
-  const response = await CustomerService.get_kyc_stats();
+  const response = await CustomerService.get_regularisation_stats();
   const responseJson = await response.json();
   if (!response.ok) {
     throw new Error(responseJson.message || 'Failed to get users statistics'); 
@@ -170,7 +125,12 @@ export default function KYC() {
 	const [searchKYCDeclined, setSearchKYCDeclined] = useState('');
   const [searchKYCNone, setSearchKYCNone] = useState('');
 
-  
+  const [filterKYC, setFilterKYC] = useState('');
+	const [filterKYCAccepted, setFilterKYCAccepted] = useState('');
+	const [filterKYCPending, setFilterKYCPending] = useState('');
+	const [filterKYCDeclined, setFilterKYCDeclined] = useState('');
+  const [filterKYCNone, setFilterKYCNone] = useState('');
+
 	const dispatch = useDispatch();
 	const searchTerm:string = useSelector(selectSearchTerm);
 
@@ -187,7 +147,7 @@ export default function KYC() {
 
 
   const allKYCQueryRes = useQuery({
-      queryKey: ["allKYC", {}, searchKYC],
+      queryKey: ["allKYC", {regularisation_status:'ALL'}, filterKYC, searchKYC],
       queryFn: getAllKYC,
       onError: (err) => {
         toast.error("Failed to get KYC.");
@@ -201,7 +161,7 @@ export default function KYC() {
 
 
   const allKYCAcceptedQueryRes = useQuery({
-      queryKey: ["allKYCAccepted", {kyc_result:'APPROVED', kyc_status:'COMPLETED'}, searchKYCAccepted],
+      queryKey: ["allKYCAccepted", {regularisation_status:'QUEUED'}, filterKYCAccepted, searchKYCAccepted],
       queryFn: getAllKYC,
       onError: (err) => {
         toast.error("Failed to get Accepted KYC list.");
@@ -215,7 +175,7 @@ export default function KYC() {
   
 
   const allKYCPendingQueryRes = useQuery({
-      queryKey: ["allKYCPending", {kyc_status:'PENDING'}, searchKYCPending],
+      queryKey: ["allKYCPending", {regularisation_status:'VERIFIED'}, filterKYCPending, searchKYCPending],
       queryFn: getAllKYC,
       onError: (err) => {
         toast.error("Failed to get Pending KYC list.");
@@ -229,7 +189,7 @@ export default function KYC() {
 
 
   const allKYCDeclinedQueryRes = useQuery({
-      queryKey: ["allKYCDeclined", {kyc_result:'DECLINED', kyc_status:'COMPLETED'}, searchKYCDeclined],
+      queryKey: ["allKYCDeclined", {regularisation_status:'PROCESSING'}, filterKYCDeclined, searchKYCDeclined],
       queryFn: getAllKYC,
       onError: (err) => {
         toast.error("Failed to get Declined KYC list.");
@@ -243,7 +203,7 @@ export default function KYC() {
 
 
   const allKYCNoneQueryRes = useQuery({
-    queryKey: ["allKYCNone", {kyc_status:'NOT_STARTED'}, searchKYCNone],
+    queryKey: ["allKYCNone", {regularisation_status:'PAID'}, filterKYCNone, searchKYCNone],
       queryFn: getAllKYC,
       onError: (err) => {
         toast.error("Failed to get None KYC list.");
@@ -258,31 +218,24 @@ export default function KYC() {
 
   if(allKYCStatsQueryRes?.data) {
 
-    infoData[0][0][0].value.text = `${(allKYCStatsQueryRes?.data?.stats?.today?.countAll?.toLocaleString('fr-FR') ?? 0)} comptes`;
-    infoData[0][1][0].value.text = (allKYCStatsQueryRes?.data?.stats?.today?.countAccepted?.toLocaleString('fr-FR') ?? 0);
-    infoData[0][1][1].value.text = (allKYCStatsQueryRes?.data?.stats?.today?.countPending?.toLocaleString('fr-FR') ?? 0);
-    infoData[0][1][2].value.text = (allKYCStatsQueryRes?.data?.stats?.today?.countDeclined?.toLocaleString('fr-FR') ?? 0);
-    infoData[0][1][3].value.text = (allKYCStatsQueryRes?.data?.stats?.today?.countNone?.toLocaleString('fr-FR') ?? 0);
+    infoData[0][0][0].value.text = `${(allKYCStatsQueryRes?.data?.customers?.today_completed_reg_users_count?.toLocaleString('fr-FR') ?? 0)}`;
+    infoData[0][1][0].value.text = `${(allKYCStatsQueryRes?.data?.customers?.overall_completed_reg_users_count?.toLocaleString('fr-FR') ?? 0)} / ${(allKYCStatsQueryRes?.data?.customers?.overall_reg_users_count?.toLocaleString('fr-FR') ?? 0)}`;
     
-    infoData[1][0][0].value.text = `${(allKYCStatsQueryRes?.data?.stats?.overall?.countAll?.toLocaleString('fr-FR') ?? 0)} comptes`;
-    infoData[1][1][0].value.text = (allKYCStatsQueryRes?.data?.stats?.overall?.countAccepted?.toLocaleString('fr-FR') ?? 0);
-    infoData[1][1][1].value.text = (allKYCStatsQueryRes?.data?.stats?.overall?.countPending?.toLocaleString('fr-FR') ?? 0);
-    infoData[1][1][2].value.text = (allKYCStatsQueryRes?.data?.stats?.overall?.countDeclined?.toLocaleString('fr-FR') ?? 0);
-    infoData[1][1][3].value.text = (allKYCStatsQueryRes?.data?.stats?.overall?.countNone?.toLocaleString('fr-FR') ?? 0);
+    infoData[1][0][0].value.text = `${(allKYCStatsQueryRes?.data?.transactions?.standbypayout?.todayTotal?.todayTotalAmount?.toLocaleString('fr-FR') ?? 0)} XAF`;
+    infoData[1][1][0].value.text = `${(allKYCStatsQueryRes?.data?.transactions?.standbypayout?.avgTotal?.totalAmount?.toLocaleString('fr-FR') ?? 0)} XAF`;
 
-    infoData[2][0][0].value.text = `${(allKYCStatsQueryRes?.data?.stats?.completedToday?.countAll?.toLocaleString('fr-FR') ?? 0)} comptes`;
-    infoData[2][1][0].value.text = (allKYCStatsQueryRes?.data?.stats?.completedToday?.countAccepted?.toLocaleString('fr-FR') ?? 0);
-    infoData[2][1][1].value.text = (allKYCStatsQueryRes?.data?.stats?.completedToday?.countDeclined?.toLocaleString('fr-FR') ?? 0);
-
+    infoData[2][0][0].value.text = `${(allKYCStatsQueryRes?.data?.transactions?.standbyrelease?.todayTotal?.todayTotalAmount?.toLocaleString('fr-FR') ?? 0)} XAF`;
+    infoData[2][1][0].value.text = `${(allKYCStatsQueryRes?.data?.transactions?.standbyrelease?.avgTotal?.totalAmount?.toLocaleString('fr-FR') ?? 0)} XAF`;
+    
   }
 
 	return (
 		<Layout
-		title={"Vérifications KYC V2"}
+		title={"Régularisations"}
 		>
 			<>
 			<section className="px-2">
-        <div className='mb-10 grid lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-1' style={{gap:'20px'}}>
+        <div className='mb-10 grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1' style={{gap:'20px'}}>
             
             {allKYCStatsQueryRes?.status === 'loading' ? 
                 <div className="flex justify-center w-full py-10">
@@ -301,13 +254,13 @@ export default function KYC() {
       </section>
       <section className="my-10">
           <Tabs defaultValue="pending" className="w-full">
-            <div className="border-b-0 md:border-b-1">
-            <TabsList className="TabsList grid grid-cols-2 md:block mb-[200px] md:mb-0">
-              <TabsTrigger className="TabsTrigger border-b-1 md:border-b-0" value="pending">KYC en cours</TabsTrigger>
-              <TabsTrigger className="TabsTrigger border-b-1 md:border-b-0" value="accepted">KYC approuvés</TabsTrigger>
-              <TabsTrigger className="TabsTrigger border-b-1 md:border-b-0" value="declined">KYC rejetés</TabsTrigger>
-              <TabsTrigger className="TabsTrigger border-b-1 md:border-b-0" value="none">Pas de KYC</TabsTrigger>
-              <TabsTrigger className="TabsTrigger border-b-1 md:border-b-0" value="all">Tous les KYC</TabsTrigger>              
+            <div className="border-b-1">
+            <TabsList className="TabsList">
+              <TabsTrigger className="TabsTrigger" value="pending">Vérifiés</TabsTrigger>
+              <TabsTrigger className="TabsTrigger" value="accepted">{`En file d'attente`}</TabsTrigger>
+              <TabsTrigger className="TabsTrigger" value="declined">En cours de traitement</TabsTrigger>
+              <TabsTrigger className="TabsTrigger" value="none">Payés</TabsTrigger>
+              <TabsTrigger className="TabsTrigger" value="all">Tous</TabsTrigger>              
             </TabsList>
             </div>
             <div className={`mt-5`}>
@@ -316,6 +269,8 @@ export default function KYC() {
                 isLoading={allKYCQueryRes.status == 'loading'}
                 search={searchKYC}
 						    setSearch={setSearchKYC}
+                filter={filterKYC}
+						    setFilter={setFilterKYC}
                 />
               </TabsContent>
               <TabsContent value="accepted">
@@ -323,6 +278,8 @@ export default function KYC() {
                 isLoading={allKYCAcceptedQueryRes.status == 'loading'}
                 search={searchKYCAccepted}
 						    setSearch={setSearchKYCAccepted}
+                filter={filterKYCAccepted}
+						    setFilter={setFilterKYCAccepted}
                 />
               </TabsContent>
               <TabsContent value="declined">
@@ -330,6 +287,8 @@ export default function KYC() {
                 isLoading={allKYCDeclinedQueryRes.status == 'loading'}
                 search={searchKYCDeclined}
 						    setSearch={setSearchKYCDeclined}
+                filter={filterKYCDeclined}
+						    setFilter={setFilterKYCDeclined}
                 />
               </TabsContent>
               <TabsContent value="pending">
@@ -337,6 +296,8 @@ export default function KYC() {
                 isLoading={allKYCPendingQueryRes.status == 'loading'}
                 search={searchKYCPending}
 						    setSearch={setSearchKYCPending}
+                filter={filterKYCPending}
+						    setFilter={setFilterKYCPending}
                 />
               </TabsContent>
               <TabsContent value="none">
@@ -344,6 +305,8 @@ export default function KYC() {
                 isLoading={allKYCNoneQueryRes.status == 'loading'}
                 search={searchKYCNone}
 						    setSearch={setSearchKYCNone}
+                filter={filterKYCNone}
+						    setFilter={setFilterKYCNone}
                 />
   KYC          </TabsContent>
             </div>

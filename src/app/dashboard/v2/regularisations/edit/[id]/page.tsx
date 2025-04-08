@@ -41,8 +41,8 @@ const Edit = ({ params }: { params: { id: string} }) => {
 
   return (
     <Layout
-      title={"Régularisations"}
-      backLink={'/regularisation'}
+      title={"Vérifications KYC"}
+      backLink={'/kyc'}
     >
       
     <section className="flex justify-start items-start">

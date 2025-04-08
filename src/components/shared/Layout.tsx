@@ -1,5 +1,6 @@
 "use client"
 import React, { useState } from "react";
+import cstyle from './styles/layout-style.module.scss';
 import Navbar from "./Navbar";
 import SideBar from "./SideBar";
 import Modal from "./Modal/Modal";
@@ -77,6 +78,10 @@ const Layout: React.FC<LayoutProps> = ({ children, title, backLink, goBack }) =>
       && !pathname.startsWith(urlsV2.usersAccounts.root) 
       && !pathname.startsWith(urlsV2.kyc.root)
       && !pathname.startsWith(urlsV2.notifications.root)
+      && !pathname.startsWith(urlsV2.payment_services.root)
+      && !pathname.startsWith(urlsV2.customer_tickets.root)
+      && !pathname.startsWith(urlsV2.regularisations.root)
+      
       ) 
     )){
       router.push(previousUrl || urlsV2.kyc.root);
@@ -96,15 +101,15 @@ const Layout: React.FC<LayoutProps> = ({ children, title, backLink, goBack }) =>
     /** //////////////////////////////////////////// */
     
   return (
-    <main className="flex">
+    <main className="flex w-full">
         <div className="relative">
           <SideBar user={user} isExpanded={isExpanded} setIsExpanded={setIsExpanded}/>
         </div>
-        <div className="flex flex-col w-full" style={{width: isExpanded ? 'calc(100vw - 300px)' : 'calc(100vw - 120px)', transition:'all ease-in .3s'}}>
+        <div className={`${cstyle['layout-container']} flex flex-col w-full`} style={{width: isExpanded ? 'calc(100vw - 300px)' : 'calc(100vw - 120px)', transition:'all ease-in .3s'}}>
             <div className="relative w-full">
               <Navbar title={title} goBack={goBack} backLink={backLink} isExpanded={isExpanded}/>
             </div>
-            <div className="pl-10 pt-3 pb-10 w-full">
+            <div className="pl-5 md:pl-10 pr-5 md:pr-0   pt-3 pb-10 w-full">
                 {children}
             </div>
         </div>

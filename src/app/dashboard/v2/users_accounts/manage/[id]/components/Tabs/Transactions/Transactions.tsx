@@ -100,8 +100,8 @@ const Transactions = ({search, setSearch}:Props) => {
 	});
 
   return (
-    <section className="p-6">
-      <div className="w-full flex justify-start items-center">
+    <section className="p-0 md:p-6 pt-6 md:pt-0">
+      <div className="w-full flex flex-col md:flex-row gap-10 md:gap-0 justify-start items-center">
         <div className="pr-10">
           <h1 className="text-sm font-semibold mb-2">Nombre de transactions<span className="text-base font-semibold text-[#18BC7A] ml-5">{customerDetails?.transactions?.stats?.totalCount ?? 0}</span></h1>
           <div className="flex justify-start items-center gap-10 w-full">

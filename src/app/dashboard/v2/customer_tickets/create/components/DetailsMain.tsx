@@ -15,7 +15,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import classNames from "classnames";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 import { HashLoader } from "react-spinners";
@@ -121,12 +121,24 @@ const categoryData = [
 		label:`Informations de l'utilisateur`,
 	},
   {
+		key:'v1v2',
+		label:'Transfert V1 vers V2',
+	},
+  {
+		key:'wallet_standby',
+		label:'Solde de verification',
+	},
+  {
 		key:'wallet_topup',
 		label:'Recharge de compte',
 	},
   {
 		key:'wallet_withdrawal',
 		label:'Retrait de compte',
+	},
+  {
+		key:'card_access',
+		label:'Acces a la carte',
 	},
   {
 		key:'card_purchase',
@@ -143,6 +155,10 @@ const categoryData = [
   {
 		key:'card_transaction',
 		label:'Paiement par carte',
+	},
+  {
+		key:'card_reimbursement',
+		label:'Remboursement dans la carte',
 	},
   {
 		key:'chinpay',
@@ -433,6 +449,14 @@ export default function Details() {
     setTicketImages(newImages)
     setTicketImagesToSubmit(newImagesToSubmit)
   };
+
+  const handleImageClick = useCallback((index:any) => {
+    setIsDisplayImageModalOpen(index);
+  }, [setIsDisplayImageModalOpen]);
+
+  const handleRemoveImage = useCallback((index:any) => {
+    removeTicketImage(index);
+  }, [removeTicketImage]);
   
 
   return (
@@ -454,31 +478,7 @@ export default function Details() {
                 title="Informations requete client"
                 />
                 <div className="w-full flex flex-col gap-7 mb-7">
-                  <FormField
-                    control={form.control}
-                    name="category_name"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-gray-900 text-sm font-semibold tracking-tight">Catégorie *</FormLabel>
-                        <FormControl>
-                          <Select 
-                            {...field}
-                            placeholder="Sélectionner la categorie" 
-                            style={{width:'100%', background: '#F4EFE3'}}
-                            className={`rounded-xs text-gray-900 font-normal`}                          
-                            onChange={(data) => handleCategoryChange(data)}
-                          >
-                            {categoryData.map((item,idx) => (
-                            <SelectItem key={item.key} value={item.key}>
-                              {item.label}
-                            </SelectItem>
-                            ))}
-                          </Select>
-                        </FormControl>
-                        <FormMessage className="text-red-400"/>
-                      </FormItem>
-                    )}
-                  />
+                  
                   <FormField
                     control={form.control}
                     name="title"
@@ -507,7 +507,7 @@ export default function Details() {
                   />
                   
                   <div className="grid grid-cols-2 gap-x-7 gap-y-7">
-                      <FormField
+                      {/* <FormField
                         control={form.control}
                         name="status"
                         render={({ field }) => (
@@ -531,31 +531,56 @@ export default function Details() {
                             </FormControl>
                           </FormItem>
                         )}
-                      />
+                      /> */}
                       <FormField
-                        control={form.control}
-                        name="priority"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className="text-gray-900 text-sm font-semibold tracking-tight">Priorité *</FormLabel>
-                            <FormControl>
-                              <Select 
-                                {...field}
-                                placeholder="Sélectionner la statut" 
-                                style={{width:'100%', background: '#F4EFE3'}}
-                                className={`rounded-xs text-gray-900 font-normal`}
-                                defaultSelectedKeys={[field.value ?? ""]}
-                                onChange={(data) => handlePriorityChange(data)}
-                              >
-                                {priorityData.map((item,idx) => (
-                                <SelectItem key={item.key} value={item.key}>
-                                  {item.label}
-                                </SelectItem>
-                                ))}
-                              </Select>
-                            </FormControl>
-                          </FormItem>
-                        )}
+                      control={form.control}
+                      name="category_name"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-gray-900 text-sm font-semibold tracking-tight">Catégorie *</FormLabel>
+                          <FormControl>
+                            <Select 
+                              {...field}
+                              placeholder="Sélectionner la categorie" 
+                              style={{width:'100%', background: '#F4EFE3'}}
+                              className={`rounded-xs text-gray-900 font-normal`}                          
+                              onChange={(data) => handleCategoryChange(data)}
+                            >
+                              {categoryData.map((item,idx) => (
+                              <SelectItem key={item.key} value={item.key}>
+                                {item.label}
+                              </SelectItem>
+                              ))}
+                            </Select>
+                          </FormControl>
+                          <FormMessage className="text-red-400"/>
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="priority"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-gray-900 text-sm font-semibold tracking-tight">Priorité *</FormLabel>
+                          <FormControl>
+                            <Select 
+                              {...field}
+                              placeholder="Sélectionner la statut" 
+                              style={{width:'100%', background: '#F4EFE3'}}
+                              className={`rounded-xs text-gray-900 font-normal`}
+                              defaultSelectedKeys={[field.value ?? ""]}
+                              onChange={(data) => handlePriorityChange(data)}
+                            >
+                              {priorityData.map((item,idx) => (
+                              <SelectItem key={item.key} value={item.key}>
+                                {item.label}
+                              </SelectItem>
+                              ))}
+                            </Select>
+                          </FormControl>
+                        </FormItem>
+                      )}
                       />
                   </div>
                 </div>
@@ -565,7 +590,7 @@ export default function Details() {
                   title="Informations utilisateur"        
                   />
                   <div className="w-full flex flex-col gap-7">
-                    <div className="grid grid-cols-3 gap-x-7 gap-y-7 mt-5">
+                    <div className="grid grid-cols-2 gap-x-7 gap-y-7 mt-5">
                       <FormField
                         control={form.control}
                         name="user_phone"
@@ -590,7 +615,7 @@ export default function Details() {
                           </FormItem>
                         )}
                         />
-                      <FormField
+                      {/* <FormField
                         control={form.control}
                         name="country"
                         render={({ field }) => (
@@ -614,24 +639,24 @@ export default function Details() {
                             </FormControl>
                           </FormItem>
                         )}
-                      />
+                      /> */}
                     </div>
-                    <FormField
+                    {/* <FormField
                       control={form.control}
                       name="user_infos"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-gray-900 text-sm font-semibold tracking-tight">Autres infos de l'utilisateur</FormLabel>
+                          <FormLabel className="text-gray-900 text-sm font-semibold tracking-tight">{`Autres infos de l'utilisateur`}</FormLabel>
                           <FormControl>
                             <Textarea className="px-6 font-normal bg-[#F4EFE3]" {...field}/>
                           </FormControl>
                         </FormItem>
                       )}
-                    />
+                    /> */}
                   </div>
                 </div>
 
-                <div className="pr-6 py-3 flex-1 w-full">           
+                {/* <div className="pr-6 py-3 flex-1 w-full">           
                   <Title 
                   title="Informations carte"        
                   />
@@ -641,7 +666,6 @@ export default function Details() {
                       name="card_infos"
                       render={({ field }) => (
                         <FormItem>
-                          {/* <FormLabel className="text-gray-900 text-sm font-semibold tracking-tight"></FormLabel> */}
                           <FormControl>
                             <Textarea className="px-6 font-normal bg-[#F4EFE3]" {...field}/>
                           </FormControl>
@@ -661,7 +685,6 @@ export default function Details() {
                       name="transaction_infos"
                       render={({ field }) => (
                         <FormItem>
-                          {/* <FormLabel className="text-gray-900 text-sm font-semibold tracking-tight"></FormLabel> */}
                           <FormControl>
                             <Textarea className="px-6 font-normal bg-[#F4EFE3]" {...field}/>
                           </FormControl>
@@ -669,7 +692,7 @@ export default function Details() {
                       )}
                     />
                   </div>
-                </div>
+                </div> */}
 
 
               </div>
@@ -760,23 +783,31 @@ export default function Details() {
                 {ticketImages?.map((item:any, index:any) => (
                   <>
                   <div 
+                  key={index}
                   className="mt-3" 
                   style={{width: 400, height: 400, borderRadius:'20px', position: 'relative', overflow:'hidden'}}
+                  onClick={() => handleImageClick(index)}
                   >
                     <Image
                       alt='vector background'
                       src={item}
                       layout='fill'
                       objectFit='cover'
-                      onClick={()=>setIsDisplayImageModalOpen(true)}
+                      // onClick={() => handleImageClick(index)}
+                      // onClick={()=>setIsDisplayImageModalOpen(index)}
                     />
                     <span 
                     style={{top:5, right:5, width: 40, height: 40, borderRadius:'20px', position: 'absolute', overflow:'hidden', background:'#ff000033', color:'white', display:'flex', justifyContent:'center', alignItems:'center', cursor:'pointer'}}
-                    onClick={()=>removeTicketImage(index)}>
+                    // onClick={()=>removeTicketImage(index)}
+                    onClick={(e) => {
+                      e.stopPropagation(); // Prevent triggering the image click
+                      handleRemoveImage(index);
+                    }}
+                    >
                       <MdClose size={24}/>
                     </span>
                     <DisplayImageModal
-                    isOpen={isDisplayImageModalOpen}
+                    isOpen={isDisplayImageModalOpen === index}
                     setIsOpen={setIsDisplayImageModalOpen}
                     image={item}
                     />

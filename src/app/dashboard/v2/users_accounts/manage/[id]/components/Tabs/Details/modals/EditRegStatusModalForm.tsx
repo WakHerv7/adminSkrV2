@@ -35,10 +35,11 @@ import { GabonService } from '@/api/services/gabon';
 import { getCurrentDateTime } from '@/utils/utils';
 import { UserService } from '@/api/services/user';
 import { CustomerService } from '@/api/services/v2/customer';
+import { Select, SelectItem } from '@nextui-org/select';
 // import { useNavigate } from 'react-router-dom';
 export const formSchema = z.object({
-    amount: z.number(
-        {message:'Entrez un montant'}
+    status: z.string(
+        {message:'Veuillez choisir un statut'}
     ),
     // phone: z.string(
     //     {message:'Entrez un numero de telephone'}
@@ -46,13 +47,14 @@ export const formSchema = z.object({
 });
 
     
-const handleReleaseStandByBalance = async (queryData:any) => {
-    const {userId, adminUserId} = queryData;
-    console.log("handleReleaseStandByBalance : ", {userId, adminUserId});
+const handleUpdateRegStatus = async (queryData:any) => {
+    const {status, userId, adminUserId} = queryData;
+    console.log("handleUpdateRegStatus : ", {userId, adminUserId});
     // return {currentUserId, customerId, label, body}
-    const response = await CustomerService.handle_release_standby_balance({
-        body:{id: userId},
-        adminUserId
+    const response = await CustomerService.update_one_customer_reg_status({ 
+        userId:adminUserId, 
+        customerId: userId,
+        body:{status, id:userId },
     }); 
     if (!response.ok) {
         const responseBody = await response.json();
@@ -63,10 +65,29 @@ const handleReleaseStandByBalance = async (queryData:any) => {
     
 }
 
+const statusData = [
+	{
+		key:'VERIFIED',
+		label:"VERIFIED",
+	},
+	{
+		key:'QUEUED',
+		label:"QUEUED",
+	},
+    {
+		key:'PROCESSING',
+		label:"PROCESSING",
+	},
+    {
+		key:'PAID',
+		label:"PAID",
+	},
+];
+
 interface TransferModalProps {
     customer?:any,
 }
-export default function ReleaseStandByAccountBalanceModalForm({customer}:TransferModalProps) {
+export default function EditRegStatusModalForm({customer}:TransferModalProps) {
     const pathname = usePathname();
     const redirectRef:any = useRef();
 
@@ -76,22 +97,21 @@ export default function ReleaseStandByAccountBalanceModalForm({customer}:Transfe
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues : {
-            amount: customer.old_balance_xaf || 0,
-            // phone: "66192325",
+            status: customer?.regularisation_status,
         }
     });
     const currentUser = useSelector(selectCurrentUser);
     const customerDetails:any = useSelector(selectCurrentCustomerDetails);
 
     const mutation = useMutation({
-		mutationFn: (data)=>handleReleaseStandByBalance({userId:customer.id, adminUserId:currentUser.id}),
+		mutationFn: (data:any)=>handleUpdateRegStatus({status:data.status, userId:customer.id, adminUserId:currentUser.id}),
 		onError: (err:any) => {
             console.error("onError : ", err.message);
-            toast.error(`Une erreur est survenue lors du Reversement vers solde actif : ${err.message}`);		
+            toast.error(`Une erreur est survenue lors de la Modification de statut de regularisation : ${err.message}`);		
 		},
 		onSuccess: (data) => {
             console.log("onSuccess : ", data);
-            toast.success(`Reversement de ${form.getValues('amount')} vers solde actif effectué avec SUCCES !`);
+            toast.success(`Modification de statut de regularisation effectué avec SUCCES !`);
             redirectRef.current.href = window.location.pathname;
             redirectRef.current.click();
 		},
@@ -119,11 +139,17 @@ export default function ReleaseStandByAccountBalanceModalForm({customer}:Transfe
         }
     }
 
+
+    const handleStatusChange = (data: any) => {
+        const value = data.target.value;
+        form.setValue('status', value);
+    }
+
     return (
     <div className="bg-white m-auto p-8 rounded-md min-w-[350px] max-w-[700px]">
         <div className="flex justify-between mb-5 gap-10">
             <Title
-            title={`Regularisation`}//{`Reversement vers solde actif`}
+            title={`Modification de statut de regularisation`}
             />
             <Link href={pathname}>
                 <FaX size={16} color={"#444"}/>
@@ -133,57 +159,40 @@ export default function ReleaseStandByAccountBalanceModalForm({customer}:Transfe
         <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit, onError)}>
             <div className="space-y-[20px]">
-                <div>
-                <p className="text-gray-800 text-sm font-normal tracking-tight">
-                    Statut regularisation
-                </p>
-                <span className="">{customer?.regularisation_status}</span>
-                </div>
-
-                <div>
-                <p className="text-gray-800 text-sm font-normal tracking-tight">
-                    Methode regularisation
-                </p>
-                <span className="">{customer?.regularisation_method}</span>
-                </div>
-
-                <div>
-                <p className="text-gray-800 text-sm font-normal tracking-tight">
-                    Numero telephone regularisation
-                </p>
-                <span className="">{customer?.regularisation_phone}</span>
-                </div>
                 <FormField
                 control={form.control}
-                name="amount"
+                name="status"
                 render={({ field }) => (
                     <FormItem>
-                    <FormLabel className="text-gray-900 text-sm font-[500] tracking-tight">Montant à reverser</FormLabel>
-                    &nbsp;&nbsp;&nbsp;
-                    <span className='text-xs text-gray-500'>{`(Montant maximal à retirer : ${(customer.old_balance_xaf || 0)?.toLocaleString('fr-FR')})`}</span>
+                    <FormLabel className="text-gray-900 text-sm font-[500] tracking-tight">Statut de regularisation</FormLabel>
                     <FormControl>
-                        <Input 
-                        type="number" 
-                        min={0}
-                        max={Math.floor(customer.old_balance_xaf) ?? 1000000000000000000000000 }
-                        value={field.value} 
-                        className="px-2 w-full bg-[#F4EFE3]"
-                        disabled
-                        />
+                    <Select
+                          {...field}
+                          placeholder="Sélectionner le pays" 
+                          style={{width:'100%', background: '#F4EFE3'}}
+                          className={`rounded-xs text-gray-900 font-normal`}
+                          defaultSelectedKeys={[field.value]}
+                          onChange={(data) => handleStatusChange(data)}
+                        >
+                          {statusData.map((item,idx) => (
+                          <SelectItem key={item.key} value={item.key}>
+                            {item.label}
+                          </SelectItem>
+                          ))}
+                        </Select>
                     </FormControl>
                     <FormMessage className="text-red-400"/>
                     </FormItem>
                 )}
                 />
-                
             </div>
             
             <div 
-            style={{display: (getFormLabels()?.max && getFormLabels()?.max !== 0)? 'block':'none'}}
+            // style={{display: (getFormLabels()?.max && getFormLabels()?.max !== 0)? 'block':'none'}}
             className={`mt-[10vh]`}>
             <CButton 
-            text={`Reverser`} 
-            btnStyle={`red`}
+            text={`Modifier`} 
+            btnStyle={`green`}
             type={"submit"}
             width={'100%'}
             height={"35px"}

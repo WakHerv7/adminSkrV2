@@ -43,11 +43,11 @@ export default function Index({isLoading, search, setSearch}:Props) {
 				item.status == 'FAILED' ?
 				<LabelWithBadge className={`text-xs`} label={'Echec'} badgeColor={'#F85D4B'} textColor={'#444'}/>
 				:
-				item.status?.toUpperCase() == 'PENDING' ?
-				<LabelWithBadge className={`text-xs`} label={'En cours'} badgeColor={'orange'} textColor={'#444'}/>
+				item.status?.toUpperCase() == 'PENDING' && !item.order_id ?
+				<LabelWithBadge className={`text-xs`} label={'En attente'} badgeColor={'orange'} textColor={'#444'}/>
 				:
-				item.status == 'INITIATED' ?
-				<LabelWithBadge className={`text-xs`} label={'Initial'} badgeColor={'#007FFF'} textColor={'#444'}/>
+				item.status == 'PENDING'  && item.order_id ?
+				<LabelWithBadge className={`text-xs`} label={'En cours'} badgeColor={'#007FFF'} textColor={'#444'}/>
 				:
 				(item.status == 'CANCELLED' || item.status == 'CANCELED') ?
 				<LabelWithBadge className={`text-xs`} label={'Suspendu'} badgeColor={'#444'} textColor={'#444'}/>

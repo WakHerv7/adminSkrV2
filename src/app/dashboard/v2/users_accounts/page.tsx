@@ -279,6 +279,9 @@ export default function Home() {
                 nbCartes: item.number_of_cards,       //item.numberOfCards,
                 totalTrx: item.total_transaction_amount?.toLocaleString('fr-FR'),      // item.totalTransactionAmount.toLocaleString('fr-FR'),
                 avgTrx: item.average_transaction_amount ? Math.round(item.average_transaction_amount)?.toLocaleString('fr-FR') : 0,      // item.avgTransactionAmount ? Math.round(item.avgTransactionAmount).toLocaleString('fr-FR') : 0,
+                oldNew: item.is_v1 ? 
+                    <LabelWithBadge label="Ancien" badgeColor="#000"/>
+                    :<LabelWithBadge label="Nouveau" badgeColor="#18BC7A"/>,
                 kyc: item.kyc_result == 'APPROVED' 
                     ?<LabelWithBadge label="Approuvé" badgeColor="#18BC7A"/>
                     :item.kyc_result == 'DECLINED'

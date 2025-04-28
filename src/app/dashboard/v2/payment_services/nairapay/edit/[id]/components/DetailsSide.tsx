@@ -12,6 +12,8 @@ import { FaCheck, FaX } from "react-icons/fa6";
 import { useMutation } from "react-query";
 import ConfirmStatusModal from "./modals/ConfirmSubmitModal";
 import { selectCurrentChnPayment } from "@/redux/slices_v2/chinpay";
+import classNames from "classnames";
+import { HashLoader } from "react-spinners";
 
 
 const handleUpdateChnPayment = async (queryData:any) => {
@@ -117,6 +119,22 @@ export default function DetailsSide() {
       :
       <></>}
 
+
+      <div
+        style={{zIndex:9000}}
+          className={classNames(
+              "transition-all invisible z-20 bg-blue-900/30 opacity-0 absolute top-0 left-0 h-full w-full flex items-center justify-center",
+              {
+                  "!opacity-100 !visible z-20": mutation.isLoading,
+              }
+          )}
+      >
+          <HashLoader
+              className="shrink-0"
+              size={50}
+              color="#18BC7A"
+          />
+      </div>
       <a ref={redirectRef} hidden href="#"></a>
 
     </div>

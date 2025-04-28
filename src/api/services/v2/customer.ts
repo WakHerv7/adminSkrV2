@@ -91,9 +91,10 @@ export class CustomerService {
     static get_one_customer_transfers= (id:string) =>{
         return BaseMethods.getRequest(customerUrlsV2.GET_ONE_CUSTOMER_TRANSFERS(id), true);
     }
-    static get_stats_countries = ({limitDate}: {limitDate?:string}) => {
+    static get_stats_countries = ({startDate, limitDate}: {startDate?:string, limitDate?:string}) => {
         let query_params:any = {};
-        if(limitDate) query_params.limitDate =limitDate;        
+        if(startDate ) query_params.startDate=startDate;
+        if(limitDate) query_params.limitDate =limitDate;
         return BaseMethods.getRequest(customerUrlsV2.STATS_PER_COUNTRY, true, query_params);
     }
     // static get_stats_countries = () =>

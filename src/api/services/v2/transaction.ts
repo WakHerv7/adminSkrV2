@@ -11,9 +11,10 @@ export class TransactionService {
         if(limitDate) query_params.limitDate =limitDate;
         return BaseMethods.postRequest(transactionUrlsV2.MANAGE_USER_ACCOUNT_TRANSACTIONS, body, true, query_params);
     }
-    static get_stats_periodic = ({period, limitDate, separateDecline}: {period?:string, limitDate?:string, separateDecline?:boolean}) => {
+    static get_stats_periodic = ({period, startDate, limitDate, separateDecline}: {period?:string, startDate?:string, limitDate?:string, separateDecline?:boolean}) => {
         let query_params:any = {};
         if(period) query_params.period =period;
+        if(startDate) query_params.startDate =startDate;
         if(limitDate) query_params.limitDate =limitDate;        
         if(separateDecline) query_params.separateDecline ='true';
         return BaseMethods.getRequest(transactionUrlsV2.STATS_PERIODIC, true, query_params);

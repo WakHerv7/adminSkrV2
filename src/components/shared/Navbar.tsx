@@ -13,18 +13,18 @@ import cstyle from './styles/navbar-style.module.scss';
 import Modal from "./Modal/Modal";
 import { useDispatch, useSelector } from "react-redux";
 import { logOut, selectCurrentUser } from "@/redux/slices/auth";
-import { selectCurrentVersion, setVersion } from "@/redux/slices_v2/settings";
+import { selectCurrentVersion, selectLimitDate, selectStartDate, setVersion } from "@/redux/slices_v2/settings";
 import CustomDropdown2 from "./CustomDropdown2";
 import CButton from "./CButton";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { AuthService } from "@/api/services/auth";
 import toast from "react-hot-toast";
 import { useMutation } from "react-query";
 import { hasPermission } from "@/utils/permissions";
 import { useState } from "react";
 import ChangeLimitDateModalForm from "@/app/dashboard/v2/home/modals/ChangeLimitDateModalForm";
-import { selectLimitDate } from "@/redux/slices_v2/settings";
 import { getTextFormattedDate, parseDateObject } from "@/utils/DateFormat";
+import ChangeStartDateModalForm from "@/app/dashboard/v2/home/modals/ChangeStartDateModalForm";
 type Props = {
     title: string | undefined;
     backLink?: string;
@@ -44,6 +44,7 @@ const handleLogout = async (email:string) => {
 
 export default function Navbar(props:Props) {
     const router = useRouter();
+    const pathname = usePathname();
     const dispatch = useDispatch();
     const { title, backLink, goBack, isExpanded } = props;
     const classNames = (...classes: string[]): string =>
@@ -51,9 +52,12 @@ export default function Navbar(props:Props) {
 
     const currentUser = useSelector(selectCurrentUser);
     const currentVersion = useSelector(selectCurrentVersion);
+    const currentStartDate = useSelector(selectStartDate);
     const currentLimitDate = useSelector(selectLimitDate);
+    
 
     const [isChangeLimitDateModalFormOpen, setIsChangeLimitDateModalFormOpen] = useState(false);
+    const [isChangeStartDateModalFormOpen, setIsChangeStartDateModalFormOpen] = useState(false);
     
     const mutation = useMutation({
 		mutationFn: async () => handleLogout(currentUser.email),
@@ -155,18 +159,35 @@ export default function Navbar(props:Props) {
                 </div> */}
 
                 {(currentUser.admin_role==='owner' || currentUser.admin_role==='manager') ?
-                <div className="hidden md:block mr-10">
-                    <div className="flex gap-3 text-xs items-center cursor-pointer hover:text-[#18BC7A]"
-                    onClick={()=>setIsChangeLimitDateModalFormOpen(true)}
-                    >
-                        <FaCalendar size={14}/>
-                        <span>{getTextFormattedDate(parseDateObject(currentLimitDate))}</span>
+                <div className="flex gap-7">
+                    <div className="relative hidden md:flex mr-10 w-[100px]">
+                        <span className="absolute top-[-20px] left-0 text-xs font-bold">Debut</span>
+                        <div className="flex gap-3 text-xs items-center cursor-pointer hover:text-[#18BC7A]"
+                        onClick={()=>setIsChangeStartDateModalFormOpen(true)}
+                        >
+                            <FaCalendar size={14}/>
+                            <span>{getTextFormattedDate(parseDateObject(currentStartDate))}</span>
+                        </div>
+                        <ChangeStartDateModalForm
+                        isOpen={isChangeStartDateModalFormOpen}
+                        setIsOpen={setIsChangeStartDateModalFormOpen}
+                        customer={currentUser}
+                        />
                     </div>
-                    <ChangeLimitDateModalForm
-                    isOpen={isChangeLimitDateModalFormOpen}
-                    setIsOpen={setIsChangeLimitDateModalFormOpen}
-                    customer={currentUser}
-                    />
+                    <div className="relative hidden md:flex mr-10 w-[100px]">
+                        <span className="absolute top-[-20px] left-0 text-xs font-bold">Fin</span>
+                        <div className="flex gap-3 text-xs items-center cursor-pointer hover:text-[#18BC7A]"
+                        onClick={()=>setIsChangeLimitDateModalFormOpen(true)}
+                        >
+                            <FaCalendar size={14}/>
+                            <span>{getTextFormattedDate(parseDateObject(currentLimitDate))}</span>
+                        </div>
+                        <ChangeLimitDateModalForm
+                        isOpen={isChangeLimitDateModalFormOpen}
+                        setIsOpen={setIsChangeLimitDateModalFormOpen}
+                        customer={currentUser}
+                        />
+                    </div>
                 </div>
                 :<></>}
 
@@ -284,6 +305,13 @@ export default function Navbar(props:Props) {
 
             {(currentUser.admin_role==='owner' || currentUser.admin_role==='manager') ?
             <div className="hidden md:block pl-2">
+                {pathname?.includes('v1v2') ?
+                <>
+                <div className="switchbar block bg-gray-100 w-fit h-[33px] rounded-full flex items-center px-4 text-xs">
+                    <span className="testMode font-bold text-[18px] text-gray-600">V1V2</span>
+                </div>
+                </>
+                :<>
                 <label htmlFor="modeToggle" className="flex items-center cursor-pointer">                
                     <div className="relative">                
                         <input 
@@ -303,7 +331,9 @@ export default function Navbar(props:Props) {
                             <span className="w-[14px] h-[14px] rounded-[5px] border border-solid border-4 border-white"></span>
                         </div>
                     </div>
-                </label>            
+                </label> 
+                </>}
+                           
             </div>
             :<></>}
             

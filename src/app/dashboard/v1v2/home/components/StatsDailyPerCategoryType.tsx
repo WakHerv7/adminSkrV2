@@ -1,14 +1,15 @@
 import { getGraphData, getTransactionDailyPerCategoryTypeGraphData, getTransactionPerCategoryTypeGraphData, getTransactionPerCountryGraphData, getTransactionTrendGraphData } from "@/utils/graphs";
 import { TransactionService } from "@/api/services/v1v2/transaction";
-import { selectLimitDate } from "@/redux/slices_v2/settings";
+import { selectLimitDate, selectStartDate } from "@/redux/slices_v2/settings";
 import toast from "react-hot-toast";
 import { useQuery } from "react-query";
 import { useSelector } from "react-redux";
 import DataCard from "@/components/cards/DataCard/DataCard";
 
 const getDailyCategoryTypeTransactions = async ({queryKey}:any) => {
-  const [_key, limitDate] = queryKey;
+  const [_key, startDate, limitDate] = queryKey;
   let params:any = {};
+  if(startDate) params.startDate = startDate;
   if(limitDate) params.limitDate = limitDate;
   const response = await TransactionService.get_stats_daily_category_type(params);
   const responseJson = await response.json();
@@ -25,10 +26,11 @@ interface Props {
 }
 
 export default function StatsDailyPerCategoryType() {
+    const startDate:string = useSelector(selectStartDate);
     const limitDate:string = useSelector(selectLimitDate);
 
     const transactionDailyPerCategoryTypeQueryRes = useQuery({
-        queryKey: ["transactionDailyPerCategoryType", limitDate],
+        queryKey: ["transactionDailyPerCategoryType", startDate, limitDate],
         queryFn: getDailyCategoryTypeTransactions,
         onError: (err) => {
           toast.error("Une erreur est survenue:"+err);

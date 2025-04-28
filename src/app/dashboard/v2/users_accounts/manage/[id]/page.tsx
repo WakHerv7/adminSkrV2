@@ -146,7 +146,7 @@ export default function ManageUserAccount() {
             
             
             <div className="border-b-0 md:border-b-1">
-            <TabsList defaultValue={"Details"} className="TabsList grid grid-cols-2 md:block mb-[120px] md:mb-0">
+            <TabsList defaultValue={"Details"} className="TabsList grid grid-cols-2 md:flex mb-[120px] md:mb-0">
               <TabsTrigger className="TabsTrigger border-b-1 md:border-b-0" value="Details">Details</TabsTrigger>
               <TabsTrigger className="TabsTrigger border-b-1 md:border-b-0" value="Cartes">Cartes</TabsTrigger>              
               <TabsTrigger className="TabsTrigger border-b-1 md:border-b-0" value="Transactions">Transactions</TabsTrigger>

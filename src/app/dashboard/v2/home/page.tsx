@@ -29,7 +29,7 @@ import { getFormattedDate, getFormattedDateTime } from "@/utils/DateFormat";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { selectTransactionPeriod, setPeriod } from "@/redux/slices/transaction";
-import { selectLimitDate } from "@/redux/slices_v2/settings";
+import { selectLimitDate, selectStartDate } from "@/redux/slices_v2/settings";
 import { getGraphData, getTransactionPerCategoryTypeGraphData, getTransactionPerCountryGraphData, getTransactionTrendGraphData } from "@/utils/graphs";
 import { selectSearchTerm, setSearchTerm } from "@/redux/slices/search";
 import urlsV2 from '@/config/urls_v2';
@@ -105,9 +105,10 @@ const getBestUsers = async ({queryKey}:any) => {
 };
 
 const getTransactionTrends = async ({queryKey}:any) => {
-  const [_key, period, limitDate] = queryKey;
+  const [_key, period, startDate, limitDate] = queryKey;
   let params:any = {};
   if(period) params.period = period;
+  if(startDate) params.startDate = startDate;
   if(limitDate) params.limitDate = limitDate;
   const response = await TransactionService.get_stats_periodic(params);
   const responseJson = await response.json();
@@ -118,8 +119,9 @@ const getTransactionTrends = async ({queryKey}:any) => {
 };
 
 const getUsersPerCountry = async ({queryKey}:any) => {
-  const [_key, limitDate] = queryKey;
+  const [_key, startDate, limitDate] = queryKey;
   let params:any = {};
+  if(startDate) params.startDate = startDate;
   if(limitDate) params.limitDate = limitDate;
   const response = await CustomerService.get_stats_countries(params);
   // const response = await TransactionService.get_stats_countries();
@@ -147,6 +149,7 @@ export default function Home() {
     useTitle("Sekure | Accueil", true);
     const dispatch = useDispatch();
     const period:string = useSelector(selectTransactionPeriod);
+    const startDate:string = useSelector(selectStartDate);
     const limitDate:string = useSelector(selectLimitDate);
     const searchTerm:string = useSelector(selectSearchTerm);
 
@@ -160,7 +163,7 @@ export default function Home() {
     });
     
     const transactionTrendsQueryRes = useQuery({
-      queryKey: ["transactionTrends", period, limitDate],
+      queryKey: ["transactionTrends", period, startDate, limitDate],
       queryFn: getTransactionTrends,
       onError: (err) => {
         toast.error("Une erreur est survenue:"+err);
@@ -169,7 +172,7 @@ export default function Home() {
     });
 
     const transactionPerCountryQueryRes = useQuery({
-      queryKey: ["transactionPerCountry", limitDate],
+      queryKey: ["transactionPerCountry", startDate, limitDate],
       queryFn: getUsersPerCountry,
       onError: (err) => {
         toast.error("Une erreur est survenue:"+err);

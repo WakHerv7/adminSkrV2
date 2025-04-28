@@ -302,7 +302,7 @@ export default function KYC() {
       <section className="my-10">
           <Tabs defaultValue="pending" className="w-full">
             <div className="border-b-0 md:border-b-1">
-            <TabsList className="TabsList grid grid-cols-2 md:block mb-[200px] md:mb-0">
+            <TabsList className="TabsList grid grid-cols-2 md:flex mb-[200px] md:mb-0">
               <TabsTrigger className="TabsTrigger border-b-1 md:border-b-0" value="pending">KYC en cours</TabsTrigger>
               <TabsTrigger className="TabsTrigger border-b-1 md:border-b-0" value="accepted">KYC approuvés</TabsTrigger>
               <TabsTrigger className="TabsTrigger border-b-1 md:border-b-0" value="declined">KYC rejetés</TabsTrigger>

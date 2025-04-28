@@ -10,7 +10,7 @@ import {
     FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { selectLimitDate, setLimitDate } from '@/redux/slices_v2/settings';
+import { selectStartDate, setStartDate } from '@/redux/slices_v2/settings';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DatePicker } from "@nextui-org/date-picker";
 import { getNextUIDatePickerValueStr, parseDateStr } from "@/utils/DateFormat";
@@ -26,7 +26,7 @@ import { z } from "zod";
 // import { useNavigate } from 'react-router-dom';
 
 export const formSchema:any = z.object({
-    limitDate: z.string(
+    startDate: z.string(
         {message:'Entrez une date'}
     ),
 });
@@ -37,11 +37,11 @@ interface ModalProps {
     setIsOpen:(data?:any)=>void;
 }
 
-export default function ChangeLimitDateModalForm({isOpen, setIsOpen, customer}:ModalProps) {
+export default function ChangeStartDateModalForm({isOpen, setIsOpen, customer}:ModalProps) {
     const pathname = usePathname();
     const redirectRef:any = useRef();
     
-    const currentLimitDate = useSelector(selectLimitDate);
+    const currentStartDate = useSelector(selectStartDate);
 
     const handleClose = ()=> {
         setIsOpen(false);
@@ -55,7 +55,7 @@ export default function ChangeLimitDateModalForm({isOpen, setIsOpen, customer}:M
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            limitDate: currentLimitDate ? currentLimitDate : (new Date()).toISOString(),
+            startDate: currentStartDate ? currentStartDate : '2024-01-01',
           },
     });
 
@@ -64,7 +64,7 @@ export default function ChangeLimitDateModalForm({isOpen, setIsOpen, customer}:M
 
     const onSubmit = (data: any) => {
         // console.log("pathname : ", pathname);
-        dispatch(setLimitDate(String(data.limitDate || '')));
+        dispatch(setStartDate(String(data.startDate || '')));
         handleClose();
         // redirectRef.current.href = window.location.pathname;
         // redirectRef.current.click();
@@ -77,7 +77,7 @@ export default function ChangeLimitDateModalForm({isOpen, setIsOpen, customer}:M
         <DialogWrapper
         open={isOpen}
         handleClose={handleClose}
-        title={`Changer la date de fin`}
+        title={`Changer la date de debut`}
         // titleLine2={`pour obtenir des statistiques`}
         >
             <div className="min-w-[350px] max-w-[700px]">
@@ -86,10 +86,10 @@ export default function ChangeLimitDateModalForm({isOpen, setIsOpen, customer}:M
                     <div className="space-y-[20px]">
                         <FormField
                         control={form.control}
-                        name="limitDate"
+                        name="startDate"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel className="text-gray-900 text-sm font-[500] tracking-tight">{`Date - ${form.getValues('limitDate')}`}</FormLabel>
+                                <FormLabel className="text-gray-900 text-sm font-[500] tracking-tight">{`Date - ${form.getValues('startDate')}`}</FormLabel>
                                 <FormControl>
                                     <DatePicker
                                         className={`text-gray-900 font-normal ${cstyles['datepicker_yellow_bg']}`} 
@@ -98,7 +98,7 @@ export default function ChangeLimitDateModalForm({isOpen, setIsOpen, customer}:M
                                         const newDateStr = getNextUIDatePickerValueStr(date.year, date.month, date.day); 
                                         // console.log("date : ", date);
                                         // console.log("newDateStr : ", newDateStr);
-                                        form.setValue('limitDate',newDateStr);
+                                        form.setValue('startDate',newDateStr);
                                         }}
                                         showMonthAndYearPickers
                                     />

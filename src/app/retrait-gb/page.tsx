@@ -3,11 +3,11 @@
 import { useTitle } from "@/hooks/useTitle";
 import Layout from "@/components/shared/Layout";
 import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
+	Form,
+	FormControl,
+	FormField,
+	FormItem,
+	FormLabel,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
@@ -20,7 +20,10 @@ import { FourDots } from "@/components/shared/icons";
 import Modal from "@/components/shared/Modal/Modal";
 import RetraitBJModalForm from "./modals/RetraitBJModalForm";
 import RetraitGBModalForm from "./modals/RetraitGBModalForm";
-import { selectCurrentGetSekureApiToken, selectCurrentToken } from "@/redux/slices/auth";
+import {
+	selectCurrentGetSekureApiToken,
+	selectCurrentToken,
+} from "@/redux/slices/auth";
 import { useSelector } from "react-redux";
 import { TransactionService } from "@/api/services/transaction";
 import { GabonService } from "@/api/services/gabon";
@@ -29,159 +32,284 @@ import toast from "react-hot-toast";
 import { BeninService } from "@/api/services/benin";
 import { CameroonService } from "@/api/services/cameroon";
 import RetraitCMModalForm from "./modals/RetraitCMModalForm";
+import { MidenService } from "@/api/services/v2/miden";
+import { NairapayService } from "@/api/services/v2/nairapay";
 
-const getGabonBalance = async ({queryKey}:any) => {
-  const [_key, token] = queryKey;
-  if (token) {
-    const response = await GabonService.get_gabon_balance({token});
-    const responseJson = await response.json();
-    if (!response.ok) {
-      throw new Error(responseJson.message || 'Failed to get Gabon Balance'); 
-    }  
-    return responseJson.data; 
-  } else {
-    return {data: {message:"No token provided"}}
-  }
+const getGabonBalance = async ({ queryKey }: any) => {
+	const [_key, token] = queryKey;
+	if (token) {
+		const response = await GabonService.get_gabon_balance({ token });
+		const responseJson = await response.json();
+		if (!response.ok) {
+			throw new Error(
+				responseJson.message || "Failed to get Gabon Balance"
+			);
+		}
+		return responseJson.data;
+	} else {
+		return { data: { message: "No token provided" } };
+	}
 };
 
-const getBeninBalance = async ({queryKey}:any) => {
-  const [_key, token] = queryKey;
-  if (token) {
-    const response = await BeninService.get_benin_balance({token});
-    const responseJson = await response.json();
-    if (!response.ok) {
-      throw new Error(responseJson.message || 'Failed to get Benin Balance'); 
-    }  
-    return responseJson.data; 
-  } else {
-    return {data: {message:"No token provided"}}
-  }
+const getBeninBalance = async ({ queryKey }: any) => {
+	const [_key, token] = queryKey;
+	if (token) {
+		const response = await BeninService.get_benin_balance({ token });
+		const responseJson = await response.json();
+		if (!response.ok) {
+			throw new Error(
+				responseJson.message || "Failed to get Benin Balance"
+			);
+		}
+		return responseJson.data;
+	} else {
+		return { data: { message: "No token provided" } };
+	}
 };
 
-
-const getCameroonBalance = async ({queryKey}:any) => {
-  const [_key, token] = queryKey;
-  if (token) {
-    const response = await CameroonService.get_cameroon_balance({token});
-    const responseJson = await response.json();
-    if (!response.ok) {
-      throw new Error(responseJson.message || 'Failed to get Cameroon Balance'); 
-    }  
-    return responseJson.data; 
-  } else {
-    return {data: {message:"No token provided"}}
-  }
+const getCameroonBalance = async ({ queryKey }: any) => {
+	const [_key, token] = queryKey;
+	if (token) {
+		const response = await CameroonService.get_cameroon_balance({ token });
+		const responseJson = await response.json();
+		if (!response.ok) {
+			throw new Error(
+				responseJson.message || "Failed to get Cameroon Balance"
+			);
+		}
+		return responseJson.data;
+	} else {
+		return { data: { message: "No token provided" } };
+	}
 };
 
+const getMidenBalance = async ({ queryKey }: any) => {
+	const [_key, token] = queryKey;
+	if (token) {
+		const response = await MidenService.get_miden_balance();
+		const responseJson = await response.json();
+		if (!response.ok) {
+			throw new Error(
+				responseJson.message || "Failed to get Midenss Balance"
+			);
+		}
+		return responseJson.data;
+	} else {
+		return { data: { message: "No token provided" } };
+	}
+};
+
+const getNairapayMapleradBalance = async ({ queryKey }: any) => {
+	const [_key, token] = queryKey;
+	if (token) {
+		const response = await NairapayService.get_nairapay_maplerad_balance();
+		const responseJson = await response.json();
+		if (!response.ok) {
+			throw new Error(
+				responseJson.message || "Failed to get NairapayMaplerad Balance"
+			);
+		}
+		return responseJson.data;
+	} else {
+		return { data: { message: "No token provided" } };
+	}
+};
 
 export default function RetraitGBPage() {
+	const getSekureApiToken = useSelector(selectCurrentGetSekureApiToken);
 
-  const getSekureApiToken = useSelector(selectCurrentGetSekureApiToken);
+	const gabonBalanceQueryRes = useQuery({
+		queryKey: ["gabon", getSekureApiToken],
+		queryFn: getGabonBalance,
+		onError: (err) => {
+			toast.error("Failed to get Gabon balance.");
+		},
+		// enabled: false,
+		refetchInterval: 60000, // Fetches data every 60 seconds
+	});
 
-  const gabonBalanceQueryRes = useQuery({
-    queryKey: ["gabon", getSekureApiToken],
-    queryFn: getGabonBalance,
-    onError: (err) => {
-      toast.error("Failed to get Gabon balance.");
-    },
-    // enabled: false,
-    refetchInterval: 60000, // Fetches data every 60 seconds
-  });
+	const beninBalanceQueryRes = useQuery({
+		queryKey: ["benin", getSekureApiToken],
+		queryFn: getBeninBalance,
+		onError: (err) => {
+			toast.error("Failed to get Benin balance.");
+		},
+		// enabled: false,
+		refetchInterval: 60000, // Fetches data every 60 seconds
+	});
 
-  const beninBalanceQueryRes = useQuery({
-    queryKey: ["benin", getSekureApiToken],
-    queryFn: getBeninBalance,
-    onError: (err) => {
-      toast.error("Failed to get Benin balance.");
-    },
-    // enabled: false,
-    refetchInterval: 60000, // Fetches data every 60 seconds
-  });
+	const cameroonBalanceQueryRes = useQuery({
+		queryKey: ["cameroon", getSekureApiToken],
+		queryFn: getCameroonBalance,
+		onError: (err) => {
+			toast.error("Failed to get Cameroon balance.");
+		},
+		// enabled: false,
+		refetchInterval: 60000, // Fetches data every 60 seconds
+	});
 
-  const cameroonBalanceQueryRes = useQuery({
-    queryKey: ["cameroon", getSekureApiToken],
-    queryFn: getCameroonBalance,
-    onError: (err) => {
-      toast.error("Failed to get Cameroon balance.");
-    },
-    // enabled: false,
-    refetchInterval: 60000, // Fetches data every 60 seconds
-  });
+	const MidenBalanceQueryRes = useQuery({
+		queryKey: ["miden", getSekureApiToken],
+		queryFn: getMidenBalance,
+		onError: (err) => {
+			toast.error("Failed to get Miden balance.");
+		},
+		// enabled: false,
+		refetchInterval: 60000, // Fetches data every 60 seconds
+	});
 
-  console.log("gabonBalanceQueryRes.data : ", gabonBalanceQueryRes.data);
-  console.log("beninBalanceQueryRes.data : ", beninBalanceQueryRes.data);
-  console.log("cameroonBalanceQueryRes.data : ", cameroonBalanceQueryRes.data);
+	const NairapayMapleradBalanceQueryRes = useQuery({
+		queryKey: ["NairapayMaplerad", getSekureApiToken],
+		queryFn: getNairapayMapleradBalance,
+		onError: (err) => {
+			toast.error("Failed to get NairapayMaplerad balance.");
+		},
+		// enabled: false,
+		refetchInterval: 60000, // Fetches data every 60 seconds
+	});
 
-  useTitle("Sekure | Accueil", true);
-  return (
-    <Layout
-      title="Retraits"
-    >
-      <div
-      className="flex flex-col justify-center items-center"
-      >
-        <div className="text-xl font-bold mb-3">{`Solde Gabon (XAF)`}</div>
-        <div
-        className={`h-10  mb-3 min-w-[300px] text-xl font-bold text-[#18BC7A] border-none bg-gray-100 rounded-md outline-none px-3
+	console.log("gabonBalanceQueryRes.data : ", gabonBalanceQueryRes.data);
+	console.log("beninBalanceQueryRes.data : ", beninBalanceQueryRes.data);
+	console.log(
+		"cameroonBalanceQueryRes.data : ",
+		cameroonBalanceQueryRes.data
+	);
+	console.log("MidenBalanceQueryRes.data : ", MidenBalanceQueryRes.data);
+	console.log(
+		"NairapayMapleradBalanceQueryRes.data : ",
+		NairapayMapleradBalanceQueryRes.data
+	);
+
+	useTitle("Sekure | Accueil", true);
+	return (
+		<Layout title="Balances">
+			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 mt-[50px] gap-[100px]">
+				<div className="flex flex-col justify-center items-center">
+					<div className="text-xl font-bold mb-3">{`Solde Gabon (XAF)`}</div>
+					<div
+						className={`h-10  mb-3 min-w-[300px] text-xl font-bold text-[#18BC7A] border-none bg-gray-100 rounded-md outline-none px-3
           flex justify-center items-center`}
-        >
-          {gabonBalanceQueryRes?.data?.amount?.toLocaleString('fr-FR') ?? 0}
-        </div>
-        <div className="flex flex-wrap items-center gap-y-4 mt-3">
-          <CButton
-          text={"Retirer"}
-          btnStyle={"green"}
-          icon={<FourDots />}
-          href="?withdrawGB=true"
-          />          
-        </div>
-      </div>
+					>
+						{gabonBalanceQueryRes?.data?.amount?.toLocaleString(
+							"fr-FR"
+						) ?? 0}
+					</div>
+					<div className="flex flex-wrap items-center gap-y-4 mt-3">
+						<CButton
+							text={"Retirer"}
+							btnStyle={"green"}
+							icon={<FourDots />}
+							href="?withdrawGB=true"
+						/>
+					</div>
+				</div>
 
-
-      <div
-      className="flex flex-col justify-center items-center mt-[100px]"
-      >
-        <div className="text-xl font-bold mb-3">{`Solde Benin (XOF)`}</div>
-        <div
-        className={`h-10  mb-3 min-w-[300px] text-xl font-bold text-[#18BC7A] border-none bg-gray-100 rounded-md outline-none px-3
+				<div className="flex flex-col justify-center items-center">
+					<div className="text-xl font-bold mb-3">{`Solde Benin Pawapay (XOF)`}</div>
+					<div
+						className={`h-10  mb-3 min-w-[300px] text-xl font-bold text-[#18BC7A] border-none bg-gray-100 rounded-md outline-none px-3
           flex justify-center items-center`}
-        >
-          {Number(beninBalanceQueryRes?.data?.balances?.[0]?.balance || 0).toLocaleString('fr-FR') ?? 0}
-        </div>
-        <div className="flex flex-wrap items-center gap-y-4 mt-3">
-          <CButton
-          text={"Retirer"}
-          btnStyle={"green"}
-          icon={<FourDots />}
-          href="?withdrawBJ=true"
-          />          
-        </div>
-      </div>
+					>
+						{Number(
+							beninBalanceQueryRes?.data?.balances?.[0]
+								?.balance || 0
+						).toLocaleString("fr-FR") ?? 0}
+					</div>
+					<div className="flex flex-wrap items-center gap-y-4 mt-3">
+						<CButton
+							text={"Retirer"}
+							btnStyle={"green"}
+							icon={<FourDots />}
+							href="?withdrawBJ=true"
+						/>
+					</div>
+				</div>
 
-
-      <div
-      className="flex flex-col justify-center items-center mt-[100px]"
-      >
-        <div className="text-xl font-bold mb-3">{`Solde Cameroun Pawapay (XAF)`}</div>
-        <div
-        className={`h-10  mb-3 min-w-[300px] text-xl font-bold text-[#18BC7A] border-none bg-gray-100 rounded-md outline-none px-3
+				<div className="flex flex-col justify-center items-center">
+					<div className="text-xl font-bold mb-3">{`Solde Cameroun Pawapay (XAF)`}</div>
+					<div
+						className={`h-10  mb-3 min-w-[300px] text-xl font-bold text-[#18BC7A] border-none bg-gray-100 rounded-md outline-none px-3
           flex justify-center items-center`}
-        >
-          {Number(cameroonBalanceQueryRes?.data?.balances?.[0]?.balance || 0).toLocaleString('fr-FR') ?? 0}
-        </div>
-        <div className="flex flex-wrap items-center gap-y-4 mt-3">
-          <CButton
-          text={"Retirer"}
-          btnStyle={"green"}
-          icon={<FourDots />}
-          href="?withdrawCM=true"
-          />          
-        </div>
-      </div>
+					>
+						{Number(
+							cameroonBalanceQueryRes?.data?.balances?.[0]
+								?.balance || 0
+						).toLocaleString("fr-FR") ?? 0}
+					</div>
+					<div className="flex flex-wrap items-center gap-y-4 mt-3">
+						<CButton
+							text={"Retirer"}
+							btnStyle={"green"}
+							icon={<FourDots />}
+							href="?withdrawCM=true"
+						/>
+					</div>
+				</div>
 
-      <Modal name={'withdrawGB'} modalContent={<RetraitGBModalForm amount={Number(gabonBalanceQueryRes?.data?.amount || 0)}/>}/>
-      <Modal name={'withdrawBJ'} modalContent={<RetraitBJModalForm amount={Number(beninBalanceQueryRes?.data?.balances?.[0]?.balance || 0)}/>}/>
-      <Modal name={'withdrawCM'} modalContent={<RetraitCMModalForm amount={Number(cameroonBalanceQueryRes?.data?.balances?.[0]?.balance || 0)}/>}/>
-    </Layout>
-  )
+				<div className="flex flex-col justify-center items-center">
+					<div className="text-xl font-bold mb-3">{`Solde Miden (USD)`}</div>
+					<div
+						className={`h-10  mb-3 min-w-[300px] text-xl font-bold text-[#18BC7A] border-none bg-gray-100 rounded-md outline-none px-3
+          flex justify-center items-center`}
+					>
+						{MidenBalanceQueryRes?.data?.toLocaleString("fr-FR") ??
+							0}
+					</div>
+				</div>
+				<div className="flex flex-col justify-center items-center">
+					<div className="text-xl font-bold mb-3">{`Solde Nairapay Maplerad (Naira)`}</div>
+					<div
+						className={`h-10  mb-3 min-w-[300px] text-xl font-bold text-[#18BC7A] border-none bg-gray-100 rounded-md outline-none px-3
+          flex justify-center items-center`}
+					>
+						{NairapayMapleradBalanceQueryRes?.data?.toLocaleString(
+							"fr-FR"
+						) ?? 0}
+					</div>
+				</div>
+				<div className="flex flex-col justify-center items-center">
+					<div className="text-xl font-bold mb-3">{`Solde Nairapay Maplerad (XAF)`}</div>
+					<div
+						className={`h-10  mb-3 min-w-[300px] text-xl font-bold text-[#18BC7A] border-none bg-gray-100 rounded-md outline-none px-3
+          flex justify-center items-center`}
+					>
+						{(
+							NairapayMapleradBalanceQueryRes?.data / 1.86
+						)?.toLocaleString("fr-FR") ?? 0}
+					</div>
+				</div>
+			</div>
+
+			<Modal
+				name={"withdrawGB"}
+				modalContent={
+					<RetraitGBModalForm
+						amount={Number(gabonBalanceQueryRes?.data?.amount || 0)}
+					/>
+				}
+			/>
+			<Modal
+				name={"withdrawBJ"}
+				modalContent={
+					<RetraitBJModalForm
+						amount={Number(
+							beninBalanceQueryRes?.data?.balances?.[0]
+								?.balance || 0
+						)}
+					/>
+				}
+			/>
+			<Modal
+				name={"withdrawCM"}
+				modalContent={
+					<RetraitCMModalForm
+						amount={Number(
+							cameroonBalanceQueryRes?.data?.balances?.[0]
+								?.balance || 0
+						)}
+					/>
+				}
+			/>
+		</Layout>
+	);
 }

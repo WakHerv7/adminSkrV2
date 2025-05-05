@@ -32,6 +32,8 @@ import NotificationModalForm from "./modals/NotificationModalForm";
 import ReleaseStandByAccountBalanceModalForm from "./modals/ReleaseStandByAccountBalanceModalForm";
 import EditRegStatusModalForm from "./modals/EditRegStatusModalForm";
 import { CustomerService } from "@/api/services/v2/customer";
+import { HashLoader } from "react-spinners";
+import classNames from "classnames";
 
 const getKYCWarningsList = async () => {
 	const response = await KycService.get_kyc_warnings_list({ lang: "fr" });
@@ -652,6 +654,17 @@ export default function DetailsSide() {
             width={'100%'}              
             />
         </div> */}
+			<div
+				style={{ zIndex: 9000 }}
+				className={classNames(
+					"transition-all invisible z-20 bg-blue-900/30 opacity-0 absolute top-0 left-0 h-full w-full flex items-center justify-center",
+					{
+						"!opacity-100 !visible z-20": mutation.isLoading,
+					}
+				)}
+			>
+				<HashLoader className="shrink-0" size={50} color="#18BC7A" />
+			</div>
 			<a ref={redirectRef} hidden href="#"></a>
 		</div>
 	);

@@ -184,7 +184,7 @@ export default function Navbar(props: Props) {
                     14
                     </div>
                 </div> */}
-						<div className="relative hidden md:flex mr-10 w-[200px]">
+						<div className="relative hidden md:flex mr-10 w-[300px]">
 							<SearchUserInput
 								onSelected={(data) =>
 									router.push(

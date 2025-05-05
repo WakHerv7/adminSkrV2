@@ -102,7 +102,7 @@ export const nairapaymentUrlsV2 = {
 	CHECK_AND_UPDATE_NAIRAPAYMENT: (id: any) =>
 		`${V2_BASE_URL_NAIRAPAYMENT}/status/${id}`,
 	UPDATE_NAIRAPAYMENT: (id: any) =>
-		`${V2_BASE_URL_NAIRAPAYMENT}/update-status/${id}`,
+		`${API_V2_BASE_URL}/nairapayment/update-status/${id}`,
 	GET_NAIRAPAY_MAPLERAD_BALANCE: `${V2_BASE_URL_NAIRAPAYMENT}/maplerad/balance`,
 };
 /** ------------------------------------ */

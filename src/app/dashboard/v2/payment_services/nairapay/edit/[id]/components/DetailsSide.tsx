@@ -155,10 +155,14 @@ export default function DetailsSide() {
 						onClick={() => onSubmit({ status })}
 					/>
 					{!nairaPaymentData?.order_id ? (
-						<div style={{ display: shiftDown ? "block" : "none" }}>
+						<div
+							className="w-full"
+							style={{ display: shiftDown ? "block" : "none" }}
+						>
 							<CButton
 								text={"Rejeter"}
 								btnStyle={"red"}
+								width="100%"
 								icon={<FaX />}
 								onClick={() =>
 									setIsConfirmStatusModalOpen(true)

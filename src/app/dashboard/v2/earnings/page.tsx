@@ -13,6 +13,7 @@ import {
 	RiBankCardLine,
 } from "react-icons/ri";
 import { IoWallet, IoWalletOutline } from "react-icons/io5";
+import { BsFillCreditCard2FrontFill } from "react-icons/bs";
 
 const getAllKYC = async ({ queryKey }: any) => {
 	const [_key, filter, st] = queryKey;
@@ -48,7 +49,12 @@ export default function KYC() {
 
 	const paymentServices: any = [
 		{
-			title: "Prélevements frais de paiement par carte",
+			title: "Tous les prélevements de frais de paiement par carte",
+			slug: "all-card-payment_fee",
+			icon: <BsFillCreditCard2FrontFill size={35} color="#18BC7A" />,
+		},
+		{
+			title: "Prélevements de frais de paiement par carte",
 			slug: "card-payment_fee",
 			icon: <RiBankCard2Fill size={35} color="#18BC7A" />,
 		},

@@ -30,6 +30,7 @@ import {
 import LabelWithBadge from "@/components/shared/LabelWithBadge";
 import { getFormattedDateTime } from "@/utils/DateFormat";
 import { transformArray } from "@/utils/utils";
+import { useState } from "react";
 
 type Props = {
 	search?: string;
@@ -37,6 +38,7 @@ type Props = {
 };
 
 const Transferts = ({ search, setSearch }: Props) => {
+	const [isOpen, setIsOpen] = useState(false);
 	const customerDetails: any = useSelector(selectCurrentCustomerTransfers);
 
 	const trxPerStatus = customerDetails?.transfers?.stats?.statuses; //transformArray(customerDetails?.transfers?.stats?.statuses ?? []);
@@ -114,15 +116,19 @@ const Transferts = ({ search, setSearch }: Props) => {
 						<div className="flex gap-5">
 							<CButton
 								text={"Details"}
-								href={`?transaction${index + 1}=true`}
+								// href={`?transaction${index + 1}=true`}
+								onClick={() => setIsOpen(index)}
 								btnStyle={"dark"}
 								icon={<FourDots />}
 							/>
 							<Modal
-								index={index + 1}
-								name={"transaction"}
+								index={`${index}`}
+								name={"pending"}
+								isOpen={isOpen === index}
+								setIsOpen={setIsOpen}
 								modalContent={
 									<TransactionModal
+										setIsOpen={setIsOpen}
 										customer={item?.userDetails}
 										recipient={item?.recipientDetails}
 										item={item}

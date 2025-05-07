@@ -43,8 +43,8 @@ const getAllTrx = async ({ queryKey }: any) => {
 	let params: any = {};
 	if (st) params.searchTerm = st;
 	// if (filter?.category) params.category = filter?.category;
-	params.category = "card";
-	params.type = "payment_fee";
+	params.includedCategories = "card.wallet";
+	params.includedTypes = "payment_fee.payment_fee_success.payment_fee_failed";
 
 	const response = await TransactionService.get_all_trxs(params);
 	const responseJson = await response.json();
@@ -137,7 +137,7 @@ export default function Index() {
 	console.log("allTrxFailedQueryRes.data : ", allTrxFailedQueryRes.data);
 
 	return (
-		<Layout title={"Prelevements de frais de paiement par carte"}>
+		<Layout title={"Tous les prélevements de frais de paiement par carte"}>
 			<>
 				<section className="w-full my-[10px]">
 					<div className="my-5">

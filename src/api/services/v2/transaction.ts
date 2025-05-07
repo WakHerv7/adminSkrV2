@@ -107,17 +107,24 @@ export class TransactionService {
 		type,
 		status,
 		searchTerm,
+		includedCategories,
+		includedTypes,
 	}: {
 		category?: string;
 		type?: string;
 		status?: string;
 		searchTerm?: string;
+		includedCategories?: string;
+		includedTypes?: string;
 	}) => {
 		let query_params: any = {};
 		if (category) query_params.category = category;
 		if (type) query_params.type = type;
 		if (status) query_params.status = status;
 		if (searchTerm) query_params.searchTerm = searchTerm;
+		if (includedCategories)
+			query_params.includedCategories = includedCategories;
+		if (includedTypes) query_params.includedTypes = includedTypes;
 		return BaseMethods.getRequest(
 			transactionUrlsV2.GET_ALL_TRANSACTIONS,
 			true,
@@ -128,15 +135,22 @@ export class TransactionService {
 		category,
 		type,
 		limitDate,
+		includedCategories,
+		includedTypes,
 	}: {
 		category?: string;
 		type?: string;
 		limitDate?: string;
+		includedCategories?: string;
+		includedTypes?: string;
 	}) => {
 		let query_params: any = {};
 		if (category) query_params.category = category;
 		if (type) query_params.type = type;
 		if (limitDate) query_params.limitDate = limitDate;
+		if (includedCategories)
+			query_params.includedCategories = includedCategories;
+		if (includedTypes) query_params.includedTypes = includedTypes;
 		return BaseMethods.getRequest(
 			transactionUrlsV2.GET_TODAY_STATS,
 			true,
@@ -147,15 +161,22 @@ export class TransactionService {
 		category,
 		type,
 		limitDate,
+		includedCategories,
+		includedTypes,
 	}: {
 		category?: string;
 		type?: string;
 		limitDate?: string;
+		includedCategories?: string;
+		includedTypes?: string;
 	}) => {
 		let query_params: any = {};
 		if (category) query_params.category = category;
 		if (type) query_params.type = type;
 		if (limitDate) query_params.limitDate = limitDate;
+		if (includedCategories)
+			query_params.includedCategories = includedCategories;
+		if (includedTypes) query_params.includedTypes = includedTypes;
 		return BaseMethods.getRequest(
 			transactionUrlsV2.GET_DAILY_STATS,
 			true,

@@ -66,6 +66,10 @@ const URLConfig = {
 	regularisations: {
 		...regularisations(),
 	},
+	//   earnings
+	earnings: {
+		...earnings(),
+	},
 
 	// Admin Module
 	// ADMIN: {
@@ -163,6 +167,13 @@ function customer_tickets(prefix: string = "") {
 
 function regularisations(prefix: string = "") {
 	const PATH = `${dashboardRootUrlV2}/regularisations`;
+	return {
+		root: PATH,
+	};
+}
+
+function earnings(prefix: string = "") {
+	const PATH = `${dashboardRootUrlV2}/earnings`;
 	return {
 		root: PATH,
 	};

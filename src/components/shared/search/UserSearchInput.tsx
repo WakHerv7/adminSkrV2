@@ -74,7 +74,13 @@ function SearchUserInput({ onSelected }: IProps) {
 	};
 
 	return (
-		<div style={{ position: "relative", height: "fit-content" }}>
+		<div
+			style={{
+				width: "100%",
+				position: "relative",
+				height: "fit-content",
+			}}
+		>
 			<input
 				type="text"
 				// value={query}

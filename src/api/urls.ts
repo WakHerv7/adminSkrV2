@@ -72,7 +72,9 @@ export const transactionUrlsV2 = {
 	CHECK_PARTNER_TRX: (id: any) =>
 		`${API_V2_PROD_BASE_URL}/transactions/check-partner-trx/${id}`,
 
-	// GET_ALL_TRANSACTIONS: `${BASE_URL_TRANSACTION}`,
+	GET_ALL_TRANSACTIONS: `${V2_BASE_URL_TRANSACTION}`,
+	GET_TODAY_STATS: `${V2_BASE_URL_TRANSACTION}/stats-today`,
+	GET_DAILY_STATS: `${V2_BASE_URL_TRANSACTION}/stats-daily`,
 	// GET_PERIODIC_TRANSACTIONS: `${BASE_URL_TRANSACTION}/periodic`,
 	// GET_USER_TRANSACTIONS: (id:any) => `${BASE_URL_TRANSACTION}/user/${id}`,
 	// GET_USER_TRANSACTIONS_STATS: (id:any) => `${BASE_URL_TRANSACTION}/user-stats/${id}`,
@@ -103,6 +105,8 @@ export const nairapaymentUrlsV2 = {
 		`${V2_BASE_URL_NAIRAPAYMENT}/status/${id}`,
 	UPDATE_NAIRAPAYMENT: (id: any) =>
 		`${API_V2_BASE_URL}/nairapayment/update-status/${id}`,
+	GET_TODAY_STATS: `${API_V2_BASE_URL}/nairapayment/stats-today`,
+	GET_DAILY_STATS: `${API_V2_BASE_URL}/nairapayment/stats-daily`,
 	GET_NAIRAPAY_MAPLERAD_BALANCE: `${V2_BASE_URL_NAIRAPAYMENT}/maplerad/balance`,
 };
 /** ------------------------------------ */

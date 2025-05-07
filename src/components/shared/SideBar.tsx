@@ -34,6 +34,8 @@ import { selectCurrentVersion } from "@/redux/slices_v2/settings";
 import { useSelector } from "react-redux";
 import { FaFilterCircleDollar } from "react-icons/fa6";
 import { HiOutlineMenu } from "react-icons/hi";
+import { AiFillBank } from "react-icons/ai";
+import { BsBank2 } from "react-icons/bs";
 
 interface ISideBarLinks {
 	title: string;
@@ -177,6 +179,14 @@ const SideBar = (props: Props) => {
 			path: urlsV2.payment_services.root,
 			count: null,
 			icon: <FaHandHoldingUsd size={20} />,
+		},
+		{
+			title: "Gains",
+			slug: "earnings",
+			canSee: hasPermission(user, "earnings", "view"),
+			path: urlsV2.earnings.root,
+			count: null,
+			icon: <BsBank2 size={18} />,
 		},
 		{
 			title: "Notifications",

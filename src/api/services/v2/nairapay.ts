@@ -77,4 +77,22 @@ export class NairapayService {
 			true
 		);
 	};
+	static get_today_stats = ({ limitDate }: { limitDate?: string }) => {
+		let query_params: any = {};
+		if (limitDate) query_params.limitDate = limitDate;
+		return BaseMethods.getRequest(
+			nairapaymentUrlsV2.GET_TODAY_STATS,
+			true,
+			query_params
+		);
+	};
+	static get_daily_stats = ({ limitDate }: { limitDate?: string }) => {
+		let query_params: any = {};
+		if (limitDate) query_params.limitDate = limitDate;
+		return BaseMethods.getRequest(
+			nairapaymentUrlsV2.GET_DAILY_STATS,
+			true,
+			query_params
+		);
+	};
 }

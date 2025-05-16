@@ -103,14 +103,34 @@ const getRDCBalance = async ({ queryKey }: any) => {
 	}
 };
 
-const getCameroonBalance = async ({ queryKey }: any) => {
+const getCameroonCampayBalance = async ({ queryKey }: any) => {
 	const [_key, token] = queryKey;
 	if (token) {
-		const response = await CameroonService.get_cameroon_balance({ token });
+		const response = await CameroonService.get_cameroon_campay_balance({
+			token,
+		});
 		const responseJson = await response.json();
 		if (!response.ok) {
 			throw new Error(
-				responseJson.message || "Failed to get Cameroon Balance"
+				responseJson.message || "Failed to get Cameroon Campay Balance"
+			);
+		}
+		return responseJson.data;
+	} else {
+		return { data: { message: "No token provided" } };
+	}
+};
+
+const getCameroonPawapayBalance = async ({ queryKey }: any) => {
+	const [_key, token] = queryKey;
+	if (token) {
+		const response = await CameroonService.get_cameroon_pawapay_balance({
+			token,
+		});
+		const responseJson = await response.json();
+		if (!response.ok) {
+			throw new Error(
+				responseJson.message || "Failed to get Cameroon Pawapay Balance"
 			);
 		}
 		return responseJson.data;
@@ -193,11 +213,21 @@ export default function RetraitGBPage() {
 		refetchInterval: 60000, // Fetches data every 60 seconds
 	});
 
-	const cameroonBalanceQueryRes = useQuery({
+	const cameroonCampayBalanceQueryRes = useQuery({
 		queryKey: ["cameroon", getSekureApiToken],
-		queryFn: getCameroonBalance,
+		queryFn: getCameroonCampayBalance,
 		onError: (err) => {
-			toast.error("Failed to get Cameroon balance.");
+			toast.error("Failed to get Cameroon Campay balance.");
+		},
+		// enabled: false,
+		refetchInterval: 60000, // Fetches data every 60 seconds
+	});
+
+	const cameroonPawapayBalanceQueryRes = useQuery({
+		queryKey: ["cameroon", getSekureApiToken],
+		queryFn: getCameroonPawapayBalance,
+		onError: (err) => {
+			toast.error("Failed to get Cameroon Pawapay balance.");
 		},
 		// enabled: false,
 		refetchInterval: 60000, // Fetches data every 60 seconds
@@ -226,8 +256,12 @@ export default function RetraitGBPage() {
 	console.log("gabonBalanceQueryRes.data : ", gabonBalanceQueryRes.data);
 	console.log("beninBalanceQueryRes.data : ", beninBalanceQueryRes.data);
 	console.log(
-		"cameroonBalanceQueryRes.data : ",
-		cameroonBalanceQueryRes.data
+		"cameroonCampayBalanceQueryRes.data : ",
+		cameroonCampayBalanceQueryRes.data
+	);
+	console.log(
+		"cameroonPawapayBalanceQueryRes.data : ",
+		cameroonPawapayBalanceQueryRes.data
 	);
 	console.log("MidenBalanceQueryRes.data : ", MidenBalanceQueryRes.data);
 	console.log(
@@ -352,7 +386,7 @@ export default function RetraitGBPage() {
           flex justify-center items-center`}
 					>
 						{Number(
-							cameroonBalanceQueryRes?.data?.balances?.[0]
+							cameroonPawapayBalanceQueryRes?.data?.balances?.[0]
 								?.balance || 0
 						).toLocaleString("fr-FR") ?? 0}
 					</div>
@@ -363,6 +397,19 @@ export default function RetraitGBPage() {
 							icon={<FourDots />}
 							href="?withdrawCM=true"
 						/>
+					</div>
+				</div>
+
+				<div className="flex flex-col justify-center items-center">
+					<div className="text-xl font-bold mb-3">{`Solde Cameroun Campay (XAF)`}</div>
+					<div
+						className={`h-10  mb-3 min-w-[300px] text-xl font-bold text-[#18BC7A] border-none bg-gray-100 rounded-md outline-none px-3
+          flex justify-center items-center`}
+					>
+						{Number(
+							cameroonCampayBalanceQueryRes?.data
+								?.total_balance || 0
+						).toLocaleString("fr-FR") ?? 0}
 					</div>
 				</div>
 
@@ -446,7 +493,7 @@ export default function RetraitGBPage() {
 				modalContent={
 					<RetraitCMModalForm
 						amount={Number(
-							cameroonBalanceQueryRes?.data?.balances?.[0]
+							cameroonPawapayBalanceQueryRes?.data?.balances?.[0]
 								?.balance || 0
 						)}
 					/>

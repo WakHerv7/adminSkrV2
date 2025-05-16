@@ -246,7 +246,8 @@ export const burkinaUrls = {
 
 export const BASE_URL_CAMEROON = `${API_V2_BASE_URL}/cameroon`;
 export const cameroonUrls = {
-	GET_CAMEROON_BALANCE: `${BASE_URL_CAMEROON}/check-balance`,
+	GET_CAMEROON_CAMPAY_BALANCE: `${BASE_URL_CAMEROON}/check-balance/campay`,
+	GET_CAMEROON_PAWAPAY_BALANCE: `${BASE_URL_CAMEROON}/check-balance/pawapay`,
 	CAMEROON_PAYOUT: `${BASE_URL_CAMEROON}/payout`,
 	GET_CAMEROON_PAYOUT_STATUS: `${BASE_URL_CAMEROON}/check-payout-status`,
 };

@@ -4,7 +4,7 @@ import {
 	getTransactionPerCountryGraphData,
 	getTransactionTrendGraphData,
 } from "@/utils/graphs";
-import { TransactionService } from "@/api/services/v1v2/transaction";
+import { TransactionService } from "@/api/services/v2/transaction";
 import { selectLimitDate } from "@/redux/slices_v2/settings";
 import toast from "react-hot-toast";
 import { useQuery } from "react-query";

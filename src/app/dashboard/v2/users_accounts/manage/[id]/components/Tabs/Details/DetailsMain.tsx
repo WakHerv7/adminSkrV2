@@ -174,6 +174,7 @@ export default function Details() {
 				: "",
 			email: customerDetails?.customer?.email ?? "",
 			phone: `${customerDetails?.customer?.phone}`,
+			niu: customerDetails?.customer?.niu,
 			country_code: customerDetails?.customer?.country_phone_code ?? "",
 			country: customerDetails?.customer?.country ?? "",
 			city: customerDetails?.customer?.city ?? "",
@@ -946,6 +947,24 @@ export default function Details() {
 								)}
 							/>
 						</div>
+						<FormField
+							control={form.control}
+							name="niu"
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel className="text-gray-900 text-sm font-semibold tracking-tight">
+										Numero d'Identifiant Unique (NIU)
+									</FormLabel>
+									<FormControl>
+										<Input
+											className={`px-6 text-gray-900 font-normal bg-gray-200`}
+											{...field}
+											readOnly
+										/>
+									</FormControl>
+								</FormItem>
+							)}
+						/>
 						<div className="grid grid-cols-1 md:grid-cols-2 gap-x-7 gap-y-7">
 							<FormField
 								control={form.control}

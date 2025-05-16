@@ -75,6 +75,8 @@ export const transactionUrlsV2 = {
 	GET_ALL_TRANSACTIONS: `${V2_BASE_URL_TRANSACTION}`,
 	GET_TODAY_STATS: `${V2_BASE_URL_TRANSACTION}/stats-today`,
 	GET_DAILY_STATS: `${V2_BASE_URL_TRANSACTION}/stats-daily`,
+	GET_ALL_FEES_DAILY_STATS: `${V2_BASE_URL_TRANSACTION}/all-fees-stats-daily`,
+
 	// GET_PERIODIC_TRANSACTIONS: `${BASE_URL_TRANSACTION}/periodic`,
 	// GET_USER_TRANSACTIONS: (id:any) => `${BASE_URL_TRANSACTION}/user/${id}`,
 	// GET_USER_TRANSACTIONS_STATS: (id:any) => `${BASE_URL_TRANSACTION}/user-stats/${id}`,
@@ -114,6 +116,7 @@ export const V2_BASE_URL_NOTIFICATION = `${API_V2_PROD_BASE_URL}/notifications`;
 export const notificationUrlsV2 = {
 	GET_NOTIFICATIONS: `${V2_BASE_URL_NOTIFICATION}`,
 	SEND_NOTIFICATION: `${V2_BASE_URL_NOTIFICATION}`,
+	SEND_WHATSAPP_NOTIFICATION: `${V2_BASE_URL_NOTIFICATION}/whatsapp`,
 };
 /** ------------------------------------ */
 export const V2_BASE_URL_CUSTOMER_TICKET = `${API_V2_BASE_URL}/customertickets`;
@@ -234,11 +237,25 @@ export const beninUrls = {
 	GET_BENIN_PAYOUT_STATUS: `${BASE_URL_BENIN}/check-payout-status`,
 };
 
+export const BASE_URL_BURKINA = `${API_V2_BASE_URL}/burkina`;
+export const burkinaUrls = {
+	GET_BURKINA_BALANCE: `${BASE_URL_BURKINA}/check-balance`,
+	BURKINA_PAYOUT: `${BASE_URL_BURKINA}/payout`,
+	GET_BURKINA_PAYOUT_STATUS: `${BASE_URL_BURKINA}/check-payout-status`,
+};
+
 export const BASE_URL_CAMEROON = `${API_V2_BASE_URL}/cameroon`;
 export const cameroonUrls = {
 	GET_CAMEROON_BALANCE: `${BASE_URL_CAMEROON}/check-balance`,
 	CAMEROON_PAYOUT: `${BASE_URL_CAMEROON}/payout`,
 	GET_CAMEROON_PAYOUT_STATUS: `${BASE_URL_CAMEROON}/check-payout-status`,
+};
+
+export const BASE_URL_RDC = `${API_V2_BASE_URL}/rdc`;
+export const rdcUrls = {
+	GET_RDC_BALANCE: `${BASE_URL_RDC}/check-balance`,
+	RDC_PAYOUT: `${BASE_URL_RDC}/payout`,
+	GET_RDC_PAYOUT_STATUS: `${BASE_URL_RDC}/check-payout-status`,
 };
 
 export const BASE_URL_MIDEN = `${API_V2_PROD_BASE_URL}/miden`;

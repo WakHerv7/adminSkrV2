@@ -34,6 +34,10 @@ import { CameroonService } from "@/api/services/cameroon";
 import RetraitCMModalForm from "./modals/RetraitCMModalForm";
 import { MidenService } from "@/api/services/v2/miden";
 import { NairapayService } from "@/api/services/v2/nairapay";
+import RetraitCDModalForm from "./modals/RetraitCDModalForm";
+import { RdcService } from "@/api/services/rdc";
+import { BurkinaService } from "@/api/services/burkina";
+import RetraitBFModalForm from "./modals/RetraitBFModalForm";
 
 const getGabonBalance = async ({ queryKey }: any) => {
 	const [_key, token] = queryKey;
@@ -59,6 +63,38 @@ const getBeninBalance = async ({ queryKey }: any) => {
 		if (!response.ok) {
 			throw new Error(
 				responseJson.message || "Failed to get Benin Balance"
+			);
+		}
+		return responseJson.data;
+	} else {
+		return { data: { message: "No token provided" } };
+	}
+};
+
+const getBurkinaBalance = async ({ queryKey }: any) => {
+	const [_key, token] = queryKey;
+	if (token) {
+		const response = await BurkinaService.get_burkina_balance({ token });
+		const responseJson = await response.json();
+		if (!response.ok) {
+			throw new Error(
+				responseJson.message || "Failed to get Burkina Balance"
+			);
+		}
+		return responseJson.data;
+	} else {
+		return { data: { message: "No token provided" } };
+	}
+};
+
+const getRDCBalance = async ({ queryKey }: any) => {
+	const [_key, token] = queryKey;
+	if (token) {
+		const response = await RdcService.get_rdc_balance({ token });
+		const responseJson = await response.json();
+		if (!response.ok) {
+			throw new Error(
+				responseJson.message || "Failed to get RDC Balance"
 			);
 		}
 		return responseJson.data;
@@ -133,6 +169,25 @@ export default function RetraitGBPage() {
 		queryFn: getBeninBalance,
 		onError: (err) => {
 			toast.error("Failed to get Benin balance.");
+		},
+		// enabled: false,
+		refetchInterval: 60000, // Fetches data every 60 seconds
+	});
+	const burkinaBalanceQueryRes = useQuery({
+		queryKey: ["burkina", getSekureApiToken],
+		queryFn: getBurkinaBalance,
+		onError: (err) => {
+			toast.error("Failed to get Burkina balance.");
+		},
+		// enabled: false,
+		refetchInterval: 60000, // Fetches data every 60 seconds
+	});
+
+	const rdcBalanceQueryRes = useQuery({
+		queryKey: ["rdc", getSekureApiToken],
+		queryFn: getRDCBalance,
+		onError: (err) => {
+			toast.error("Failed to get RDC balance.");
 		},
 		// enabled: false,
 		refetchInterval: 60000, // Fetches data every 60 seconds
@@ -226,6 +281,71 @@ export default function RetraitGBPage() {
 				</div>
 
 				<div className="flex flex-col justify-center items-center">
+					<div className="text-xl font-bold mb-3">{`Solde Burkina Pawapay (XOF)`}</div>
+					<div
+						className={`h-10  mb-3 min-w-[300px] text-xl font-bold text-[#18BC7A] border-none bg-gray-100 rounded-md outline-none px-3
+          flex justify-center items-center`}
+					>
+						{Number(
+							burkinaBalanceQueryRes?.data?.balances?.[0]
+								?.balance || 0
+						).toLocaleString("fr-FR") ?? 0}
+					</div>
+					<div className="flex flex-wrap items-center gap-y-4 mt-3">
+						<CButton
+							text={"Retirer"}
+							btnStyle={"green"}
+							icon={<FourDots />}
+							href="?withdrawBF=true"
+						/>
+					</div>
+				</div>
+
+				<div className="flex flex-col justify-center items-center">
+					<div className="text-xl font-bold mb-3">{`Solde RDC Pawapay (CDF)`}</div>
+					<div
+						className={`h-10  mb-3 min-w-[300px] text-xl font-bold text-[#18BC7A] border-none bg-gray-100 rounded-md outline-none px-3
+          flex justify-center items-center`}
+					>
+						{Number(
+							rdcBalanceQueryRes?.data?.balances?.[0]?.balance ||
+								0
+						).toLocaleString("fr-FR") ?? 0}
+					</div>
+					<div className="flex flex-wrap items-center gap-y-4 mt-3">
+						<CButton
+							text={"Retirer"}
+							btnStyle={"green"}
+							icon={<FourDots />}
+							href="?withdrawCD=true"
+						/>
+					</div>
+				</div>
+
+				<div className="flex flex-col justify-center items-center">
+					<div className="text-xl font-bold mb-3">{`Solde RDC Pawapay (XAF)`}</div>
+					<div
+						className={`h-10  mb-3 min-w-[300px] text-xl font-bold text-[#18BC7A] border-none bg-gray-100 rounded-md outline-none px-3
+          flex justify-center items-center`}
+					>
+						{(
+							Number(
+								rdcBalanceQueryRes?.data?.balances?.[0]
+									?.balance || 0
+							) / 5
+						).toLocaleString("fr-FR") ?? 0}
+					</div>
+					{/* <div className="flex flex-wrap items-center gap-y-4 mt-3">
+						<CButton
+							text={"Retirer"}
+							btnStyle={"green"}
+							icon={<FourDots />}
+							href="?withdrawCD=true"
+						/>
+					</div> */}
+				</div>
+
+				<div className="flex flex-col justify-center items-center">
 					<div className="text-xl font-bold mb-3">{`Solde Cameroun Pawapay (XAF)`}</div>
 					<div
 						className={`h-10  mb-3 min-w-[300px] text-xl font-bold text-[#18BC7A] border-none bg-gray-100 rounded-md outline-none px-3
@@ -295,6 +415,28 @@ export default function RetraitGBPage() {
 						amount={Number(
 							beninBalanceQueryRes?.data?.balances?.[0]
 								?.balance || 0
+						)}
+					/>
+				}
+			/>
+			<Modal
+				name={"withdrawBF"}
+				modalContent={
+					<RetraitBFModalForm
+						amount={Number(
+							burkinaBalanceQueryRes?.data?.balances?.[0]
+								?.balance || 0
+						)}
+					/>
+				}
+			/>
+			<Modal
+				name={"withdrawCD"}
+				modalContent={
+					<RetraitCDModalForm
+						amount={Number(
+							rdcBalanceQueryRes?.data?.balances?.[0]?.balance ||
+								0
 						)}
 					/>
 				}

@@ -137,12 +137,14 @@ export class TransactionService {
 		limitDate,
 		includedCategories,
 		includedTypes,
+		columnToSum,
 	}: {
 		category?: string;
 		type?: string;
 		limitDate?: string;
 		includedCategories?: string;
 		includedTypes?: string;
+		columnToSum?: string;
 	}) => {
 		let query_params: any = {};
 		if (category) query_params.category = category;
@@ -151,6 +153,7 @@ export class TransactionService {
 		if (includedCategories)
 			query_params.includedCategories = includedCategories;
 		if (includedTypes) query_params.includedTypes = includedTypes;
+		if (columnToSum) query_params.columnToSum = columnToSum;
 		return BaseMethods.getRequest(
 			transactionUrlsV2.GET_TODAY_STATS,
 			true,
@@ -163,12 +166,14 @@ export class TransactionService {
 		limitDate,
 		includedCategories,
 		includedTypes,
+		columnToSum,
 	}: {
 		category?: string;
 		type?: string;
 		limitDate?: string;
 		includedCategories?: string;
 		includedTypes?: string;
+		columnToSum?: string;
 	}) => {
 		let query_params: any = {};
 		if (category) query_params.category = category;
@@ -177,8 +182,38 @@ export class TransactionService {
 		if (includedCategories)
 			query_params.includedCategories = includedCategories;
 		if (includedTypes) query_params.includedTypes = includedTypes;
+		if (columnToSum) query_params.columnToSum = columnToSum;
 		return BaseMethods.getRequest(
 			transactionUrlsV2.GET_DAILY_STATS,
+			true,
+			query_params
+		);
+	};
+	static get_all_fees_daily_stats = ({
+		category,
+		type,
+		limitDate,
+		includedCategories,
+		includedTypes,
+		columnToSum,
+	}: {
+		category?: string;
+		type?: string;
+		limitDate?: string;
+		includedCategories?: string;
+		includedTypes?: string;
+		columnToSum?: string;
+	}) => {
+		let query_params: any = {};
+		if (category) query_params.category = category;
+		if (type) query_params.type = type;
+		if (limitDate) query_params.limitDate = limitDate;
+		if (includedCategories)
+			query_params.includedCategories = includedCategories;
+		if (includedTypes) query_params.includedTypes = includedTypes;
+		if (columnToSum) query_params.columnToSum = columnToSum;
+		return BaseMethods.getRequest(
+			transactionUrlsV2.GET_ALL_FEES_DAILY_STATS,
 			true,
 			query_params
 		);

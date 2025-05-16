@@ -468,8 +468,9 @@ export default function TransactionModal({
 									(itm[key]
 										? itm[key]?.toLocaleString("fr-FR")
 										: itm.category === "card" &&
-										  itm.type === "topup"
-										? 300
+										  (itm.type === "topup" ||
+												itm.type === "withdrawal")
+										? itm?.fee
 										: 0) +
 									" XAF " +
 									USDValue;

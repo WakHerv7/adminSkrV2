@@ -34,6 +34,7 @@ import EditRegStatusModalForm from "./modals/EditRegStatusModalForm";
 import { CustomerService } from "@/api/services/v2/customer";
 import { HashLoader } from "react-spinners";
 import classNames from "classnames";
+import WhatsappModalForm from "./modals/WhatsappModalForm";
 
 const getKYCWarningsList = async () => {
 	const response = await KycService.get_kyc_warnings_list({ lang: "fr" });
@@ -74,7 +75,8 @@ export default function DetailsSide() {
 	] = useState(false);
 	const [isNotificationModalFormOpen, setIsNotificationModalFormOpen] =
 		useState(false);
-
+	const [isWhatsappModalFormOpen, setIsWhatsappModalFormOpen] =
+		useState(false);
 	const [isActivateModalOpen, setIsActivateModalOpen] = useState(false);
 
 	const currentUser = useSelector(selectCurrentUser);
@@ -590,74 +592,31 @@ export default function DetailsSide() {
 							customer={customerDetails?.customer}
 						/>
 					</>
-					{customerDetails?.customer?.blocked ? (
-						<>
-							{/* <CButton 
-            text={'Débloquer'} 
-            href={`?unblockUserAccount=true`}
-            btnStyle={'lightYellow'}
-            icon={<FaLock />}
-            width={'100%'}
-            />
-            <Modal name={'unblockUserAccount'} modalContent={<UnblockUserAccountModalForm customer={customerDetails?.customer}/>}/> */}
-						</>
-					) : (
-						<>
-							{/* <CButton 
-            text={'Bloquer'} 
-            href={`?blockUserAccount=true`}
-            btnStyle={'yellow'}
-            icon={<FaLock />}
-            width={'100%'}
-            />
-            <Modal name={'blockUserAccount'} modalContent={<BlockUserAccountModalForm customer={customerDetails?.customer}/>}/> */}
-						</>
-					)}
 				</div>
-				{/* <div>
-            <CButton 
-            text={customerDetails?.customer?.active ? 'Désactiver' : 'Activer'} 
-            btnStyle={'outlineDark'}
-            icon={customerDetails?.customer?.active ? <MdClose size={24} /> : <MdCheck size={24} />}
-            width={'100%'}
-            onClick={()=>setIsActivateModalOpen(true)}
-            />
-            <ActivateUserAccountModal
-            isOpen={isActivateModalOpen}
-            setIsOpen={setIsActivateModalOpen}
-            customer={customerDetails?.customer}
-            activate={!customerDetails?.customer?.active}
-            />
-          </div> */}
+				<div className=" mt-3 mb-2">
+					<span className="text-gray-800 text-sm font-normal my-5">
+						Whatsapp
+					</span>
+					<>
+						<CButton
+							icon={<IoIosSend />}
+							onClick={() => setIsWhatsappModalFormOpen(true)}
+							text={"Envoyer un Whatsapp"}
+							btnStyle={"green"}
+							width={"100%"}
+						/>
+						<WhatsappModalForm
+							isOpen={isWhatsappModalFormOpen}
+							setIsOpen={setIsWhatsappModalFormOpen}
+							customer={customerDetails?.customer}
+						/>
+					</>
+				</div>
 			</div>
-
-			{/* <div className="flex flex-col justify-start gap-2">
-          <div className="flex justify-between items-center w-full">
-            <p className="text-gray-800 text-sm font-normal tracking-tight">Etat du KYC</p>
-            { customerDetails?.customer?.kyc_status === 'verified' ?
-              <LabelWithBadge className={`text-xs`} label={'Vérifié'} badgeColor={'#18BC7A'} textColor={'#444'}/>
-              :
-              customerDetails?.customer?.blocked ?
-              <LabelWithBadge className={`text-xs`} label={'Bloqué'} badgeColor={'#F85D4B'} textColor={'#444'}/>
-              :
-              customerDetails?.customer?.kyc_status === 'ongoing' ?
-              <LabelWithBadge className={`text-xs`} label={'En cours'} badgeColor={'#777'} textColor={'#444'}/>
-              :customerDetails?.customer?.kyc_status === 'none' ?
-              <LabelWithBadge className={`text-xs`} label={'Aucun'} badgeColor={'#000'} textColor={'#000'}/>
-              :<></>
-            }
-          </div> 
-          <CButton
-            text={'Voir details KYC'}
-            href={`#`}
-            btnStyle={'dark'}
-            width={'100%'}              
-            />
-        </div> */}
 			<div
 				style={{ zIndex: 9000 }}
 				className={classNames(
-					"transition-all invisible z-20 bg-blue-900/30 opacity-0 absolute top-0 left-0 h-full w-full flex items-center justify-center",
+					"transition-all invisible z-20 bg-blue-900/30 opacity-0 fixed top-0 left-0 h-full w-full flex items-center justify-center",
 					{
 						"!opacity-100 !visible z-20": mutation.isLoading,
 					}

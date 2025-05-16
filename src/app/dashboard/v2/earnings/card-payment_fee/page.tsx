@@ -42,7 +42,7 @@ const getAllTrx = async ({ queryKey }: any) => {
 	const [_key, filter, st] = queryKey;
 	let params: any = {};
 	if (st) params.searchTerm = st;
-	// if (filter?.category) params.category = filter?.category;
+	if (filter?.status) params.status = filter?.status;
 	params.category = "card";
 	params.type = "payment_fee";
 

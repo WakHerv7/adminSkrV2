@@ -117,6 +117,7 @@ export const notificationUrlsV2 = {
 	GET_NOTIFICATIONS: `${V2_BASE_URL_NOTIFICATION}`,
 	SEND_NOTIFICATION: `${V2_BASE_URL_NOTIFICATION}`,
 	SEND_WHATSAPP_NOTIFICATION: `${V2_BASE_URL_NOTIFICATION}/whatsapp`,
+	// SEND_WHATSAPP_NOTIFICATION: `${API_V2_BASE_URL}/notifications/whatsapp`,
 };
 /** ------------------------------------ */
 export const V2_BASE_URL_CUSTOMER_TICKET = `${API_V2_BASE_URL}/customertickets`;

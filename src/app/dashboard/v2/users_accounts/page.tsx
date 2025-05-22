@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import Image from "next/image";
 import { useTitle } from "@/hooks/useTitle";
 import ProductsSection from "@/components/sections/ProductsSection";
@@ -8,9 +8,9 @@ import toast from "react-hot-toast";
 import { Kbd } from "@nextui-org/react";
 import { useEffect, useRef, useState } from "react";
 
-import SideBar from "@/components/shared/SideBar"
-import { RxCaretDown, RxDotsHorizontal } from "react-icons/rx"
-import { IoIosDisc, IoIosNotificationsOutline } from "react-icons/io"
+import SideBar from "@/components/shared/SideBar";
+import { RxCaretDown, RxDotsHorizontal } from "react-icons/rx";
+import { IoIosDisc, IoIosNotificationsOutline } from "react-icons/io";
 import { CgProfile } from "react-icons/cg";
 import Navbar from "@/components/shared/Navbar";
 import CustomTable from "@/components/shared/CustomTable";
@@ -18,7 +18,7 @@ import Layout from "@/components/shared/Layout";
 import CustomDropdown from "@/components/shared/CustomDropdown";
 import Link from "next/link";
 import ButtonFilled from "@/components/shared/ButtonFilled";
-import { IGenericRow } from '@/components/AdminTable/Table';
+import { IGenericRow } from "@/components/AdminTable/Table";
 import ActiveYesNo from "@/components/shared/ActiveYesNo";
 import ButtonOutlined from "@/components/shared/ButtonOutlined";
 import { FourDots } from "@/components/shared/icons";
@@ -37,96 +37,135 @@ import CButton from "@/components/shared/CButton";
 import { FaLock } from "react-icons/fa";
 import classNames from "classnames";
 
-import { 
-    headerUserAccountDataV2 as headerData, tableUserAccountData as tableData,
-    trxData as data, pieData, pieData2, doughnutData } from "@/constants/Index";
-import { waitCircleIcon,
-    checkCircleIcon,
-    ongoingCircleIcon,
-    haltCircleIcon,
- } from "@/constants/icons";
+import {
+	headerUserAccountDataV2 as headerData,
+	tableUserAccountData as tableData,
+	trxData as data,
+	pieData,
+	pieData2,
+	doughnutData,
+} from "@/constants/Index";
+import {
+	waitCircleIcon,
+	checkCircleIcon,
+	ongoingCircleIcon,
+	haltCircleIcon,
+} from "@/constants/icons";
 import InfoCardGrid from "@/components/cards/InfoCardGrid";
 import Modal from "@/components/shared/Modal/Modal";
 import { UserService } from "@/api/services/user";
 import { getFormattedDate, getFormattedDateTime } from "@/utils/DateFormat";
 import { useDispatch, useSelector } from "react-redux";
-import urlsV2 from '@/config/urls_v2';
+import urlsV2 from "@/config/urls_v2";
 import { selectSearchTerm, setSearchTerm } from "@/redux/slices/search";
 import LabelWithBadge from "@/components/shared/LabelWithBadge";
 import { CustomerService } from "@/api/services/v2/customer";
 import { HashLoader } from "react-spinners";
+import useKeyPressed from "@/hooks/useKeyPressed";
 
 let infoData: TDataList[] = [
-    [
-        [{
-            label:{text:"Comptes créés aujourd'hui", fw:"bold", color:"#444"},
-            value:{text:"42", fw:"bold", color:"#444"}
-        }],
-        [{
-            label:{text:"Moyenne de création", fw:"", color:"#444"},
-            value:{text:"80 / jour", fw:"bold", color:"#444"}
-        }]
-    ],
-    [
-        [{
-            label:{text:"Comptes créés ", fw:"bold", color:"#444"},
-            value:{text:"1456", fw:"bold", color:"#444"}
-        }],
-        [{
-            label:{text:"Total solde SEKURE ", fw:"bold", color:"#444"},
-            value:{text:"24 558 450 XAF", fw:"bold", color:"#444"}
-        }],
-        // [
-        //     {
-        //         label:{text:checkCircleIcon, tooltip:"Actifs", fw:"", color:"#444"},
-        //         value:{text:"1399", fw:"bold", color:"#18BC7A"}
-        //     },
-        //     {
-        //         label:{text:haltCircleIcon, tooltip:"Bloqués", fw:"", color:"#444"},
-        //         value:{text:"57", fw:"bold", color:"#F85D4B"}
-        //     },
-        // ]
-    ],
-    [
-        [{
-            label:{text:"Anciens comptes ", fw:"bold", color:"#444"},
-            value:{text:"1456", fw:"bold", color:"#444"}
-        }],
-        [{
-            label:{text:"Solde total anciens comptes ", fw:"bold", color:"#444"},
-            value:{text:"24 558 450 XAF", fw:"bold", color:"#444"}
-        }],
-    ],
-    [
-        [{
-            label:{text:"Nouveaux comptes ", fw:"bold", color:"#444"},
-            value:{text:"1456", fw:"bold", color:"#444"}
-        }],
-        [{
-            label:{text:"Solde total nouveaux comptes ", fw:"bold", color:"#444"},
-            value:{text:"24 558 450 XAF", fw:"bold", color:"#444"}
-        }],
-    ],
-    // [
-    //     [{
-    //         label:{text:"Verifications KYC ", fw:"bold", color:"#444"},
-    //         value:{text:"1456", fw:"bold", color:"#444"}
-    //     }],
-    //     [
-    //         {
-    //             label:{text:waitCircleIcon, tooltip:"En attente", fw:"", color:"#444", fs:'11px'},
-    //             value:{text:"1399", fw:"bold", color:"#888", fs:'14px'}
-    //         },
-    //         {
-    //             label:{text:checkCircleIcon, tooltip:"Validés", fw:"", color:"#444", fs:'11px'},
-    //             value:{text:"443", fw:"bold", color:"#18BC7A", fs:'14px'}
-    //         },
-    //         {
-    //             label:{text:haltCircleIcon, tooltip:"Bloqués", fw:"", color:"#444", fs:'11px'},
-    //             value:{text:"57", fw:"bold", color:"#F85D4B", fs:'14px'}
-    //         },
-    //     ]
-    // ]
+	[
+		[
+			{
+				label: {
+					text: "Comptes créés aujourd'hui",
+					fw: "bold",
+					color: "#444",
+				},
+				value: { text: "42", fw: "bold", color: "#444" },
+			},
+		],
+		[
+			{
+				label: { text: "Moyenne de création", fw: "", color: "#444" },
+				value: { text: "80 / jour", fw: "bold", color: "#444" },
+			},
+		],
+	],
+	[
+		[
+			{
+				label: { text: "Comptes créés ", fw: "bold", color: "#444" },
+				value: { text: "1456", fw: "bold", color: "#444" },
+			},
+		],
+		[
+			{
+				label: {
+					text: "Total solde SEKURE ",
+					fw: "bold",
+					color: "#444",
+				},
+				value: { text: "24 558 450 XAF", fw: "bold", color: "#444" },
+			},
+		],
+		// [
+		//     {
+		//         label:{text:checkCircleIcon, tooltip:"Actifs", fw:"", color:"#444"},
+		//         value:{text:"1399", fw:"bold", color:"#18BC7A"}
+		//     },
+		//     {
+		//         label:{text:haltCircleIcon, tooltip:"Bloqués", fw:"", color:"#444"},
+		//         value:{text:"57", fw:"bold", color:"#F85D4B"}
+		//     },
+		// ]
+	],
+	[
+		[
+			{
+				label: { text: "Anciens comptes ", fw: "bold", color: "#444" },
+				value: { text: "1456", fw: "bold", color: "#444" },
+			},
+		],
+		[
+			{
+				label: {
+					text: "Solde total anciens comptes ",
+					fw: "bold",
+					color: "#444",
+				},
+				value: { text: "24 558 450 XAF", fw: "bold", color: "#444" },
+			},
+		],
+	],
+	[
+		[
+			{
+				label: { text: "Nouveaux comptes ", fw: "bold", color: "#444" },
+				value: { text: "1456", fw: "bold", color: "#444" },
+			},
+		],
+		[
+			{
+				label: {
+					text: "Solde total nouveaux comptes ",
+					fw: "bold",
+					color: "#444",
+				},
+				value: { text: "24 558 450 XAF", fw: "bold", color: "#444" },
+			},
+		],
+	],
+	// [
+	//     [{
+	//         label:{text:"Verifications KYC ", fw:"bold", color:"#444"},
+	//         value:{text:"1456", fw:"bold", color:"#444"}
+	//     }],
+	//     [
+	//         {
+	//             label:{text:waitCircleIcon, tooltip:"En attente", fw:"", color:"#444", fs:'11px'},
+	//             value:{text:"1399", fw:"bold", color:"#888", fs:'14px'}
+	//         },
+	//         {
+	//             label:{text:checkCircleIcon, tooltip:"Validés", fw:"", color:"#444", fs:'11px'},
+	//             value:{text:"443", fw:"bold", color:"#18BC7A", fs:'14px'}
+	//         },
+	//         {
+	//             label:{text:haltCircleIcon, tooltip:"Bloqués", fw:"", color:"#444", fs:'11px'},
+	//             value:{text:"57", fw:"bold", color:"#F85D4B", fs:'14px'}
+	//         },
+	//     ]
+	// ]
 ];
 
 infoData[0][0][0].value.text = 0;
@@ -143,188 +182,329 @@ infoData[3][1][0].value.text = 0 + "  XAF";
 // infoData[3][1][1].value.text = 0;
 // infoData[3][1][2].value.text = 0;
 
+const getAllCustomers = async ({ queryKey }: any) => {
+	const [_key, st, filterContent] = queryKey;
+	let params: any = {};
+	if (st) params.searchTerm = st;
 
+	if (isObject(filterContent)) {
+		Object.entries(filterContent).map(([key, value]: any[]) => {
+			if (value && value !== "all") params[key] = value;
+		});
+	}
+	console.log("getAllCustomers searchTerm : ", st);
+	console.log("getAllCustomers filterContent : ", filterContent);
+	console.log("getAllCustomers params : ", params);
 
-const getAllCustomers = async ({queryKey}:any) => {
-    const [_key, st, filterContent] = queryKey;
-    let params:any = {};
-    if(st) params.searchTerm = st;
+	const response = await CustomerService.get_all_customers(params);
+	const responseJson = await response.json();
+	if (!response.ok) {
+		throw new Error(responseJson.message || "Failed to get users");
+	}
+	console.log("responseJson.data : ", responseJson.data);
 
-    if(isObject(filterContent)){
-        Object.entries(filterContent).map(([key, value]:any[]) => {
-            if(value && value!== 'all') params[key] = value;
-        });
-    }
-    console.log("getAllCustomers searchTerm : ", st);
-    console.log("getAllCustomers filterContent : ", filterContent);
-    console.log("getAllCustomers params : ", params);
-    
-    const response = await CustomerService.get_all_customers(params);
-    const responseJson = await response.json();
-    if (!response.ok) {
-      throw new Error(responseJson.message || 'Failed to get users'); 
-    }  
-    console.log("responseJson.data : ", responseJson.data);
-    
-    return responseJson.data; 
+	return responseJson.data;
 };
-const getCustomersStats = async ({queryKey}:any) => {
-    const [_key, filterContent] = queryKey;
-    let params:any = {};
-    if(isObject(filterContent)){
-        Object.entries(filterContent).map(([key, value]:any[]) => {
-            if(value && value!== 'all') params[key] = value;
-        });
-    }
-    const response = await CustomerService.get_customers_stats(params);
-    const responseJson = await response.json();
-    if (!response.ok) {
-      throw new Error(responseJson.message || 'Failed to get users statistics'); 
-    }  
-    return responseJson.data; 
+const getCustomersStats = async ({ queryKey }: any) => {
+	const [_key, filterContent] = queryKey;
+	let params: any = {};
+	if (isObject(filterContent)) {
+		Object.entries(filterContent).map(([key, value]: any[]) => {
+			if (value && value !== "all") params[key] = value;
+		});
+	}
+	const response = await CustomerService.get_customers_stats(params);
+	const responseJson = await response.json();
+	if (!response.ok) {
+		throw new Error(
+			responseJson.message || "Failed to get users statistics"
+		);
+	}
+	return responseJson.data;
 };
 
-const generateCustomersExcel = async (queryData:any) => {
-    const {filterContent} = queryData;
-    let params:any = {};
-    if(isObject(filterContent)){
-        Object.entries(filterContent).map(([key, value]:any[]) => {
-            if(value && value!== 'all') params[key] = value;
-        });
-    }
-    const response = await CustomerService.generate_customers_excel(params); 
-    
-    if (!response.ok) {
-        const responseBody = await response.json();
-        throw new Error(responseBody.message);
-    }
-    const responseJson = await response.json();
-    return responseJson;
-}
+const generateCustomersExcel = async (queryData: any) => {
+	const { filterContent } = queryData;
+	let params: any = {};
+	if (isObject(filterContent)) {
+		Object.entries(filterContent).map(([key, value]: any[]) => {
+			if (value && value !== "all") params[key] = value;
+		});
+	}
+	const response = await CustomerService.generate_customers_excel(params);
+
+	if (!response.ok) {
+		const responseBody = await response.json();
+		throw new Error(responseBody.message);
+	}
+	const responseJson = await response.json();
+	return responseJson;
+};
 
 export default function Home() {
-    useTitle("Sekure | Comptes utilisateurs", true);
+	useTitle("Sekure | Comptes utilisateurs", true);
 
-    const [filterContent, setFilterContent] = useState({});
+	const [filterContent, setFilterContent] = useState({});
 
-    const dispatch = useDispatch();
-    const redirectRef:any = useRef();
-    // dispatch(setSearchTerm(''));
-    const searchTerm:string = useSelector(selectSearchTerm);
+	const [statsData, setStatsData] = useState<TDataList[]>();
 
-    const mutationExcel = useMutation({
-        mutationFn: (data)=>generateCustomersExcel({filterContent}),
-        onError: (err:any) => {
-            console.error("onError : ", err.message);
-            toast.error(`Echec lors de la generation de fichier excel : ` + err.message);
-            // downloadLink		
-        },
-        onSuccess: (data) => {
-            console.log("onSuccess : ", data);            
-            toast.success(`Fichier excel généré avec succes.`);
-            redirectRef.current.href = data?.data;
-            redirectRef.current.click();
-        },
-    });
+	const dispatch = useDispatch();
+	const redirectRef: any = useRef();
+	// dispatch(setSearchTerm(''));
+	const searchTerm: string = useSelector(selectSearchTerm);
 
-    const allUsersStatsQueryRes = useQuery({
-        queryKey: ["allUsersStats", filterContent],
-        queryFn: getCustomersStats,
-        onError: (err) => {
-          toast.error("Failed to get users stats.");
-        },
-        refetchInterval: 30000, // Fetches data every 30 seconds
-    });
-    const allUsersQueryRes = useQuery({
-        queryKey: ["allCustomers", searchTerm, filterContent],
-        queryFn: getAllCustomers,
-        onError: (err) => {
-          toast.error("Failed to get users.");
-        },
-        // enabled: false,
-        // refetchInterval: 50000, // Fetches data every 60 seconds
-    });
+	const mutationExcel = useMutation({
+		mutationFn: (data) => generateCustomersExcel({ filterContent }),
+		onError: (err: any) => {
+			console.error("onError : ", err.message);
+			toast.error(
+				`Echec lors de la generation de fichier excel : ` + err.message
+			);
+			// downloadLink
+		},
+		onSuccess: (data) => {
+			console.log("onSuccess : ", data);
+			toast.success(`Fichier excel généré avec succes.`);
+			redirectRef.current.href = data?.data;
+			redirectRef.current.click();
+		},
+	});
 
-    console.log("allUsersQueryRes.data : ", allUsersQueryRes.data);
-    console.log("allUsersStatsQueryRes.data : ", allUsersStatsQueryRes.data);
+	const allUsersStatsQueryRes = useQuery({
+		queryKey: ["allUsersStats", filterContent],
+		queryFn: getCustomersStats,
+		onError: (err) => {
+			toast.error("Failed to get users stats.");
+		},
+		refetchInterval: 30000, // Fetches data every 30 seconds
+	});
+	const allUsersQueryRes = useQuery({
+		queryKey: ["allCustomers", searchTerm, filterContent],
+		queryFn: getAllCustomers,
+		onError: (err) => {
+			toast.error("Failed to get users.");
+		},
+		// enabled: false,
+		// refetchInterval: 50000, // Fetches data every 60 seconds
+	});
 
-    let rearrangedTableData:any[] = [];
+	console.log("allUsersQueryRes.data : ", allUsersQueryRes.data);
+	console.log("allUsersStatsQueryRes.data : ", allUsersStatsQueryRes.data);
 
-    // if(allUsersQueryRes?.data) {
-    //     
-    // }
-    
-    if(allUsersStatsQueryRes?.data) {
-    // if(allUsersStatsQueryRes?.data) {
-        infoData[0][0][0].value.text = allUsersStatsQueryRes?.data?.todayCountUsers?.toLocaleString('fr-FR') ?? 0;
-        infoData[0][1][0].value.text = Math.round(allUsersStatsQueryRes?.data?.avgUsers ?? 0) + "  /jour";
-        infoData[1][0][0].value.text = allUsersStatsQueryRes?.data?.countUsers?.toLocaleString('fr-FR') ?? 0;
-        infoData[1][1][0].value.text = (allUsersStatsQueryRes?.data?.totalSolde?.toLocaleString('fr-FR') ?? 0) + "  XAF";        
-        infoData[2][0][0].value.text = allUsersStatsQueryRes?.data?.countV1Users?.toLocaleString('fr-FR') ?? 0;
-        infoData[2][1][0].value.text = (allUsersStatsQueryRes?.data?.totalSoldeV1?.toLocaleString('fr-FR') ?? 0) + "  XAF";
-        infoData[3][0][0].value.text = allUsersStatsQueryRes?.data?.countV2Users?.toLocaleString('fr-FR') ?? 0;
-        infoData[3][1][0].value.text = (allUsersStatsQueryRes?.data?.totalSoldeV2?.toLocaleString('fr-FR') ?? 0) + "  XAF";
-        // infoData[4][0][0].value.text = allUsersStatsQueryRes?.data?.todayTotal?.toLocaleString('fr-FR') ?? 0;
-        // infoData[4][1][0].value.text = (allUsersStatsQueryRes?.data?.totalSolde?.toLocaleString('fr-FR') ?? 0) + "  XAF";
+	let rearrangedTableData: any[] = [];
 
-        rearrangedTableData = allUsersQueryRes?.data?.map((item:any, index:any) => {
-            const rearrangedItem = {
-                serial: index+1,
-                name: `${item.last_name} ${item.first_name}`,			
-                country:  item.country.includes('Congo') && item.country.includes('Democratic')  ? 'Congo RDC' : item.country ,
-                phone: item.country_phone_code ? `${item.country_phone_code} ${item.phone}` : item.phone,
-                email: item.email,        
-                solde: item.balance_xaf?.toLocaleString('fr-FR'),
-                soldeStandby: item.old_balance_xaf?.toLocaleString('fr-FR') ?? 0,
-                nbCartes: item.number_of_cards,       //item.numberOfCards,
-                totalTrx: item.total_transaction_amount?.toLocaleString('fr-FR'),      // item.totalTransactionAmount.toLocaleString('fr-FR'),
-                avgTrx: item.average_transaction_amount ? Math.round(item.average_transaction_amount)?.toLocaleString('fr-FR') : 0,      // item.avgTransactionAmount ? Math.round(item.avgTransactionAmount).toLocaleString('fr-FR') : 0,
-                oldNew: item.is_v1 ? 
-                    <LabelWithBadge label="Ancien" badgeColor="#000"/>
-                    :<LabelWithBadge label="Nouveau" badgeColor="#18BC7A"/>,
-                kyc: item.kyc_result == 'APPROVED' 
-                    ?<LabelWithBadge label="Approuvé" badgeColor="#18BC7A"/>
-                    :item.kyc_result == 'DECLINED'
-                    ?<LabelWithBadge label="Refusé" badgeColor="#F85D4B"/>
-                    :item.kyc_status == 'PENDING'
-                    ?<LabelWithBadge label="En cours" badgeColor="#999"/>
-                    :<LabelWithBadge label="Aucun" badgeColor="#000"/>,          
-                status: <ActiveYesNo isActive={item.active}/>,
-                locked: <ActiveYesNo isActive={item.blocked} colorActive={"#F85D4B"} labelActive={'Bloqué'} labelInactive={'Non'}/>,          
-                date: getFormattedDateTime(item.created_at), //item.date,
-                actions:                
-                    <CButton
-                    text={'Manager'}
-                    href={`${urlsV2.usersAccounts.manage}/${item.id}`}
-                    btnStyle={'dark'}
-                    icon={<FourDots />}              
-                    />
-            };
-            item = rearrangedItem;
-            return item;
-        });
-    }
+	/** ------------------------------------------------- */
+	const { shiftDown, iPressed, ePressed } = useKeyPressed();
+
+	// useEffect(() => {
+	// 	if (shiftDown && ePressed) {
+	// 		if (allUsersStatsQueryRes?.data) {
+	// 			infoData[0][0][0].value.text =
+	// 				allUsersStatsQueryRes?.data?.external?.todayCountUsers?.toLocaleString(
+	// 					"fr-FR"
+	// 				) ?? 0;
+	// 			infoData[0][1][0].value.text =
+	// 				Math.round(
+	// 					allUsersStatsQueryRes?.data?.external?.avgUsers ?? 0
+	// 				) + "  /jour";
+	// 			infoData[1][0][0].value.text =
+	// 				allUsersStatsQueryRes?.data?.external?.countUsers?.toLocaleString(
+	// 					"fr-FR"
+	// 				) ?? 0;
+	// 			infoData[1][1][0].value.text =
+	// 				(allUsersStatsQueryRes?.data?.external?.totalSolde?.toLocaleString(
+	// 					"fr-FR"
+	// 				) ?? 0) + "  XAF";
+	// 			infoData[2][0][0].value.text =
+	// 				allUsersStatsQueryRes?.data?.external?.countV1Users?.toLocaleString(
+	// 					"fr-FR"
+	// 				) ?? 0;
+	// 			infoData[2][1][0].value.text =
+	// 				(allUsersStatsQueryRes?.data?.external?.totalSoldeV1?.toLocaleString(
+	// 					"fr-FR"
+	// 				) ?? 0) + "  XAF";
+	// 			infoData[3][0][0].value.text =
+	// 				allUsersStatsQueryRes?.data?.external?.countV2Users?.toLocaleString(
+	// 					"fr-FR"
+	// 				) ?? 0;
+	// 			infoData[3][1][0].value.text =
+	// 				(allUsersStatsQueryRes?.data?.external?.totalSoldeV2?.toLocaleString(
+	// 					"fr-FR"
+	// 				) ?? 0) + "  XAF";
+
+	// 			setStatsData(infoData);
+	// 		}
+	// 	} else if (shiftDown && iPressed) {
+	// 		if (allUsersStatsQueryRes?.data) {
+	// 			infoData[0][0][0].value.text =
+	// 				allUsersStatsQueryRes?.data?.internal?.todayCountUsers?.toLocaleString(
+	// 					"fr-FR"
+	// 				) ?? 0;
+	// 			infoData[0][1][0].value.text =
+	// 				Math.round(
+	// 					allUsersStatsQueryRes?.data?.internal?.avgUsers ?? 0
+	// 				) + "  /jour";
+	// 			infoData[1][0][0].value.text =
+	// 				allUsersStatsQueryRes?.data?.internal?.countUsers?.toLocaleString(
+	// 					"fr-FR"
+	// 				) ?? 0;
+	// 			infoData[1][1][0].value.text =
+	// 				(allUsersStatsQueryRes?.data?.internal?.totalSolde?.toLocaleString(
+	// 					"fr-FR"
+	// 				) ?? 0) + "  XAF";
+	// 			infoData[2][0][0].value.text =
+	// 				allUsersStatsQueryRes?.data?.internal?.countV1Users?.toLocaleString(
+	// 					"fr-FR"
+	// 				) ?? 0;
+	// 			infoData[2][1][0].value.text =
+	// 				(allUsersStatsQueryRes?.data?.internal?.totalSoldeV1?.toLocaleString(
+	// 					"fr-FR"
+	// 				) ?? 0) + "  XAF";
+	// 			infoData[3][0][0].value.text =
+	// 				allUsersStatsQueryRes?.data?.internal?.countV2Users?.toLocaleString(
+	// 					"fr-FR"
+	// 				) ?? 0;
+	// 			infoData[3][1][0].value.text =
+	// 				(allUsersStatsQueryRes?.data?.internal?.totalSoldeV2?.toLocaleString(
+	// 					"fr-FR"
+	// 				) ?? 0) + "  XAF";
+
+	// 			setStatsData(infoData);
+	// 		}
+	// 	}
+	// }, [shiftDown, ePressed, iPressed]);
+	/** ------------------------------------------------- */
+
+	if (allUsersStatsQueryRes?.data) {
+		infoData[0][0][0].value.text =
+			allUsersStatsQueryRes?.data?.internal?.todayCountUsers?.toLocaleString(
+				"fr-FR"
+			) ?? 0;
+		infoData[0][1][0].value.text =
+			Math.round(allUsersStatsQueryRes?.data?.internal?.avgUsers ?? 0) +
+			"  /jour";
+		infoData[1][0][0].value.text =
+			allUsersStatsQueryRes?.data?.internal?.countUsers?.toLocaleString(
+				"fr-FR"
+			) ?? 0;
+		infoData[1][1][0].value.text =
+			(allUsersStatsQueryRes?.data?.internal?.totalSolde?.toLocaleString(
+				"fr-FR"
+			) ?? 0) + "  XAF";
+		infoData[2][0][0].value.text =
+			allUsersStatsQueryRes?.data?.internal?.countV1Users?.toLocaleString(
+				"fr-FR"
+			) ?? 0;
+		infoData[2][1][0].value.text =
+			(allUsersStatsQueryRes?.data?.internal?.totalSoldeV1?.toLocaleString(
+				"fr-FR"
+			) ?? 0) + "  XAF";
+		infoData[3][0][0].value.text =
+			allUsersStatsQueryRes?.data?.internal?.countV2Users?.toLocaleString(
+				"fr-FR"
+			) ?? 0;
+		infoData[3][1][0].value.text =
+			(allUsersStatsQueryRes?.data?.internal?.totalSoldeV2?.toLocaleString(
+				"fr-FR"
+			) ?? 0) + "  XAF";
+
+		// infoData[4][0][0].value.text = allUsersStatsQueryRes?.data?.todayTotal?.toLocaleString('fr-FR') ?? 0;
+		// infoData[4][1][0].value.text = (allUsersStatsQueryRes?.data?.totalSolde?.toLocaleString('fr-FR') ?? 0) + "  XAF";
+
+		// setStatsData(infoData);
+
+		rearrangedTableData = allUsersQueryRes?.data?.map(
+			(item: any, index: any) => {
+				const rearrangedItem = {
+					serial: index + 1,
+					name: `${item.last_name} ${item.first_name}`,
+					country:
+						item.country.includes("Congo") &&
+						item.country.includes("Democratic")
+							? "Congo RDC"
+							: item.country,
+					phone: item.country_phone_code
+						? `${item.country_phone_code} ${item.phone}`
+						: item.phone,
+					email: item.email,
+					solde: item.balance_xaf?.toLocaleString("fr-FR"),
+					soldeStandby:
+						item.old_balance_xaf?.toLocaleString("fr-FR") ?? 0,
+					nbCartes: item.number_of_cards, //item.numberOfCards,
+					totalTrx:
+						item.total_transaction_amount?.toLocaleString("fr-FR"), // item.totalTransactionAmount.toLocaleString('fr-FR'),
+					avgTrx: item.average_transaction_amount
+						? Math.round(
+								item.average_transaction_amount
+						  )?.toLocaleString("fr-FR")
+						: 0, // item.avgTransactionAmount ? Math.round(item.avgTransactionAmount).toLocaleString('fr-FR') : 0,
+					oldNew: item.is_v1 ? (
+						<LabelWithBadge label="Ancien" badgeColor="#000" />
+					) : (
+						<LabelWithBadge label="Nouveau" badgeColor="#18BC7A" />
+					),
+					kyc:
+						item.kyc_result == "APPROVED" ? (
+							<LabelWithBadge
+								label="Approuvé"
+								badgeColor="#18BC7A"
+							/>
+						) : item.kyc_result == "DECLINED" ? (
+							<LabelWithBadge
+								label="Refusé"
+								badgeColor="#F85D4B"
+							/>
+						) : item.kyc_status == "PENDING" ? (
+							<LabelWithBadge
+								label="En cours"
+								badgeColor="#999"
+							/>
+						) : (
+							<LabelWithBadge label="Aucun" badgeColor="#000" />
+						),
+					status: <ActiveYesNo isActive={item.active} />,
+					locked: (
+						<ActiveYesNo
+							isActive={item.blocked}
+							colorActive={"#F85D4B"}
+							labelActive={"Bloqué"}
+							labelInactive={"Non"}
+						/>
+					),
+					date: getFormattedDateTime(item.created_at), //item.date,
+					actions: (
+						<CButton
+							text={"Manager"}
+							href={`${urlsV2.usersAccounts.manage}/${item.id}`}
+							btnStyle={"dark"}
+							icon={<FourDots />}
+						/>
+					),
+				};
+				item = rearrangedItem;
+				return item;
+			}
+		);
+	}
 
 	return (
-		<Layout
-		title={"Comptes utilisateurs"}
-		>
-            <section className='mt-2'>
-                {allUsersStatsQueryRes?.status === 'loading' ? 
-                    <div className="flex justify-center w-full py-10">
-                        <div className={'loadingSpinner'}></div>
-                    </div>
-                    :
-                    <InfoCardGrid infoData={infoData}/>
-                }
-                
-                {/* <div className='mb-10 grid lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-1' style={{gap:'20px'}}>
+		<Layout title={"Comptes utilisateurs"}>
+			<section className="mt-2">
+				{allUsersStatsQueryRes?.status === "loading" ? (
+					<div className="flex justify-center w-full py-10">
+						<div className={"loadingSpinner"}></div>
+					</div>
+				) : (
+					<InfoCardGrid infoData={infoData} />
+				)}
+
+				{/* <div className='mb-10 grid lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-1' style={{gap:'20px'}}>
                     {infoData.map((data, index) => (
                         <InfoCard key={index} data={data} />
                     ))}
                 </div> */}
 
-                {/* <div 
+				{/* <div 
                 style={{width:'calc(100vw - 350px)', overflowX:'auto'}}
                 className={`relative flex flex-row w-full items-start mt-6 gap-16`}>
                     <div className='flex flex-col justify-between items-start gap-2'>
@@ -401,46 +581,47 @@ export default function Home() {
                         </div>
                     </div>
                 </div> */}
-                
 
-                <div className="my-[50px]">
-                    <div className="mb-5">
-                        <Title 
-                        title={"Liste des utilisateurs v2"}
-                        subtitle={"Liste en temps réel des derniers utilisateurs inscrits"}
-                        />
-                    </div>
-                    <CustomTable
-                    headerData={headerData}
-                    tableData={rearrangedTableData}
-                    isLoading={allUsersQueryRes.status == 'loading'}
-                    threeButtons
-                    filter
-                    filterType={'user'}
-                    filterContent={filterContent}
-                    setFilterContent={setFilterContent}
-                    generateExcel={()=>mutationExcel.mutate()}
-                    />
-                </div>
+				<div className="my-[50px]">
+					<div className="mb-5">
+						<Title
+							title={"Liste des utilisateurs v2"}
+							subtitle={
+								"Liste en temps réel des derniers utilisateurs inscrits"
+							}
+						/>
+					</div>
+					<CustomTable
+						headerData={headerData}
+						tableData={rearrangedTableData}
+						isLoading={allUsersQueryRes.status == "loading"}
+						threeButtons
+						filter
+						filterType={"user"}
+						filterContent={filterContent}
+						setFilterContent={setFilterContent}
+						generateExcel={() => mutationExcel.mutate()}
+					/>
+				</div>
 
-                <div
-                    style={{zIndex:9000}}
-                    className={classNames(
-                        "transition-all invisible z-20 bg-blue-900/30 opacity-0 absolute top-0 left-0 h-full w-full flex items-center justify-center",
-                        {
-                            "!opacity-100 !visible z-20": mutationExcel.isLoading,
-                        }
-                    )}
-                >
-                    <HashLoader
-                        className="shrink-0"
-                        size={50}
-                        color="#18BC7A"
-                    />
-                </div>
-                <a ref={redirectRef} download hidden href="#"></a>
-            </section>
-	  </Layout>
+				<div
+					style={{ zIndex: 9000 }}
+					className={classNames(
+						"transition-all invisible z-20 bg-blue-900/30 opacity-0 absolute top-0 left-0 h-full w-full flex items-center justify-center",
+						{
+							"!opacity-100 !visible z-20":
+								mutationExcel.isLoading,
+						}
+					)}
+				>
+					<HashLoader
+						className="shrink-0"
+						size={50}
+						color="#18BC7A"
+					/>
+				</div>
+				<a ref={redirectRef} download hidden href="#"></a>
+			</section>
+		</Layout>
 	);
 }
-

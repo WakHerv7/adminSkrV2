@@ -953,7 +953,7 @@ export default function Details() {
 							render={({ field }) => (
 								<FormItem>
 									<FormLabel className="text-gray-900 text-sm font-semibold tracking-tight">
-										Numero d'Identifiant Unique (NIU)
+										{`Numero d'Identifiant Unique (NIU)`}
 									</FormLabel>
 									<FormControl>
 										<Input

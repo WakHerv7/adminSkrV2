@@ -77,6 +77,9 @@ export default function DetailsSide() {
 		useState(false);
 	const [isWhatsappModalFormOpen, setIsWhatsappModalFormOpen] =
 		useState(false);
+
+	const [isOpen, setIsOpen] = useState<string | boolean>("");
+
 	const [isActivateModalOpen, setIsActivateModalOpen] = useState(false);
 
 	const currentUser = useSelector(selectCurrentUser);
@@ -195,15 +198,19 @@ export default function DetailsSide() {
 						<>
 							<CButton
 								text={`Modifier statut regularisation`} //{'Reverser vers solde actif'}
-								href={`?editRegStatus=true`}
+								// href={`?editRegStatus=true`}
+								onClick={() => setIsOpen("editRegStatus")}
 								btnStyle={"dark"}
 								icon={<FourDots />}
 								width={"100%"}
 							/>
 							<Modal
+								isOpen={isOpen === "editRegStatus"}
+								setIsOpen={setIsOpen}
 								name={"editRegStatus"}
 								modalContent={
 									<EditRegStatusModalForm
+										setIsOpen={setIsOpen}
 										customer={customerDetails?.customer}
 									/>
 								}
@@ -242,16 +249,21 @@ export default function DetailsSide() {
 						<div className="flex justify-between items-center gap-3">
 							<CButton
 								text={"Recharger"}
-								href={`?rechargeAccount=true`}
+								// href={`?rechargeAccount=true`}
+								onClick={() => setIsOpen("rechargeAccount")}
 								btnStyle={"dark"}
 								icon={<FourDots />}
 								width={"100%"}
 							/>
 							{/* <Modal component={<RechargeAccountBalanceModalForm customer={customerDetails?.customer}/>}/> */}
 							<Modal
+								isOpen={isOpen === "rechargeAccount"}
+								setIsOpen={setIsOpen}
 								name={"rechargeAccount"}
 								modalContent={
 									<RechargeAccountBalanceModalForm
+										setIsOpen={setIsOpen}
+										action={"rechargeAccount"}
 										customer={customerDetails?.customer}
 									/>
 								}
@@ -269,16 +281,21 @@ export default function DetailsSide() {
 							>
 								<CButton
 									text={"Retirer"}
-									href={`?withdrawAccount=true`}
+									// href={`?withdrawAccount=true`}
+									onClick={() => setIsOpen("withdrawAccount")}
 									btnStyle={"dark"}
 									icon={<FourDots />}
 									width={"100%"}
 								/>
 							</div>
 							<Modal
+								isOpen={isOpen === "withdrawAccount"}
+								setIsOpen={setIsOpen}
 								name={"withdrawAccount"}
 								modalContent={
 									<RechargeAccountBalanceModalForm
+										setIsOpen={setIsOpen}
+										action={"withdrawAccount"}
 										customer={customerDetails?.customer}
 									/>
 								}
@@ -316,12 +333,17 @@ export default function DetailsSide() {
 							<>
 								<CButton
 									text={`Regulariser`} //{'Reverser vers solde actif'}
-									href={`?releaseStandByAccount=true`}
+									// href={`?releaseStandByAccount=true`}
+									onClick={() =>
+										setIsOpen("releaseStandByAccount")
+									}
 									btnStyle={"red"}
 									icon={<FourDots />}
 									width={"100%"}
 								/>
 								<Modal
+									isOpen={isOpen === "releaseStandByAccount"}
+									setIsOpen={setIsOpen}
 									name={"releaseStandByAccount"}
 									modalContent={
 										<ReleaseStandByAccountBalanceModalForm
@@ -373,15 +395,22 @@ export default function DetailsSide() {
 						<div className="flex justify-between items-center gap-3">
 							<CButton
 								text={"Recharger"}
-								href={`?rechargeSponsorshipAccount=true`}
+								// href={`?rechargeSponsorshipAccount=true`}
+								onClick={() =>
+									setIsOpen("rechargeSponsorshipAccount")
+								}
 								btnStyle={"dark"}
 								icon={<FourDots />}
 								width={"100%"}
 							/>
 							<Modal
+								isOpen={isOpen === "rechargeSponsorshipAccount"}
+								setIsOpen={setIsOpen}
 								name={"rechargeSponsorshipAccount"}
 								modalContent={
 									<RechargeAccountBalanceModalForm
+										setIsOpen={setIsOpen}
+										action={"rechargeSponsorshipAccount"}
 										customer={customerDetails?.customer}
 									/>
 								}
@@ -399,16 +428,23 @@ export default function DetailsSide() {
 							>
 								<CButton
 									text={"Retirer"}
-									href={`?withdrawSponsorshipAccount=true`}
+									// href={`?withdrawSponsorshipAccount=true`}
+									onClick={() =>
+										setIsOpen("withdrawSponsorshipAccount")
+									}
 									btnStyle={"dark"}
 									icon={<FourDots />}
 									width={"100%"}
 								/>
 							</div>
 							<Modal
+								isOpen={isOpen === "withdrawSponsorshipAccount"}
+								setIsOpen={setIsOpen}
 								name={"withdrawSponsorshipAccount"}
 								modalContent={
 									<RechargeAccountBalanceModalForm
+										setIsOpen={setIsOpen}
+										action={"withdrawSponsorshipAccount"}
 										customer={customerDetails?.customer}
 									/>
 								}

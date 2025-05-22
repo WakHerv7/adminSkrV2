@@ -408,7 +408,7 @@ export default function Navbar(props: Props) {
 						/>
 					</div>
 
-					{currentUser.admin_role === "owner" ||
+					{/* {currentUser.admin_role === "owner" ||
 					currentUser.admin_role === "manager" ? (
 						<div className="hidden md:block pl-2">
 							{pathname?.includes("v1v2") ? (
@@ -459,7 +459,7 @@ export default function Navbar(props: Props) {
 						</div>
 					) : (
 						<></>
-					)}
+					)} */}
 				</div>
 			</div>
 			{/* <Modal/>  */}

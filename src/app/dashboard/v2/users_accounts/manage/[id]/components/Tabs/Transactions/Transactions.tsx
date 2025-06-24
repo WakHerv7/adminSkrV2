@@ -19,7 +19,7 @@ import { useSelector } from "react-redux";
 import { selectCurrentCustomerTransactions } from "@/redux/slices/customer";
 import TransactionModal from "./modals/TransactionModal";
 import Modal from "@/components/shared/Modal/Modal";
-import { headerTransactionDataV2 } from "@/constants/TransactionData";
+import { headerUserTransactionDataV2 } from "@/constants/TransactionData";
 import {
 	categoryType,
 	categoryMode,
@@ -49,7 +49,8 @@ const Transactions = ({ search, setSearch }: Props) => {
 				name: item.merchant?.name,
 				country: item.country,
 				phone: item.phone_number,
-				idTrx: item.trx_ref,
+				idTrx: item.id,
+				refTrx: item.trx_ref,
 				//item.mode, //item.paymentMethod,
 				oldNew: !item.is_from_v1 ? (
 					<LabelWithBadge
@@ -259,7 +260,7 @@ const Transactions = ({ search, setSearch }: Props) => {
 					<Title title={"Liste des transactions"} />
 				</div>
 				<CustomTable
-					headerData={headerTransactionDataV2}
+					headerData={headerUserTransactionDataV2}
 					tableData={rearrangedTableData}
 					threeButtons
 					search={search}

@@ -3,11 +3,11 @@
 //---------------------------------------
 import { useTitle } from "@/hooks/useTitle";
 import Image from "next/image";
-import LoginForm from "./components/form/Form";
+import VerifyTokenForm from "./components/form/Form";
 //---------------------------------------
 
-const LoginPage = () => {
-	useTitle("Sekure | Login");
+const VerifyTokenPage = () => {
+	useTitle("Sekure | Verification OTP");
 	return (
 		<section className="flex mt-0 h-screen w-full">
 			<div className="absolute inset-0 -z-10">
@@ -53,11 +53,11 @@ const LoginPage = () => {
 							<FaUserCircle color="#FFDB5A" size={70} />
 						</div> */}
 						<h1 className="text-[25px] font-semibold text-gray-900">
-							Connexion
+							Verification OTP
 						</h1>
 						{/* <p className="text-gray-600 font-thin text-sm mb-[30px]">{`Visualisez la courbe d'evolution en nom`}</p> */}
 						<div className="mb-[7vh]">
-							<LoginForm />
+							<VerifyTokenForm />
 						</div>
 					</div>
 				</div>
@@ -75,4 +75,4 @@ const LoginPage = () => {
 	);
 };
 
-export default LoginPage;
+export default VerifyTokenPage;

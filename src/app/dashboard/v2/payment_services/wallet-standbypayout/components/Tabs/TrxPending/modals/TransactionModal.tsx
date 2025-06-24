@@ -103,15 +103,8 @@ const infoData: TDataList[] = [
 		],
 		[
 			{
-				key: "id",
-				label: { text: "ID Transaction", fw: "bold", color: "#444" },
-				value: { text: "", color: "#444" },
-			},
-		],
-		[
-			{
 				key: "trx_ref",
-				label: { text: "Ref Transaction", fw: "bold", color: "#444" },
+				label: { text: "ID Transaction", fw: "bold", color: "#444" },
 				value: { text: "", color: "#444" },
 			},
 		],
@@ -475,8 +468,7 @@ export default function TransactionModal({
 									(itm[key]
 										? itm[key]?.toLocaleString("fr-FR")
 										: itm.category === "card" &&
-										  (itm.type === "topup" ||
-												itm.type === "withdrawal")
+										  itm.type === "topup"
 										? itm?.fee
 										: 0) +
 									" XAF " +

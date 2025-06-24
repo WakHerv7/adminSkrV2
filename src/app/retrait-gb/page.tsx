@@ -274,7 +274,19 @@ export default function RetraitGBPage() {
 		<Layout title="Balances">
 			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 mt-[50px] gap-[100px]">
 				<div className="flex flex-col justify-center items-center">
-					<div className="text-xl font-bold mb-3">{`Solde Gabon (XAF)`}</div>
+					<div className="text-xl font-bold mb-3">{`Solde Cameroun Campay (XAF)`}</div>
+					<div
+						className={`h-10  mb-3 min-w-[300px] text-xl font-bold text-[#18BC7A] border-none bg-gray-100 rounded-md outline-none px-3
+          flex justify-center items-center`}
+					>
+						{Number(
+							cameroonCampayBalanceQueryRes?.data
+								?.total_balance || 0
+						).toLocaleString("fr-FR") ?? 0}
+					</div>
+				</div>
+				<div className="flex flex-col justify-center items-center">
+					<div className="text-xl font-bold mb-3">{`Solde Gabon Intouch (XAF)`}</div>
 					<div
 						className={`h-10  mb-3 min-w-[300px] text-xl font-bold text-[#18BC7A] border-none bg-gray-100 rounded-md outline-none px-3
           flex justify-center items-center`}
@@ -290,6 +302,18 @@ export default function RetraitGBPage() {
 							icon={<FourDots />}
 							href="?withdrawGB=true"
 						/>
+					</div>
+				</div>
+
+				<div className="flex flex-col justify-center items-center">
+					<div className="text-xl font-bold mb-3">{`Solde Benin Maplerad (XOF)`}</div>
+					<div
+						className={`h-10  mb-3 min-w-[300px] text-xl font-bold text-[#18BC7A] border-none bg-gray-100 rounded-md outline-none px-3
+          flex justify-center items-center`}
+					>
+						{NairapayMapleradBalanceQueryRes?.data?.xofWallet?.toLocaleString(
+							"fr-FR"
+						) ?? 0}
 					</div>
 				</div>
 
@@ -401,19 +425,6 @@ export default function RetraitGBPage() {
 				</div>
 
 				<div className="flex flex-col justify-center items-center">
-					<div className="text-xl font-bold mb-3">{`Solde Cameroun Campay (XAF)`}</div>
-					<div
-						className={`h-10  mb-3 min-w-[300px] text-xl font-bold text-[#18BC7A] border-none bg-gray-100 rounded-md outline-none px-3
-          flex justify-center items-center`}
-					>
-						{Number(
-							cameroonCampayBalanceQueryRes?.data
-								?.total_balance || 0
-						).toLocaleString("fr-FR") ?? 0}
-					</div>
-				</div>
-
-				<div className="flex flex-col justify-center items-center">
 					<div className="text-xl font-bold mb-3">{`Solde Miden (USD)`}</div>
 					<div
 						className={`h-10  mb-3 min-w-[300px] text-xl font-bold text-[#18BC7A] border-none bg-gray-100 rounded-md outline-none px-3
@@ -429,7 +440,7 @@ export default function RetraitGBPage() {
 						className={`h-10  mb-3 min-w-[300px] text-xl font-bold text-[#18BC7A] border-none bg-gray-100 rounded-md outline-none px-3
           flex justify-center items-center`}
 					>
-						{NairapayMapleradBalanceQueryRes?.data?.toLocaleString(
+						{NairapayMapleradBalanceQueryRes?.data?.ngnWallet?.toLocaleString(
 							"fr-FR"
 						) ?? 0}
 					</div>
@@ -441,7 +452,8 @@ export default function RetraitGBPage() {
           flex justify-center items-center`}
 					>
 						{(
-							NairapayMapleradBalanceQueryRes?.data / 1.86
+							NairapayMapleradBalanceQueryRes?.data?.ngnWallet /
+							1.86
 						)?.toLocaleString("fr-FR") ?? 0}
 					</div>
 				</div>

@@ -83,6 +83,22 @@ export const headerTransactionDataV2: ITableHeader = {
 	date: "Date de création",
 	edit: "",
 };
+export const headerUserTransactionDataV2: ITableHeader = {
+	serial: "S/N",
+	type: "Type",
+	name: "Marchand",
+	country: "Pays",
+	phone: "Telephone",
+	idTrx: "ID Transaction",
+	refTrx: "Ref Transaction",
+	oldNew: "A/N",
+	amount: "Montant (XAF)",
+	method: "Methode",
+	mode: "Mode",
+	status: "Statut",
+	date: "Date de création",
+	edit: "",
+};
 export const headerChnPaymentDataV2: ITableHeader = {
 	serial: "S/N",
 	type: "Type",

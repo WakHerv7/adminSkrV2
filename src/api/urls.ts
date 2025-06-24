@@ -14,13 +14,15 @@ export const API_V2_BASE_URL = `https://skr-api-v2.fly.dev/api/v2/admin`;
 //   // REGISTER_USER: `${BASE_URL}/signup`,
 // };
 
-/** ======================================================== */
-export const BASE_URL_AUTH = `${API_V2_BASE_URL}/auth`;
+/** ============================================================ */
+export const BASE_URL_AUTH = `${API_V2_PROD_BASE_URL}/auth`;
 export const authUrls = {
 	LOGIN_USER: `${BASE_URL_AUTH}/login`,
 	LOGOUT_USER: `${BASE_URL_AUTH}/logout`,
-	// REGISTER_USER: `${BASE_URL}/signup`,
+	GENERATE_TOKEN: `${BASE_URL_AUTH}/generate-token`,
+	VERIF_TOKEN: `${BASE_URL_AUTH}/verify-token`,
 };
+
 /** ------------------------------------ */
 export const V2_BASE_URL_CUSTOMER = `${API_V2_BASE_URL}/customers`;
 export const customerUrlsV2 = {
@@ -116,8 +118,8 @@ export const V2_BASE_URL_NOTIFICATION = `${API_V2_PROD_BASE_URL}/notifications`;
 export const notificationUrlsV2 = {
 	GET_NOTIFICATIONS: `${V2_BASE_URL_NOTIFICATION}`,
 	SEND_NOTIFICATION: `${V2_BASE_URL_NOTIFICATION}`,
-	SEND_WHATSAPP_NOTIFICATION: `${V2_BASE_URL_NOTIFICATION}/whatsapp`,
-	// SEND_WHATSAPP_NOTIFICATION: `${API_V2_BASE_URL}/notifications/whatsapp`,
+	// SEND_WHATSAPP_NOTIFICATION: `${V2_BASE_URL_NOTIFICATION}/whatsapp`,
+	SEND_WHATSAPP_NOTIFICATION: `${API_V2_BASE_URL}/notifications/whatsapp`,
 };
 /** ------------------------------------ */
 export const V2_BASE_URL_CUSTOMER_TICKET = `${API_V2_BASE_URL}/customertickets`;

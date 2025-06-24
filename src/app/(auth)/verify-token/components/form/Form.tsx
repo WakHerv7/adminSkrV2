@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { loginSchema } from "@/validation/FormValidation";
+import { verifyTokenSchema } from "@/validation/FormValidation";
 import { FaChevronRight, FaEye, FaEyeSlash } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
 import {
@@ -26,17 +26,30 @@ import urls from "@/config/urls";
 import urlsV2 from "@/config/urls_v2";
 import { useState } from "react";
 
-const handleLogin = async (data: z.infer<typeof loginSchema>) => {
-	const response = await AuthService.login(data);
+const handleVerifToken = async (data: z.infer<typeof verifyTokenSchema>) => {
+	const response = await AuthService.verifToken(data);
 	if (!response.ok) {
 		const responseBody = await response.json();
 		// console.error(response);
-		if (response.status === 403) {
+		if (response.status === 401) {
 			throw new Error(responseBody.message);
 		} else {
-			throw new Error(
-				"Echec authentification. Veuillez indiquer votre email et votre mot de passe !"
-			);
+			throw new Error("Echec Verification OTP.");
+		}
+	}
+	const responseJson = await response.json();
+	return responseJson;
+};
+
+const handleGenerateToken = async () => {
+	const response = await AuthService.generateToken();
+	if (!response.ok) {
+		const responseBody = await response.json();
+		// console.error(response);
+		if (response.status === 401) {
+			throw new Error(responseBody.message);
+		} else {
+			throw new Error("Echec Generation OTP.");
 		}
 	}
 	const responseJson = await response.json();
@@ -44,34 +57,25 @@ const handleLogin = async (data: z.infer<typeof loginSchema>) => {
 };
 
 export default function LogiForm() {
-	const [passwordVisible, setPasswordVisible] = useState<boolean>();
 	const previousUrl = window.sessionStorage.getItem("previousUrl");
 	const router = useRouter();
-	const dispatch = useDispatch();
-	const form = useForm<z.infer<typeof loginSchema>>({
-		resolver: zodResolver(loginSchema),
+	const form = useForm<z.infer<typeof verifyTokenSchema>>({
+		resolver: zodResolver(verifyTokenSchema),
 		defaultValues: {
-			email: "",
-			password: "",
+			code: "",
 		},
 	});
 
 	const mutation = useMutation({
-		mutationFn: handleLogin,
+		mutationFn: handleVerifToken,
 		onError: (err: any) => {
-			console.error("Login onError : ", err.message);
+			console.error("Verification Token onError : ", err.message);
 			toast.error(err.message);
 		},
 		onSuccess: (data) => {
-			console.log("Login onSuccess : ", data);
-			const token = data.token;
-			const getSekureApiToken = data.getSekureApiToken;
-			const user = data.data.user;
-			localStorage.setItem("sktoken", token);
-			toast.success("Login successful! Redirecting...");
-			dispatch(setCredentials({ token, getSekureApiToken, user }));
-			router.push("/verify-token");
-			// router.push(previousUrl || urlsV2.dashboardHome.root);
+			console.log("Verification Token onSuccess : ", data);
+			toast.success("Verification Token successful! Redirecting...");
+			router.push(previousUrl || urlsV2.dashboardHome.root);
 		},
 	});
 
@@ -82,17 +86,29 @@ export default function LogiForm() {
 		console.error("any", err);
 	};
 
+	const mutationGenerateToken = useMutation({
+		mutationFn: handleGenerateToken,
+		onError: (err: any) => {
+			console.error("Generate Token onError : ", err.message);
+			toast.error(err.message);
+		},
+		onSuccess: (data) => {
+			console.log("Generate Token onSuccess : ", data);
+			toast.success("Generate Token successful");
+		},
+	});
+
 	return (
 		<Form {...form}>
 			<form onSubmit={form.handleSubmit(onSubmit, onError)}>
 				<div className="space-y-[20px]">
 					<FormField
 						control={form.control}
-						name="email"
+						name="code"
 						render={({ field }) => (
 							<FormItem>
 								<FormLabel className="text-gray-900 text-sm tracking-tight">
-									Adresse email
+									Entrez le code
 								</FormLabel>
 								<FormControl>
 									<Input
@@ -104,54 +120,16 @@ export default function LogiForm() {
 							</FormItem>
 						)}
 					/>
-					<FormField
-						control={form.control}
-						name="password"
-						render={({ field }) => (
-							<FormItem>
-								<FormLabel className="text-gray-900 text-sm font-[500] tracking-tight">
-									Mot de passe
-								</FormLabel>
-								<FormControl className="relative">
-									<div>
-										<Input
-											type={`${
-												passwordVisible
-													? "text"
-													: "password"
-											}`}
-											className="px-6 w-full bg-[#F4EFE3]"
-											{...field}
-										/>
-										<div className="absolute text-gray-500 cursor-pointer right-[10px] top-[12px]">
-											{passwordVisible ? (
-												<FaEyeSlash
-													onClick={() =>
-														setPasswordVisible(
-															false
-														)
-													}
-												/>
-											) : (
-												<FaEye
-													onClick={() =>
-														setPasswordVisible(true)
-													}
-												/>
-											)}
-										</div>
-									</div>
-								</FormControl>
-								<FormMessage className="text-red-400" />
-							</FormItem>
-						)}
-					/>
+				</div>
+				<div className="flex justify-end my-3">
+					<div
+						className="text-[#18BC7A] cursor-pointer"
+						onClick={() => mutationGenerateToken.mutate()}
+					>
+						Renvoyer le code
+					</div>
 				</div>
 
-				{/* <div className="text-right">
-          <a href="#" className="inline-block w-[272px] text-sm font-[400]">Mot de passe oublié ?</a>
-        </div> */}
-				{/* <Link href="#" className="text-gray-800 font-semibold text-righttext-sm">Forgotten Password?</Link> */}
 				<div className={`mt-[10vh]`}>
 					<CButton
 						text={"Connexion"}
@@ -167,7 +145,9 @@ export default function LogiForm() {
 					className={classNames(
 						"transition-all invisible z-20 bg-blue-900/30 opacity-0 absolute top-0 left-0 h-full w-full flex items-center justify-center",
 						{
-							"!opacity-100 !visible z-20": mutation.isLoading,
+							"!opacity-100 !visible z-20":
+								mutation.isLoading ||
+								mutationGenerateToken.isLoading,
 						}
 					)}
 				>

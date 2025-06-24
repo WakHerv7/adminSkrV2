@@ -112,6 +112,32 @@ export const permissions: any = {
 		kyc_v2: { root: ["view", "details"] },
 		payment_services: { root: ["view", "details"] },
 	},
+	"manager-guest": {
+		home: { root: ["view"] },
+		user_accounts: { root: ["view", "details"] },
+		user_account_details: {
+			root: ["view"],
+			details: {
+				root: ["view"],
+			},
+			cards: { root: ["view", "details"] },
+			transactions: { root: ["view", "details"] },
+			transfers: { root: ["view", "details"] },
+		},
+		kyc: { root: ["view", "details"] },
+		transactions: { root: ["view", "details"] },
+		cards: { root: ["view", "details"] },
+		card_details: { root: ["view"] },
+		wallet_transactions: { root: ["view", "details"] },
+		transfers: { root: ["view", "details"] },
+		profit: { root: ["view", "details"] },
+		administration: { root: ["view", "details"] },
+		notifications: { root: ["view", "details"] },
+		earnings: { root: ["view", "details"] },
+		general_settings: { root: ["view", "details"] },
+		kyc_v2: { root: ["view", "details"] },
+		payment_services: { root: ["view", "details"] },
+	},
 	"customer-support-chief": {
 		user_accounts: { root: ["view", "details"] },
 		user_account_details: {

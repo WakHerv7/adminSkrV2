@@ -174,7 +174,7 @@ export default function Details() {
 				: "",
 			email: customerDetails?.customer?.email ?? "",
 			phone: `${customerDetails?.customer?.phone}`,
-			niu: customerDetails?.customer?.niu,
+			niu: customerDetails?.customer?.niu ?? "",
 			country_code: customerDetails?.customer?.country_phone_code ?? "",
 			country: customerDetails?.customer?.country ?? "",
 			city: customerDetails?.customer?.city ?? "",

@@ -38,6 +38,9 @@ import RetraitCDModalForm from "./modals/RetraitCDModalForm";
 import { RdcService } from "@/api/services/rdc";
 import { BurkinaService } from "@/api/services/burkina";
 import RetraitBFModalForm from "./modals/RetraitBFModalForm";
+import { FaEye, FaPlus } from "react-icons/fa";
+import AddOperationModalForm from "./modals/AddOperationModalForm";
+import GetOperationModalForm from "./modals/GetOperationModalForm";
 
 const getGabonBalance = async ({ queryKey }: any) => {
 	const [_key, token] = queryKey;
@@ -284,7 +287,46 @@ export default function RetraitGBPage() {
 								?.total_balance || 0
 						).toLocaleString("fr-FR") ?? 0}
 					</div>
+					<div className="flex flex-wrap items-center gap-4 mt-3">
+						<CButton
+							text={""}
+							btnStyle={"lightGreen"}
+							icon={<FaPlus />}
+							href="?addOperationCMCampay=true"
+						/>
+						<CButton
+							text={""}
+							btnStyle={"lightGreen"}
+							icon={<FaEye />}
+							href="?getOperationCMCampay=true"
+						/>
+					</div>
 				</div>
+				<Modal
+					name={"addOperationCMCampay"}
+					modalContent={
+						<AddOperationModalForm
+							action={"withdrawal"}
+							country={"CM"}
+							provider={"campay"}
+						/>
+					}
+				/>
+				<Modal
+					name={"getOperationCMCampay"}
+					modalContent={
+						<GetOperationModalForm
+							category={"wallet"}
+							type={"topup"}
+							country={"CM"}
+							provider={"campay"}
+							balance={Number(
+								cameroonCampayBalanceQueryRes?.data
+									?.total_balance || 0
+							)}
+						/>
+					}
+				/>
 				<div className="flex flex-col justify-center items-center">
 					<div className="text-xl font-bold mb-3">{`Solde Gabon Intouch (XAF)`}</div>
 					<div
@@ -295,7 +337,19 @@ export default function RetraitGBPage() {
 							"fr-FR"
 						) ?? 0}
 					</div>
-					<div className="flex flex-wrap items-center gap-y-4 mt-3">
+					<div className="flex flex-wrap justify-center items-center gap-4 mt-3">
+						<CButton
+							text={""}
+							btnStyle={"lightGreen"}
+							icon={<FaPlus />}
+							href="?addOperationGAIntouch=true"
+						/>
+						<CButton
+							text={""}
+							btnStyle={"lightGreen"}
+							icon={<FaEye />}
+							href="?getOperationGAIntouch=true"
+						/>
 						<CButton
 							text={"Retirer"}
 							btnStyle={"green"}
@@ -304,6 +358,30 @@ export default function RetraitGBPage() {
 						/>
 					</div>
 				</div>
+				<Modal
+					name={"addOperationGAIntouch"}
+					modalContent={
+						<AddOperationModalForm
+							action={"withdrawal"}
+							country={"GA"}
+							provider={"intouch"}
+						/>
+					}
+				/>
+				<Modal
+					name={"getOperationGAIntouch"}
+					modalContent={
+						<GetOperationModalForm
+							category={"wallet"}
+							type={"topup"}
+							country={"GA"}
+							provider={"intouch"}
+							balance={Number(
+								gabonBalanceQueryRes?.data?.amount || 0
+							)}
+						/>
+					}
+				/>
 
 				<div className="flex flex-col justify-center items-center">
 					<div className="text-xl font-bold mb-3">{`Solde Benin Maplerad (XOF)`}</div>
@@ -315,7 +393,46 @@ export default function RetraitGBPage() {
 							"fr-FR"
 						) ?? 0}
 					</div>
+					<div className="flex flex-wrap items-center gap-4 mt-3">
+						<CButton
+							text={""}
+							btnStyle={"lightGreen"}
+							icon={<FaPlus />}
+							href="?addOperationBJMaplerad=true"
+						/>
+						<CButton
+							text={""}
+							btnStyle={"lightGreen"}
+							icon={<FaEye />}
+							href="?getOperationBJMaplerad=true"
+						/>
+					</div>
 				</div>
+				<Modal
+					name={"addOperationBJMaplerad"}
+					modalContent={
+						<AddOperationModalForm
+							action={"withdrawal"}
+							country={"BJ"}
+							provider={"maplerad"}
+						/>
+					}
+				/>
+				<Modal
+					name={"getOperationBJMaplerad"}
+					modalContent={
+						<GetOperationModalForm
+							category={"wallet"}
+							type={"topup"}
+							country={"BJ"}
+							provider={"maplerad"}
+							balance={Number(
+								NairapayMapleradBalanceQueryRes?.data
+									?.xofWallet || 0
+							)}
+						/>
+					}
+				/>
 
 				<div className="flex flex-col justify-center items-center">
 					<div className="text-xl font-bold mb-3">{`Solde Benin Pawapay (XOF)`}</div>

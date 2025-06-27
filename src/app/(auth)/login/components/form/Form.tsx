@@ -70,8 +70,8 @@ export default function LogiForm() {
 			localStorage.setItem("sktoken", token);
 			toast.success("Login successful! Redirecting...");
 			dispatch(setCredentials({ token, getSekureApiToken, user }));
-			router.push("/verify-token");
-			// router.push(previousUrl || urlsV2.dashboardHome.root);
+			// router.push("/verify-token");
+			router.push(previousUrl || urlsV2.dashboardHome.root);
 		},
 	});
 

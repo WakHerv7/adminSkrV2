@@ -103,8 +103,26 @@ const infoData: TDataList[] = [
 		],
 		[
 			{
-				key: "trx_ref",
+				key: "id",
 				label: { text: "ID Transaction", fw: "bold", color: "#444" },
+				value: { text: "", color: "#444" },
+			},
+		],
+		[
+			{
+				key: "trx_ref",
+				label: { text: "Ref. Transaction", fw: "bold", color: "#444" },
+				value: { text: "", color: "#444" },
+			},
+		],
+		[
+			{
+				key: "order_id",
+				label: {
+					text: "ID Transaction partenaire",
+					fw: "bold",
+					color: "#444",
+				},
 				value: { text: "", color: "#444" },
 			},
 		],

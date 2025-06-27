@@ -15,7 +15,7 @@ export const API_V2_BASE_URL = `https://skr-api-v2.fly.dev/api/v2/admin`;
 // };
 
 /** ============================================================ */
-export const BASE_URL_AUTH = `${API_V2_PROD_BASE_URL}/auth`;
+export const BASE_URL_AUTH = `${API_V2_BASE_URL}/auth`; // `${API_V2_PROD_BASE_URL}/auth`;
 export const authUrls = {
 	LOGIN_USER: `${BASE_URL_AUTH}/login`,
 	LOGOUT_USER: `${BASE_URL_AUTH}/logout`,
@@ -265,4 +265,9 @@ export const rdcUrls = {
 export const BASE_URL_MIDEN = `${API_V2_PROD_BASE_URL}/miden`;
 export const midenUrls = {
 	GET_MIDEN_BALANCE: `${BASE_URL_MIDEN}/balance`,
+};
+
+export const BASE_URL_OPERATIONS = `${API_V2_BASE_URL}/operations`;
+export const operationUrls = {
+	BALANCE_OPERATIONS: `${BASE_URL_OPERATIONS}`,
 };

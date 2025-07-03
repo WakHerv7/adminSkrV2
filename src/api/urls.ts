@@ -229,8 +229,10 @@ export const notificationUrls = {
 
 export const BASE_URL_GABON = `${API_V2_PROD_BASE_URL}/gabon`;
 export const gabonUrls = {
-	GET_GABON_BALANCE: `${BASE_URL_GABON}/check-balance`,
-	GABON_PAYOUT: `${BASE_URL_GABON}/payout`,
+	GET_GABON_BALANCE_AFRIBAPAY: `${BASE_URL_GABON}/check-balance/afribapay`,
+	GABON_PAYOUT_AFRIBAPAY: `${BASE_URL_GABON}/payout/afribapay`,
+	GET_GABON_BALANCE_INTOUCH: `${BASE_URL_GABON}/check-balance/intouch`,
+	GABON_PAYOUT_INTOUCH: `${BASE_URL_GABON}/payout/intouch`,
 };
 
 export const BASE_URL_BENIN = `${API_V2_BASE_URL}/benin`;
@@ -248,11 +250,15 @@ export const burkinaUrls = {
 };
 
 export const BASE_URL_CAMEROON = `${API_V2_BASE_URL}/cameroon`;
+export const BASE_URL_CAMEROON_PROD = `${API_V2_PROD_BASE_URL}/cameroon`;
 export const cameroonUrls = {
 	GET_CAMEROON_CAMPAY_BALANCE: `${BASE_URL_CAMEROON}/check-balance/campay`,
 	GET_CAMEROON_PAWAPAY_BALANCE: `${BASE_URL_CAMEROON}/check-balance/pawapay`,
 	CAMEROON_PAYOUT: `${BASE_URL_CAMEROON}/payout`,
 	GET_CAMEROON_PAYOUT_STATUS: `${BASE_URL_CAMEROON}/check-payout-status`,
+
+	GET_CAMEROON_BALANCE_AFRIBAPAY: `${BASE_URL_CAMEROON_PROD}/check-balance/afribapay`,
+	CAMEROON_PAYOUT_AFRIBAPAY: `${BASE_URL_CAMEROON_PROD}/payout/afribapay`,
 };
 
 export const BASE_URL_RDC = `${API_V2_BASE_URL}/rdc`;

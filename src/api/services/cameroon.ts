@@ -11,6 +11,7 @@ export class CameroonService {
 			token
 		);
 	};
+
 	static get_cameroon_pawapay_balance = ({ token }: { token?: string }) => {
 		let query_params: any = {};
 		return BaseMethods.getRequest(
@@ -20,6 +21,7 @@ export class CameroonService {
 			token
 		);
 	};
+
 	static handle_cameroon_balance_withdrawal = ({
 		userId,
 		amount,
@@ -49,6 +51,7 @@ export class CameroonService {
 			token
 		);
 	};
+
 	static get_cameroon_payout_status = ({ trxId }: { trxId?: string }) => {
 		let query_params: any = {};
 		return BaseMethods.getRequest(
@@ -56,6 +59,42 @@ export class CameroonService {
 			true,
 			query_params,
 			trxId
+		);
+	};
+
+	static get_cameroon_balance_afribapay = ({ token }: { token?: string }) => {
+		let query_params: any = {};
+		return BaseMethods.getRequest(
+			cameroonUrls.GET_CAMEROON_BALANCE_AFRIBAPAY,
+			true,
+			query_params,
+			token
+		);
+	};
+
+	static cameroon_payout_afribapay = ({
+		amount,
+		phone,
+		token,
+		userId,
+	}: {
+		amount: string;
+		phone?: string;
+		token?: string;
+		userId: string;
+	}) => {
+		let query_params: any = {};
+		if (amount) query_params.amount = amount;
+		if (phone) query_params.phone = phone;
+
+		const body = { amount, phone };
+
+		return BaseMethods.postRequest(
+			cameroonUrls.CAMEROON_PAYOUT_AFRIBAPAY,
+			body,
+			true,
+			query_params,
+			token
 		);
 	};
 }

@@ -117,6 +117,8 @@ export const nairapaymentUrlsV2 = {
 export const V2_BASE_URL_NOTIFICATION = `${API_V2_PROD_BASE_URL}/notifications`;
 export const notificationUrlsV2 = {
 	GET_NOTIFICATIONS: `${V2_BASE_URL_NOTIFICATION}`,
+	GET_USER_NOTIFICATIONS: (id: any) =>
+		`${API_V2_BASE_URL}/notifications/${id}`,
 	SEND_NOTIFICATION: `${V2_BASE_URL_NOTIFICATION}`,
 	// SEND_WHATSAPP_NOTIFICATION: `${V2_BASE_URL_NOTIFICATION}/whatsapp`,
 	SEND_WHATSAPP_NOTIFICATION: `${API_V2_BASE_URL}/notifications/whatsapp`,
@@ -221,9 +223,10 @@ export const transactionUrls = {
 	HANDLE_USER_ACCOUNT_TRANSACTIONS: `${BASE_URL_TRANSACTION}/user-account-balance`,
 };
 
-export const BASE_URL_NOTIFICATION = `${BASE_URL}/admin/notifications`;
+export const BASE_URL_NOTIFICATION = `${API_V2_BASE_URL}/admin/notifications`;
 export const notificationUrls = {
 	GET_NOTIFICATIONS: `${BASE_URL_NOTIFICATION}`,
+	GET_USER_NOTIFICATIONS: (id: any) => `${BASE_URL_NOTIFICATION}/${id}`,
 	SEND_NOTIFICATION: `${BASE_URL_NOTIFICATION}/send`,
 };
 

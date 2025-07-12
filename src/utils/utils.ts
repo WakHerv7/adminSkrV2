@@ -3,6 +3,8 @@ export function getAvailableBalance(
 	countryCode: string,
 	service: string
 ) {
+	console.log("accounts ::", accounts);
+
 	const account = accounts.find(
 		(account) =>
 			account.country_code === countryCode && account.service === service

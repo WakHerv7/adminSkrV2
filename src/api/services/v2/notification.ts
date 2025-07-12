@@ -19,6 +19,25 @@ export class NotificationService {
 		);
 	};
 
+	static get_user_notifcations = ({
+		customerId,
+		filter,
+		searchTerm,
+	}: {
+		customerId: string;
+		filter?: string;
+		searchTerm?: string;
+	}) => {
+		let query_params: any = {};
+		if (filter) query_params.filter = filter;
+		if (searchTerm) query_params.searchTerm = searchTerm;
+		return BaseMethods.getRequest(
+			notificationUrlsV2.GET_USER_NOTIFICATIONS(customerId),
+			true,
+			query_params
+		);
+	};
+
 	static send_notifcation = ({
 		adminUserId,
 		body,

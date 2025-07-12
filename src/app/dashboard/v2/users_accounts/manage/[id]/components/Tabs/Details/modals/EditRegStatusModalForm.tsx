@@ -52,19 +52,23 @@ import { Select, SelectItem } from "@nextui-org/select";
 // import { useNavigate } from 'react-router-dom';
 export const formSchema = z.object({
 	status: z.string({ message: "Veuillez choisir un statut" }),
-	// phone: z.string(
-	//     {message:'Entrez un numero de telephone'}
-	// ),
+	phone: z.string({ message: "Entrez un numero de telephone" }),
+	method: z.string({ message: "Veuillez choisir une methode" }),
 });
 
 const handleUpdateRegStatus = async (queryData: any) => {
-	const { status, userId, adminUserId } = queryData;
+	const { data, userId, adminUserId } = queryData;
 	console.log("handleUpdateRegStatus : ", { userId, adminUserId });
 	// return {currentUserId, customerId, label, body}
-	const response = await CustomerService.update_one_customer_reg_status({
+	const response = await CustomerService.update_one_customer({
 		userId: adminUserId,
 		customerId: userId,
-		body: { status, id: userId },
+		body: {
+			regularisation_status: data.status,
+			regularisation_phone: data.phone,
+			regularisation_method: data.method,
+			id: userId,
+		},
 	});
 	if (!response.ok) {
 		const responseBody = await response.json();
@@ -73,6 +77,17 @@ const handleUpdateRegStatus = async (queryData: any) => {
 	const responseJson = await response.json();
 	return responseJson;
 };
+
+const methodData = [
+	{
+		key: "MOMO",
+		label: "MOMO",
+	},
+	{
+		key: "SEKURE",
+		label: "SEKURE",
+	},
+];
 
 const statusData = [
 	{
@@ -110,6 +125,8 @@ export default function EditRegStatusModalForm({
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
+			method: customer?.regularisation_method,
+			phone: customer?.regularisation_phone,
 			status: customer?.regularisation_status,
 		},
 	});
@@ -119,7 +136,7 @@ export default function EditRegStatusModalForm({
 	const mutation = useMutation({
 		mutationFn: (data: any) =>
 			handleUpdateRegStatus({
-				status: data.status,
+				data,
 				userId: customer.id,
 				adminUserId: currentUser.id,
 			}),
@@ -147,18 +164,9 @@ export default function EditRegStatusModalForm({
 		console.error("any", err);
 	};
 
-	const getFormLabels = (amount?: string | number) => {
-		return {
-			title: "Retirer du compte courant de",
-			btnText: "Retirer du compte courant",
-			btnStyle: "red",
-			label: "withdrawAccount",
-			toastTextSuccess: "Retrait du compte courant effectué avec succès",
-			toastTextError: "Erreur lors du retrait du compte courant",
-			note: `(Montant maximal à retirer : ${amount})`,
-			min: 0,
-			max: customer?.old_balance_xaf,
-		};
+	const handleMethodChange = (data: any) => {
+		const value = data.target.value;
+		form.setValue("method", value);
 	};
 
 	const handleStatusChange = (data: any) => {
@@ -195,7 +203,7 @@ export default function EditRegStatusModalForm({
 									<FormControl>
 										<Select
 											{...field}
-											placeholder="Sélectionner le pays"
+											placeholder="Sélectionner le statut"
 											style={{
 												width: "100%",
 												background: "#F4EFE3",
@@ -215,6 +223,61 @@ export default function EditRegStatusModalForm({
 												</SelectItem>
 											))}
 										</Select>
+									</FormControl>
+									<FormMessage className="text-red-400" />
+								</FormItem>
+							)}
+						/>
+						<FormField
+							control={form.control}
+							name="method"
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel className="text-gray-900 text-sm font-[500] tracking-tight">
+										Methode de regularisation
+									</FormLabel>
+									<FormControl>
+										<Select
+											{...field}
+											placeholder="Sélectionner la methode"
+											style={{
+												width: "100%",
+												background: "#F4EFE3",
+											}}
+											className={`rounded-xs text-gray-900 font-normal`}
+											defaultSelectedKeys={[field.value]}
+											onChange={(data) =>
+												handleMethodChange(data)
+											}
+										>
+											{methodData.map((item, idx) => (
+												<SelectItem
+													key={item.key}
+													value={item.key}
+												>
+													{item.label}
+												</SelectItem>
+											))}
+										</Select>
+									</FormControl>
+									<FormMessage className="text-red-400" />
+								</FormItem>
+							)}
+						/>
+						<FormField
+							control={form.control}
+							name="phone"
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel className="text-gray-900 text-sm font-[500] tracking-tight">
+										Numero de telephone de regularisation
+									</FormLabel>
+									<FormControl>
+										<Input
+											type="text"
+											className="px-2 w-full bg-[#F4EFE3]"
+											{...field}
+										/>
 									</FormControl>
 									<FormMessage className="text-red-400" />
 								</FormItem>

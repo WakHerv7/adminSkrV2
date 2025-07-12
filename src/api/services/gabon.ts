@@ -25,8 +25,9 @@ export class GabonService {
 		let query_params: any = {};
 		if (amount) query_params.amount = amount;
 		if (phone) query_params.phone = phone;
+		if (userId) query_params.userId = userId;
 
-		const body = { amount, phone };
+		const body = { amount, phone, userId };
 
 		return BaseMethods.postRequest(
 			gabonUrls.GABON_PAYOUT_INTOUCH,
@@ -60,8 +61,9 @@ export class GabonService {
 		let query_params: any = {};
 		if (amount) query_params.amount = amount;
 		if (phone) query_params.phone = phone;
+		if (userId) query_params.userId = userId;
 
-		const body = { amount, phone };
+		const body = { amount, phone, userId };
 
 		return BaseMethods.postRequest(
 			gabonUrls.GABON_PAYOUT_AFRIBAPAY,

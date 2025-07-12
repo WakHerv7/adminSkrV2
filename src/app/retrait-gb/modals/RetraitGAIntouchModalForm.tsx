@@ -1,13 +1,6 @@
+import { GabonService } from "@/api/services/gabon";
 import CButton from "@/components/shared/CButton";
 import Title from "@/components/shared/Title";
-import Link from "next/link";
-import { usePathname, useSearchParams } from "next/navigation";
-import { FaX } from "react-icons/fa6";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { loginSchema } from "@/validation/FormValidation";
-import { FaChevronRight } from "react-icons/fa";
 import {
 	Form,
 	FormControl,
@@ -17,36 +10,25 @@ import {
 	FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useMutation } from "react-query";
-import { HashLoader } from "react-spinners";
-import toast from "react-hot-toast";
-import { useDispatch, useSelector } from "react-redux";
 import {
 	selectCurrentGetSekureApiToken,
 	selectCurrentUser,
-	setCredentials,
 } from "@/redux/slices/auth";
-import { useRouter } from "next/navigation";
-import classNames from "classnames";
-import { Textarea } from "@/components/ui/textarea";
-import {
-	Autocomplete,
-	Box,
-	Chip,
-	MenuItem,
-	OutlinedInput,
-	TextField,
-} from "@mui/material";
-import _ from "lodash";
-import { TransactionService } from "@/api/services/transaction";
-import {
-	selectCurrentCustomerDetails,
-	setCurrentCustomerDetails,
-} from "@/redux/slices/customer";
-import { useRef } from "react";
-import { GabonService } from "@/api/services/gabon";
+import { selectCurrentCustomerDetails } from "@/redux/slices/customer";
 import { getCurrentDateTime } from "@/utils/utils";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Select, SelectItem } from "@nextui-org/select";
+import classNames from "classnames";
+import Link from "next/link";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useRef } from "react";
+import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
+import { FaX } from "react-icons/fa6";
+import { useMutation } from "react-query";
+import { useDispatch, useSelector } from "react-redux";
+import { HashLoader } from "react-spinners";
+import { z } from "zod";
 
 // import { useNavigate } from 'react-router-dom';
 
@@ -59,7 +41,7 @@ const handleGabonBalanceWithdrawal = async (queryData: any) => {
 	const { token, data } = queryData;
 	// console.log("handleTransaction : ", {currentUserId, customerId, label, body});
 	// return {currentUserId, customerId, label, body}
-	const response = await GabonService.handle_gabon_balance_withdrawal({
+	const response = await GabonService.gabon_payout_intouch({
 		token,
 		phone: data?.phone, //'66192325',
 		amount: data?.amount ?? 0,
@@ -78,7 +60,11 @@ const handleGabonBalanceWithdrawal = async (queryData: any) => {
 	return responseJson;
 };
 
-export default function RetraitGBModalForm({ amount }: { amount: number }) {
+export default function RetraitGAIntouchModalForm({
+	amount,
+}: {
+	amount: number;
+}) {
 	const pathname = usePathname();
 	const redirectRef: any = useRef();
 

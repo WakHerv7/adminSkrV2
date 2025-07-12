@@ -393,6 +393,11 @@ export default function TransactionModal({
 							} else if (key.toString() === "merchant_city") {
 								x.value.text = itm.merchant?.city ?? "";
 							} else if (key.toString() === "amount_xaf") {
+								const CurrencyValue = itm?.amount_user_currency
+									? `(${itm?.amount_user_currency?.toLocaleString(
+											"fr-FR"
+									  )} ${itm?.user_currency})`
+									: "";
 								const USDValue = itm?.amount_usd
 									? `(${itm?.amount_usd?.toLocaleString(
 											"fr-FR"
@@ -401,6 +406,7 @@ export default function TransactionModal({
 								x.value.text =
 									(itm[key]?.toLocaleString("fr-FR") ?? 0) +
 									" XAF " +
+									CurrencyValue +
 									USDValue;
 								if (
 									getCategoryModeV2(
@@ -420,6 +426,12 @@ export default function TransactionModal({
 									x.value.color = "#F85D4B";
 								}
 							} else if (key.toString() === "old_balance_xaf") {
+								const CurrencyValue =
+									itm?.old_balance_user_currency
+										? `(${itm?.old_balance_user_currency?.toLocaleString(
+												"fr-FR"
+										  )} ${itm?.user_currency})`
+										: "";
 								const USDValue = itm?.old_balance_usd
 									? `(${itm?.old_balance_usd?.toLocaleString(
 											"fr-FR"
@@ -428,9 +440,16 @@ export default function TransactionModal({
 								x.value.text =
 									(itm[key]?.toLocaleString("fr-FR") ?? 0) +
 									" XAF " +
+									CurrencyValue +
 									USDValue;
 								x.value.color = "#999";
 							} else if (key.toString() === "new_balance_xaf") {
+								const CurrencyValue =
+									itm?.new_balance_user_currency
+										? `(${itm?.new_balance_user_currency?.toLocaleString(
+												"fr-FR"
+										  )} ${itm?.user_currency})`
+										: "";
 								const USDValue = itm?.new_balance_usd
 									? `(${itm?.new_balance_usd?.toLocaleString(
 											"fr-FR"
@@ -439,6 +458,7 @@ export default function TransactionModal({
 								x.value.text =
 									(itm[key]?.toLocaleString("fr-FR") ?? 0) +
 									" XAF " +
+									CurrencyValue +
 									USDValue;
 							} else if (
 								key.toString() === "card_old_balance_xaf"
@@ -466,6 +486,11 @@ export default function TransactionModal({
 									" XAF " +
 									USDValue;
 							} else if (key.toString() === "fee_xaf") {
+								const CurrencyValue = itm?.fee_user_currency
+									? `(${itm?.fee_user_currency?.toLocaleString(
+											"fr-FR"
+									  )} ${itm?.user_currency})`
+									: "";
 								const USDValue = itm?.fee_usd
 									? `(${itm?.fee_usd?.toLocaleString(
 											"fr-FR"
@@ -480,6 +505,7 @@ export default function TransactionModal({
 										? itm?.fee
 										: 0) +
 									" XAF " +
+									CurrencyValue +
 									USDValue;
 								x.value.color = "#F85D4B";
 							} else if (key.toString() === "author") {

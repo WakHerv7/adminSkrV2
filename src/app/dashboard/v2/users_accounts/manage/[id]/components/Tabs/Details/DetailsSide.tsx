@@ -227,10 +227,11 @@ export default function DetailsSide() {
 			<div className="">
 				<p className="text-gray-800 text-sm font-normal tracking-tight">
 					{`Total solde courant `}
-					<span className="font-bold">{`($ ${retrieveUSDAmount({
+
+					{/* <span className="font-bold">{`($ ${retrieveUSDAmount({
 						amount: customerDetails?.customer?.balance_xaf,
 						amountUSD: customerDetails?.customer?.balance_usd,
-					})?.toLocaleString("fr-FR")})`}</span>
+					})?.toLocaleString("fr-FR")})`}</span> */}
 				</p>
 				<p className="text-[#18BC7A] text-2xl font-bold tracking-tight my-1">
 					{`${
@@ -239,6 +240,15 @@ export default function DetailsSide() {
 						) ?? 0
 					} XAF `}
 				</p>
+				{customerDetails?.customer?.country_iso_code === "CD" ? (
+					<p className="font-bold text-xl font-bold tracking-tight my-2">{`(${
+						customerDetails?.customer?.balance_currency?.toLocaleString(
+							"fr-FR"
+						) ?? 0
+					} ${customerDetails?.customer?.currency})`}</p>
+				) : (
+					<></>
+				)}
 
 				{hasPermission(
 					currentUser,

@@ -20,33 +20,6 @@ const headerData: ITableHeader = {
 	action: "",
 };
 
-const tableData: IGenericRow[] = [
-	{
-		name: "John Doe",
-		email: "abc123@xyz.com",
-		status: true,
-		access: "Admin",
-		date: "12/03/2024",
-		edit: "/administration/edit/1",
-	},
-	{
-		name: "John Doe",
-		email: "abc123@xyz.com",
-		status: false,
-		access: "Manager",
-		date: "12/03/2024",
-		edit: "/administration/edit/2",
-	},
-	{
-		name: "John Doe",
-		email: "abc123@xyz.com",
-		status: true,
-		access: "Visitor",
-		date: "12/03/2024",
-		edit: "/administration/edit/3",
-	},
-];
-
 const getAllNotifications = async ({ queryKey }: any) => {
 	const [_key, st] = queryKey;
 	let params: any = {};

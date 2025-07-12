@@ -76,18 +76,22 @@ export class CameroonService {
 		amount,
 		phone,
 		token,
+		operator,
 		userId,
 	}: {
 		amount: string;
-		phone?: string;
+		phone: string;
 		token?: string;
+		operator: string;
 		userId: string;
 	}) => {
 		let query_params: any = {};
 		if (amount) query_params.amount = amount;
 		if (phone) query_params.phone = phone;
+		if (operator) query_params.operator = operator;
+		if (userId) query_params.userId = userId;
 
-		const body = { amount, phone };
+		const body = { amount, phone, operator, userId };
 
 		return BaseMethods.postRequest(
 			cameroonUrls.CAMEROON_PAYOUT_AFRIBAPAY,

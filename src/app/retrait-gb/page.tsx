@@ -19,7 +19,8 @@ import CButton from "@/components/shared/CButton";
 import { FourDots } from "@/components/shared/icons";
 import Modal from "@/components/shared/Modal/Modal";
 import RetraitBJModalForm from "./modals/RetraitBJModalForm";
-import RetraitGBModalForm from "./modals/RetraitGBModalForm";
+import RetraitGAAfribapayModalForm from "./modals/RetraitGAAfribapayModalForm";
+import RetraitGAIntouchModalForm from "./modals/RetraitGAIntouchModalForm";
 import {
 	selectCurrentGetSekureApiToken,
 	selectCurrentToken,
@@ -42,6 +43,7 @@ import { FaEye, FaPlus } from "react-icons/fa";
 import AddOperationModalForm from "./modals/AddOperationModalForm";
 import GetOperationModalForm from "./modals/GetOperationModalForm";
 import { getAvailableBalance } from "@/utils/utils";
+import RetraitCMAfribapayModalForm from "./modals/RetraitCMAfribapayModalForm";
 
 const getGabonBalanceIntouch = async ({ queryKey }: any) => {
 	const [_key, token] = queryKey;
@@ -72,6 +74,8 @@ const getGabonBalanceAfribapay = async ({ queryKey }: any) => {
 				responseJson.message || "Failed to get Gabon Balance"
 			);
 		}
+		console.log("getGabonBalanceAfribapay ::: ", responseJson.data);
+
 		return responseJson.data;
 	} else {
 		return { data: { message: "No token provided" } };
@@ -198,7 +202,7 @@ export default function RetraitGBPage() {
 	const getSekureApiToken = useSelector(selectCurrentGetSekureApiToken);
 
 	const gabonBalanceIntouchQueryRes = useQuery({
-		queryKey: ["gabon", getSekureApiToken],
+		queryKey: ["gabonIntouch", getSekureApiToken],
 		queryFn: getGabonBalanceIntouch,
 		onError: (err) => {
 			toast.error("Failed to get Gabon balance.");
@@ -207,7 +211,7 @@ export default function RetraitGBPage() {
 		refetchInterval: 60000, // Fetches data every 60 seconds
 	});
 	const gabonBalanceAfribapayQueryRes = useQuery({
-		queryKey: ["gabon", getSekureApiToken],
+		queryKey: ["gabonAfribapay", getSekureApiToken],
 		queryFn: getGabonBalanceAfribapay,
 		onError: (err) => {
 			toast.error("Failed to get Gabon balance.");
@@ -365,16 +369,18 @@ export default function RetraitGBPage() {
 					}
 				/>
 				<div className="flex flex-col justify-center items-center">
-					<div className="text-xl font-bold mb-3">{`Solde Gabon Afribapay (XAF)`}</div>
+					<div className="text-xl font-bold mb-3">{`Solde Cameroun Afribapay (XAF)`}</div>
 					<div
 						className={`h-10  mb-3 min-w-[300px] text-xl font-bold text-[#18BC7A] border-none bg-gray-100 rounded-md outline-none px-3
           flex justify-center items-center`}
 					>
-						{getAvailableBalance(
-							gabonBalanceAfribapayQueryRes?.data,
-							"GA",
-							"payin"
-						)}
+						{(gabonBalanceAfribapayQueryRes?.data &&
+							getAvailableBalance(
+								gabonBalanceAfribapayQueryRes?.data,
+								"CM",
+								"payout"
+							)) ||
+							0}
 					</div>
 					<div className="flex flex-wrap justify-center items-center gap-4 mt-3">
 						{/* <CButton
@@ -393,7 +399,73 @@ export default function RetraitGBPage() {
 							text={"Retirer"}
 							btnStyle={"green"}
 							icon={<FourDots />}
-							href="?withdrawGB=true"
+							href="?withdrawCMAfribapay=true"
+						/>
+					</div>
+				</div>
+				{/* <Modal
+					name={"addOperationGAIntouch"}
+					modalContent={
+						<AddOperationModalForm
+							action={"withdrawal"}
+							country={"GA"}
+							provider={"intouch"}
+						/>
+					}
+				/>
+				<Modal
+					name={"getOperationGAIntouch"}
+					modalContent={
+						<GetOperationModalForm
+							category={"wallet"}
+							type={"topup"}
+							country={"GA"}
+							provider={"intouch"}
+							balance={Number(
+								(gabonBalanceAfribapayQueryRes?.data &&
+									getAvailableBalance(
+										gabonBalanceAfribapayQueryRes?.data,
+										"GA",
+										"payin"
+									)) ||
+									0
+							)}
+						/>
+					}
+				/> */}
+
+				<div className="flex flex-col justify-center items-center">
+					<div className="text-xl font-bold mb-3">{`Solde Gabon Afribapay (XAF)`}</div>
+					<div
+						className={`h-10  mb-3 min-w-[300px] text-xl font-bold text-[#18BC7A] border-none bg-gray-100 rounded-md outline-none px-3
+          flex justify-center items-center`}
+					>
+						{(gabonBalanceAfribapayQueryRes?.data &&
+							getAvailableBalance(
+								gabonBalanceAfribapayQueryRes?.data,
+								"GA",
+								"payin"
+							)) ||
+							0}
+					</div>
+					<div className="flex flex-wrap justify-center items-center gap-4 mt-3">
+						{/* <CButton
+							text={""}
+							btnStyle={"lightGreen"}
+							icon={<FaPlus />}
+							href="?addOperationGAIntouch=true"
+						/>
+						<CButton
+							text={""}
+							btnStyle={"lightGreen"}
+							icon={<FaEye />}
+							href="?getOperationGAIntouch=true"
+						/> */}
+						<CButton
+							text={"Retirer"}
+							btnStyle={"green"}
+							icon={<FourDots />}
+							href="?withdrawGBAfribapay=true"
 						/>
 					</div>
 				</div>
@@ -416,11 +488,53 @@ export default function RetraitGBPage() {
 							country={"GA"}
 							provider={"intouch"}
 							balance={Number(
-								gabonBalanceAfribapayQueryRes?.data?.amount || 0
+								(gabonBalanceAfribapayQueryRes?.data &&
+									getAvailableBalance(
+										gabonBalanceAfribapayQueryRes?.data,
+										"GA",
+										"payin"
+									)) ||
+									0
 							)}
 						/>
 					}
 				/>
+
+				<div className="flex flex-col justify-center items-center">
+					<div className="text-xl font-bold mb-3">{`Solde Benin Afribapay (XOF)`}</div>
+					<div
+						className={`h-10  mb-3 min-w-[300px] text-xl font-bold text-[#18BC7A] border-none bg-gray-100 rounded-md outline-none px-3
+          flex justify-center items-center`}
+					>
+						{(gabonBalanceAfribapayQueryRes?.data &&
+							getAvailableBalance(
+								gabonBalanceAfribapayQueryRes?.data,
+								"BJ",
+								"payin"
+							)) ||
+							0}
+					</div>
+					<div className="flex flex-wrap justify-center items-center gap-4 mt-3">
+						{/* <CButton
+							text={""}
+							btnStyle={"lightGreen"}
+							icon={<FaPlus />}
+							href="?addOperationGAIntouch=true"
+						/>
+						<CButton
+							text={""}
+							btnStyle={"lightGreen"}
+							icon={<FaEye />}
+							href="?getOperationGAIntouch=true"
+						/> */}
+						{/* <CButton
+							text={"Retirer"}
+							btnStyle={"green"}
+							icon={<FourDots />}
+							href="?withdrawCMAfribapay=true"
+						/> */}
+					</div>
+				</div>
 
 				<div className="flex flex-col justify-center items-center">
 					<div className="text-xl font-bold mb-3">{`Solde Gabon Intouch (XAF)`}</div>
@@ -449,7 +563,7 @@ export default function RetraitGBPage() {
 							text={"Retirer"}
 							btnStyle={"green"}
 							icon={<FourDots />}
-							href="?withdrawGB=true"
+							href="?withdrawGBIntouch=true"
 						/>
 					</div>
 				</div>
@@ -674,7 +788,7 @@ export default function RetraitGBPage() {
 			<Modal
 				name={"withdrawGBIntouch"}
 				modalContent={
-					<RetraitGBModalForm
+					<RetraitGAIntouchModalForm
 						amount={Number(
 							gabonBalanceIntouchQueryRes?.data?.amount || 0
 						)}
@@ -684,9 +798,15 @@ export default function RetraitGBPage() {
 			<Modal
 				name={"withdrawGBAfribapay"}
 				modalContent={
-					<RetraitGBModalForm
+					<RetraitGAAfribapayModalForm
 						amount={Number(
-							gabonBalanceAfribapayQueryRes?.data?.amount || 0
+							(gabonBalanceAfribapayQueryRes?.data &&
+								getAvailableBalance(
+									gabonBalanceAfribapayQueryRes?.data,
+									"GA",
+									"payin"
+								)) ||
+								0
 						)}
 					/>
 				}
@@ -731,6 +851,22 @@ export default function RetraitGBPage() {
 						amount={Number(
 							cameroonPawapayBalanceQueryRes?.data?.balances?.[0]
 								?.balance || 0
+						)}
+					/>
+				}
+			/>
+			<Modal
+				name={"withdrawCMAfribapay"}
+				modalContent={
+					<RetraitCMAfribapayModalForm
+						amount={Number(
+							(gabonBalanceAfribapayQueryRes?.data &&
+								getAvailableBalance(
+									gabonBalanceAfribapayQueryRes?.data,
+									"CM",
+									"payout"
+								)) ||
+								0
 						)}
 					/>
 				}

@@ -33,7 +33,7 @@ const CartesMain = ({ cards }: { cards: Card[] }) => {
 					carte.balance_xaf?.toLocaleString("fr-FR") ?? 0
 				} XAF`;
 				const cardUSDAmount =
-					carte.provider === "miden"
+					carte.provider === "miden" || carte.provider === "sudo"
 						? `${
 								carte.balance_usd?.toLocaleString("fr-FR") ?? 0
 						  } USD`

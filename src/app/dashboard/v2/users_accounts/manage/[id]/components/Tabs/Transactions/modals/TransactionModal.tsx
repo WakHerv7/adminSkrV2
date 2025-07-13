@@ -228,6 +228,18 @@ const infoData: TDataList[] = [
 		],
 		[
 			{
+				key: "description",
+				label: { text: "Motif", fw: "bold", color: "#444" },
+				value: {
+					text: "",
+					color: "#444",
+					maxWidth: "200px",
+					whiteSpace: "wrap",
+				},
+			},
+		],
+		[
+			{
 				key: "reason",
 				label: { text: "Motif", fw: "bold", color: "#444" },
 				value: {

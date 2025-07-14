@@ -115,23 +115,23 @@ function parseDateObject(dateString: string) {
 const sendNotification = async (queryData: any) => {
 	const { cardId, adminUserId, body } = queryData;
 
-	throw new Error("Service indisponible");
+	// throw new Error("Service indisponible");
 
-	// if (!body?.target && (!body?.users || body?.users?.length <= 0)) {
-	// 	throw new Error("Veuillez selectionner une cible");
-	// }
+	if (!body?.target && (!body?.users || body?.users?.length <= 0)) {
+		throw new Error("Veuillez selectionner une cible");
+	}
 
-	// const response = await NotificationService.send_notifcation({
-	// 	adminUserId: adminUserId,
-	// 	body: body,
-	// });
+	const response = await NotificationService.send_notifcation({
+		adminUserId: adminUserId,
+		body: body,
+	});
 
-	// if (!response.ok) {
-	// 	const responseBody = await response.json();
-	// 	throw new Error(responseBody.message);
-	// }
-	// const responseJson = await response.json();
-	// return responseJson;
+	if (!response.ok) {
+		const responseBody = await response.json();
+		throw new Error(responseBody.message);
+	}
+	const responseJson = await response.json();
+	return responseJson;
 };
 
 export default function Details() {

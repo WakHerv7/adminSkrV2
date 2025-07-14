@@ -240,7 +240,7 @@ const infoData: TDataList[] = [
 		[
 			{
 				key: "description",
-				label: { text: "Motif", fw: "bold", color: "#444" },
+				label: { text: "Description", fw: "bold", color: "#444" },
 				value: {
 					text: "",
 					color: "#444",

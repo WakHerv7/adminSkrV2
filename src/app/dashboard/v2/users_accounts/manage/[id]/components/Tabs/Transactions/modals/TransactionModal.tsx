@@ -117,11 +117,16 @@ const infoData: TDataList[] = [
 		],
 		[
 			{
-				key: "oldNew",
-				label: { text: "A/N", fw: "bold", color: "#444" },
+				key: "order_id",
+				label: {
+					text: "Order ID",
+					fw: "bold",
+					color: "#444",
+				},
 				value: { text: "", color: "#444" },
 			},
 		],
+
 		[
 			{
 				key: "merchant_name",
@@ -150,6 +155,13 @@ const infoData: TDataList[] = [
 		// }],
 	],
 	[
+		[
+			{
+				key: "oldNew",
+				label: { text: "A/N", fw: "bold", color: "#444" },
+				value: { text: "", color: "#444" },
+			},
+		],
 		[
 			{
 				key: "mode",
@@ -229,7 +241,7 @@ const infoData: TDataList[] = [
 		[
 			{
 				key: "description",
-				label: { text: "Motif", fw: "bold", color: "#444" },
+				label: { text: "Description", fw: "bold", color: "#444" },
 				value: {
 					text: "",
 					color: "#444",

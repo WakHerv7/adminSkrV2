@@ -201,15 +201,15 @@ const getNairapayMapleradBalance = async ({ queryKey }: any) => {
 export default function RetraitGBPage() {
 	const getSekureApiToken = useSelector(selectCurrentGetSekureApiToken);
 
-	const gabonBalanceIntouchQueryRes = useQuery({
-		queryKey: ["gabonIntouch", getSekureApiToken],
-		queryFn: getGabonBalanceIntouch,
-		onError: (err) => {
-			toast.error("Failed to get Gabon balance.");
-		},
-		// enabled: false,
-		refetchInterval: 60000, // Fetches data every 60 seconds
-	});
+	// const gabonBalanceIntouchQueryRes = useQuery({
+	// 	queryKey: ["gabonIntouch", getSekureApiToken],
+	// 	queryFn: getGabonBalanceIntouch,
+	// 	onError: (err) => {
+	// 		toast.error("Failed to get Gabon balance.");
+	// 	},
+	// 	// enabled: false,
+	// 	refetchInterval: 60000, // Fetches data every 60 seconds
+	// });
 	const gabonBalanceAfribapayQueryRes = useQuery({
 		queryKey: ["gabonAfribapay", getSekureApiToken],
 		queryFn: getGabonBalanceAfribapay,
@@ -220,15 +220,15 @@ export default function RetraitGBPage() {
 		refetchInterval: 60000, // Fetches data every 60 seconds
 	});
 
-	const beninBalanceQueryRes = useQuery({
-		queryKey: ["benin", getSekureApiToken],
-		queryFn: getBeninBalance,
-		onError: (err) => {
-			toast.error("Failed to get Benin balance.");
-		},
-		// enabled: false,
-		refetchInterval: 60000, // Fetches data every 60 seconds
-	});
+	// const beninBalanceQueryRes = useQuery({
+	// 	queryKey: ["benin", getSekureApiToken],
+	// 	queryFn: getBeninBalance,
+	// 	onError: (err) => {
+	// 		toast.error("Failed to get Benin balance.");
+	// 	},
+	// 	// enabled: false,
+	// 	refetchInterval: 60000, // Fetches data every 60 seconds
+	// });
 	const burkinaBalanceQueryRes = useQuery({
 		queryKey: ["burkina", getSekureApiToken],
 		queryFn: getBurkinaBalance,
@@ -259,25 +259,25 @@ export default function RetraitGBPage() {
 		refetchInterval: 60000, // Fetches data every 60 seconds
 	});
 
-	const cameroonPawapayBalanceQueryRes = useQuery({
-		queryKey: ["cameroon", getSekureApiToken],
-		queryFn: getCameroonPawapayBalance,
-		onError: (err) => {
-			toast.error("Failed to get Cameroon Pawapay balance.");
-		},
-		// enabled: false,
-		refetchInterval: 60000, // Fetches data every 60 seconds
-	});
+	// const cameroonPawapayBalanceQueryRes = useQuery({
+	// 	queryKey: ["cameroon", getSekureApiToken],
+	// 	queryFn: getCameroonPawapayBalance,
+	// 	onError: (err) => {
+	// 		toast.error("Failed to get Cameroon Pawapay balance.");
+	// 	},
+	// 	// enabled: false,
+	// 	refetchInterval: 60000, // Fetches data every 60 seconds
+	// });
 
-	const MidenBalanceQueryRes = useQuery({
-		queryKey: ["miden", getSekureApiToken],
-		queryFn: getMidenBalance,
-		onError: (err) => {
-			toast.error("Failed to get Miden balance.");
-		},
-		// enabled: false,
-		refetchInterval: 60000, // Fetches data every 60 seconds
-	});
+	// const MidenBalanceQueryRes = useQuery({
+	// 	queryKey: ["miden", getSekureApiToken],
+	// 	queryFn: getMidenBalance,
+	// 	onError: (err) => {
+	// 		toast.error("Failed to get Miden balance.");
+	// 	},
+	// 	// enabled: false,
+	// 	refetchInterval: 60000, // Fetches data every 60 seconds
+	// });
 
 	const NairapayMapleradBalanceQueryRes = useQuery({
 		queryKey: ["NairapayMaplerad", getSekureApiToken],
@@ -293,21 +293,21 @@ export default function RetraitGBPage() {
 		"gabonBalanceAfribapayQueryRes.data : ",
 		gabonBalanceAfribapayQueryRes.data
 	);
-	console.log(
-		"gabonBalanceIntouchQueryRes.data : ",
-		gabonBalanceIntouchQueryRes.data
-	);
+	// console.log(
+	// 	"gabonBalanceIntouchQueryRes.data : ",
+	// 	gabonBalanceIntouchQueryRes.data
+	// );
 
-	console.log("beninBalanceQueryRes.data : ", beninBalanceQueryRes.data);
-	console.log(
-		"cameroonCampayBalanceQueryRes.data : ",
-		cameroonCampayBalanceQueryRes.data
-	);
-	console.log(
-		"cameroonPawapayBalanceQueryRes.data : ",
-		cameroonPawapayBalanceQueryRes.data
-	);
-	console.log("MidenBalanceQueryRes.data : ", MidenBalanceQueryRes.data);
+	// console.log("beninBalanceQueryRes.data : ", beninBalanceQueryRes.data);
+	// console.log(
+	// 	"cameroonCampayBalanceQueryRes.data : ",
+	// 	cameroonCampayBalanceQueryRes.data
+	// );
+	// console.log(
+	// 	"cameroonPawapayBalanceQueryRes.data : ",
+	// 	cameroonPawapayBalanceQueryRes.data
+	// );
+	// console.log("MidenBalanceQueryRes.data : ", MidenBalanceQueryRes.data);
 	console.log(
 		"NairapayMapleradBalanceQueryRes.data : ",
 		NairapayMapleradBalanceQueryRes.data
@@ -536,7 +536,7 @@ export default function RetraitGBPage() {
 					</div>
 				</div>
 
-				<div className="flex flex-col justify-center items-center">
+				{/* <div className="flex flex-col justify-center items-center">
 					<div className="text-xl font-bold mb-3">{`Solde Gabon Intouch (XAF)`}</div>
 					<div
 						className={`h-10  mb-3 min-w-[300px] text-xl font-bold text-[#18BC7A] border-none bg-gray-100 rounded-md outline-none px-3
@@ -547,18 +547,6 @@ export default function RetraitGBPage() {
 						) ?? 0}
 					</div>
 					<div className="flex flex-wrap justify-center items-center gap-4 mt-3">
-						{/* <CButton
-							text={""}
-							btnStyle={"lightGreen"}
-							icon={<FaPlus />}
-							href="?addOperationGAIntouch=true"
-						/>
-						<CButton
-							text={""}
-							btnStyle={"lightGreen"}
-							icon={<FaEye />}
-							href="?getOperationGAIntouch=true"
-						/> */}
 						<CButton
 							text={"Retirer"}
 							btnStyle={"green"}
@@ -590,7 +578,7 @@ export default function RetraitGBPage() {
 							)}
 						/>
 					}
-				/>
+				/> */}
 
 				<div className="flex flex-col justify-center items-center">
 					<div className="text-xl font-bold mb-3">{`Solde Benin Maplerad (XOF)`}</div>
@@ -643,7 +631,7 @@ export default function RetraitGBPage() {
 					}
 				/>
 
-				<div className="flex flex-col justify-center items-center">
+				{/* <div className="flex flex-col justify-center items-center">
 					<div className="text-xl font-bold mb-3">{`Solde Benin Pawapay (XOF)`}</div>
 					<div
 						className={`h-10  mb-3 min-w-[300px] text-xl font-bold text-[#18BC7A] border-none bg-gray-100 rounded-md outline-none px-3
@@ -662,7 +650,7 @@ export default function RetraitGBPage() {
 							href="?withdrawBJ=true"
 						/>
 					</div>
-				</div>
+				</div> */}
 
 				<div className="flex flex-col justify-center items-center">
 					<div className="text-xl font-bold mb-3">{`Solde Burkina Pawapay (XOF)`}</div>
@@ -729,7 +717,7 @@ export default function RetraitGBPage() {
 					</div> */}
 				</div>
 
-				<div className="flex flex-col justify-center items-center">
+				{/* <div className="flex flex-col justify-center items-center">
 					<div className="text-xl font-bold mb-3">{`Solde Cameroun Pawapay (XAF)`}</div>
 					<div
 						className={`h-10  mb-3 min-w-[300px] text-xl font-bold text-[#18BC7A] border-none bg-gray-100 rounded-md outline-none px-3
@@ -748,9 +736,9 @@ export default function RetraitGBPage() {
 							href="?withdrawCM=true"
 						/>
 					</div>
-				</div>
+				</div> */}
 
-				<div className="flex flex-col justify-center items-center">
+				{/* <div className="flex flex-col justify-center items-center">
 					<div className="text-xl font-bold mb-3">{`Solde Miden (USD)`}</div>
 					<div
 						className={`h-10  mb-3 min-w-[300px] text-xl font-bold text-[#18BC7A] border-none bg-gray-100 rounded-md outline-none px-3
@@ -759,7 +747,7 @@ export default function RetraitGBPage() {
 						{MidenBalanceQueryRes?.data?.toLocaleString("fr-FR") ??
 							0}
 					</div>
-				</div>
+				</div> */}
 				<div className="flex flex-col justify-center items-center">
 					<div className="text-xl font-bold mb-3">{`Solde Nairapay Maplerad (Naira)`}</div>
 					<div
@@ -785,7 +773,7 @@ export default function RetraitGBPage() {
 				</div>
 			</div>
 
-			<Modal
+			{/* <Modal
 				name={"withdrawGBIntouch"}
 				modalContent={
 					<RetraitGAIntouchModalForm
@@ -794,7 +782,7 @@ export default function RetraitGBPage() {
 						)}
 					/>
 				}
-			/>
+			/> */}
 			<Modal
 				name={"withdrawGBAfribapay"}
 				modalContent={
@@ -811,7 +799,7 @@ export default function RetraitGBPage() {
 					/>
 				}
 			/>
-			<Modal
+			{/* <Modal
 				name={"withdrawBJ"}
 				modalContent={
 					<RetraitBJModalForm
@@ -821,7 +809,7 @@ export default function RetraitGBPage() {
 						)}
 					/>
 				}
-			/>
+			/> */}
 			<Modal
 				name={"withdrawBF"}
 				modalContent={
@@ -844,7 +832,7 @@ export default function RetraitGBPage() {
 					/>
 				}
 			/>
-			<Modal
+			{/* <Modal
 				name={"withdrawCM"}
 				modalContent={
 					<RetraitCMModalForm
@@ -854,7 +842,7 @@ export default function RetraitGBPage() {
 						)}
 					/>
 				}
-			/>
+			/> */}
 			<Modal
 				name={"withdrawCMAfribapay"}
 				modalContent={

@@ -580,7 +580,7 @@ export default function RetraitGBPage() {
 					}
 				/> */}
 
-				<div className="flex flex-col justify-center items-center">
+				{/* <div className="flex flex-col justify-center items-center">
 					<div className="text-xl font-bold mb-3">{`Solde Benin Maplerad (XOF)`}</div>
 					<div
 						className={`h-10  mb-3 min-w-[300px] text-xl font-bold text-[#18BC7A] border-none bg-gray-100 rounded-md outline-none px-3
@@ -629,7 +629,7 @@ export default function RetraitGBPage() {
 							)}
 						/>
 					}
-				/>
+				/> */}
 
 				{/* <div className="flex flex-col justify-center items-center">
 					<div className="text-xl font-bold mb-3">{`Solde Benin Pawapay (XOF)`}</div>

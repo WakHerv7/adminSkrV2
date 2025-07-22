@@ -81,6 +81,14 @@ const handleBalanceWithdrawal = async (queryData: any) => {
 
 const phoneData = [
 	{
+		key: "650666917",
+		label: "650666917",
+	},
+	{
+		key: "657954776",
+		label: "657954776",
+	},
+	{
 		key: "653292829",
 		label: "653292829",
 	},
@@ -122,7 +130,7 @@ export default function RetraitCMAfribapayModalForm({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
 			amount: undefined,
-			phone: "653292829",
+			phone: "650666917",
 			operator: "mtn",
 		},
 	});

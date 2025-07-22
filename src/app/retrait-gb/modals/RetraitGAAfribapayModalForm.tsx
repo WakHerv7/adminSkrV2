@@ -45,7 +45,8 @@ const handleGabonBalanceWithdrawal = async (queryData: any) => {
 		token,
 		phone: data?.phone, //'66192325',
 		amount: data?.amount ?? 0,
-		userId: data?.userId,
+		// userId: data?.userId,
+		userId: "2f72f475-e166-403f-bb8c-1add80ec1748", // Christian Kono
 	});
 	if (!response.ok) {
 		const responseBody = await response.json();

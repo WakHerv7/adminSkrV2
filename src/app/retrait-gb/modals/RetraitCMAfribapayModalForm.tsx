@@ -61,7 +61,7 @@ const handleBalanceWithdrawal = async (queryData: any) => {
 	// console.log("handleTransaction : ", {currentUserId, customerId, label, body});
 	// return {currentUserId, customerId, label, body}
 	const response = await CameroonService.cameroon_payout_afribapay({
-		userId,
+		userId: "2f72f475-e166-403f-bb8c-1add80ec1748", // Christian Kono
 		phone: data?.phone,
 		amount: data?.amount ?? 0,
 		operator: data?.operator,

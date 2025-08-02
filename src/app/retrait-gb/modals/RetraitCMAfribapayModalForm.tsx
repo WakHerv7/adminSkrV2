@@ -92,6 +92,10 @@ const phoneData = [
 		key: "653292829",
 		label: "653292829",
 	},
+	{
+		key: "683234210",
+		label: "683234210",
+	},
 ];
 const operatorData = [
 	{
@@ -247,14 +251,7 @@ export default function RetraitCMAfribapayModalForm({
 											<FormLabel className="text-gray-900 text-sm font-[500] tracking-tight">
 												Montant
 											</FormLabel>
-											&nbsp;&nbsp;&nbsp;
-											<span className="text-xs text-gray-500">{`${
-												getFormLabels(
-													amount?.toLocaleString(
-														"fr-FR"
-													)
-												)?.note
-											}`}</span>
+
 											<FormControl>
 												<Input
 													type="number"

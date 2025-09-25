@@ -613,14 +613,16 @@ export default function Details() {
 							<Title title="Informations utilisateur" />
 							<div className="w-full flex flex-col gap-7">
 								{cTicketData?.user_id ? (
-									<div className="text-[#18BC7A]">
+									<div className="flex flex-col gap-3">
 										<a
-											className="flex gap-3 text-xl font-bold"
+											className="flex gap-3 text-[#18BC7A] text-xl font-bold"
 											href={`/dashboard/v2/users_accounts/manage/${cTicketData?.user_id}`}
 										>
 											{cTicketData?.user_name}{" "}
 											<FaExternalLinkAlt color="#18BC7A" />
 										</a>
+										<span>{cTicketData?.user_phone}</span>
+										<span>{cTicketData?.user_email}</span>
 									</div>
 								) : (
 									<></>

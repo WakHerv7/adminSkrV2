@@ -405,7 +405,6 @@ export default function Details() {
 				setTicketImagesToSubmit([...ticketImagesToSubmit, file]);
 				setTicketImages([...ticketImages, reader.result as string]);
 			};
-
 			reader.readAsDataURL(file);
 		}
 	};

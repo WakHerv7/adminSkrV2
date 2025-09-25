@@ -5,7 +5,8 @@ export const GETSEKURE_API_URL = `https://api.getsekure.com/api/v1`;
 // export const API_V2_BASE_URL = `http://localhost:3000/api/v2/admin`;
 // export const API_V2_BASE_URL = `https://apigetsekure.com/api/v2/admin`;
 export const API_V2_PROD_BASE_URL = `https://apigetsekure.com/api/v2/admin`;
-export const API_V2_BASE_URL = `https://skr-api-v2.fly.dev/api/v2/admin`;
+// export const API_V2_BASE_URL = `https://skr-api-v2.fly.dev/api/v2/admin`;
+export const API_V2_BASE_URL = `https://adminapi.getsekure.com/api/v2/admin`;
 
 // export const BASE_URL_AUTH = `${BASE_URL}/admin/auth`;
 // export const authUrls = {
@@ -63,6 +64,7 @@ export const kycUrlsV2 = {
 export const V2_BASE_URL_TRANSACTION = `${API_V2_BASE_URL}/transactions`;
 export const transactionUrlsV2 = {
 	MANAGE_USER_ACCOUNT_TRANSACTIONS: `${V2_BASE_URL_TRANSACTION}/manage-user-account-balance`,
+	DO_USER_TRANSACTION: `${API_V2_PROD_BASE_URL}/transactions/user-transaction`,
 	STATS_PERIODIC: `${V2_BASE_URL_TRANSACTION}/stats/periodic`,
 	STATS_PER_COUNTRY: `${V2_BASE_URL_TRANSACTION}/stats/per-country`,
 	STATS_PER_CATEGORY_TYPE: `${V2_BASE_URL_TRANSACTION}/stats/per-category-type`,

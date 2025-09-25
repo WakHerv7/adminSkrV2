@@ -7,7 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { loginSchema } from "@/validation/FormValidation";
-import { FaChevronRight } from "react-icons/fa";
+import { FaChevronRight, FaCircle } from "react-icons/fa";
 import {
 	Form,
 	FormControl,
@@ -41,6 +41,8 @@ import {
 } from "@/redux/slices/customer";
 import { useRef, useState } from "react";
 // import { useNavigate } from 'react-router-dom';
+import { Select, SelectItem } from "@nextui-org/select";
+
 export const formSchema = z.object({
 	author: z.object(
 		{
@@ -53,11 +55,18 @@ export const formSchema = z.object({
 	amount: z.string({ message: "Entrez un montant" }),
 	reason: z.string({ message: "Entrez un motif" }),
 	description: z.string().optional(),
+	momo: z.boolean().default(false).optional(),
+	phone: z.string().optional(),
 });
 
 const handleTransaction = async (queryData: any) => {
 	const { currentUserId, customerId, label, body } = queryData;
-	// console.log("handleTransaction : ", {currentUserId, customerId, label, body});
+	console.log("handleTransaction : ", {
+		currentUserId,
+		customerId,
+		label,
+		body,
+	});
 	// return {currentUserId, customerId, label, body}
 	const reason = body.description
 		? `${body.reason} : ${body.description}`
@@ -70,10 +79,15 @@ const handleTransaction = async (queryData: any) => {
 			author: body.author,
 			amount: body.amount,
 			reason: reason,
+			momo: body.momo,
+			userId: customerId,
+			number: body.phone,
+			category: "wallet",
+			type: "withdrawal",
 		},
 	});
-	if (!response.ok) {
-		const responseBody = await response.json();
+	if (!response?.ok) {
+		const responseBody = await response?.json();
 		// console.error(response);
 		throw new Error(responseBody.message);
 		// if (response.status === 403) {
@@ -164,6 +178,9 @@ export default function RechargeAccountBalanceModalForm({
 	const dispatch = useDispatch();
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
+		defaultValues: {
+			phone: customer?.phone,
+		},
 	});
 
 	const currentUser = useSelector(selectCurrentUser);
@@ -175,6 +192,28 @@ export default function RechargeAccountBalanceModalForm({
 		isRechargeAccount || isWithdrawAccount
 			? motifsCourant
 			: motifsParrainage;
+
+	// const phoneData = [
+	// 	{
+	// 		key: customer?.phone,
+	// 		label: customer?.phone,
+	// 	},
+	// 	{
+	// 		key: customer?.additional_phone_numbers?.[0],
+	// 		label: customer?.additional_phone_numbers?.[0],
+	// 	},
+	// 	{
+	// 		key: customer?.additional_phone_numbers?.[1],
+	// 		label: customer?.additional_phone_numbers?.[1],
+	// 	},
+	// ];
+
+	const phoneData = [
+		customer?.phone,
+		...(customer?.additional_phone_numbers ?? []),
+	]
+		.filter((p): p is string => Boolean(p && p.trim()))
+		.map((p) => ({ key: p, label: p }));
 
 	const mutation = useMutation({
 		mutationFn: (data) =>
@@ -289,6 +328,16 @@ export default function RechargeAccountBalanceModalForm({
 				max: customerDetails?.customer?.balance_sponsorship_xaf,
 			};
 		}
+	};
+
+	const handleMomo = (label: string, value: any) => {
+		form.setValue("momo", value);
+	};
+
+	const handlePhoneChange = (data: any) => {
+		const value = data.target.value;
+		console.log("phone", value);
+		form.setValue("phone", value);
 	};
 
 	return (
@@ -464,6 +513,94 @@ export default function RechargeAccountBalanceModalForm({
 											className="px-2 w-full bg-[#F4EFE3]"
 											{...field}
 										/>
+									</FormControl>
+									<FormMessage className="text-red-400" />
+								</FormItem>
+							)}
+						/>
+						<FormField
+							control={form.control}
+							name="momo"
+							render={({ field }) => (
+								<FormItem className="">
+									<FormControl>
+										<label
+											htmlFor={`momo`}
+											className="flex items-center cursor-pointer"
+										>
+											<div className="relative">
+												<input
+													checked={field.value}
+													onChange={(e) =>
+														handleMomo(
+															"momo",
+															e.target.checked
+														)
+													}
+													type="checkbox"
+													id={`momo`}
+													name={`momo`}
+													className="customCheckbox sr-only"
+												/>
+												<div className="checkboxContainer block p-[3px] border border-solid border-1 border-gray-300 bg-[#f2f2f2] rounded-full flex items-center text-xs">
+													{/* <FaCircle className='checkboxContentTransparent' color="transparent" size={12} /> */}
+													{field.value ? (
+														<FaCircle
+															className={""}
+															color={"#18BC7A"}
+															size={12}
+														/>
+													) : (
+														<FaCircle
+															className={""}
+															color={"#ffffff00"}
+															size={12}
+														/>
+													)}
+												</div>
+											</div>
+											<div className="pl-3 py-4 text-sm">
+												Envoyer vers MOMO
+											</div>
+										</label>
+									</FormControl>
+									{/* <FormMessage className="text-red-400"/> */}
+								</FormItem>
+							)}
+						/>
+						<FormField
+							control={form.control}
+							name="phone"
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel className="text-gray-900 text-sm mb-3">{`Numero récepteur`}</FormLabel>
+									<FormControl>
+										<Select
+											{...field}
+											placeholder="Sélectionner le telephone"
+											style={{
+												width: "100%",
+												background: "#F4EFE3",
+											}}
+											className={`rounded-xs text-gray-900 text-md font-normal`}
+											defaultSelectedKeys={[
+												field.value ?? "",
+											]}
+											onChange={(data) =>
+												handlePhoneChange(data)
+											}
+										>
+											{phoneData.map(
+												(item: any, idx: any) => (
+													<SelectItem
+														key={item.key}
+														value={item.key}
+													>
+														{item.label}
+													</SelectItem>
+												)
+											)}
+										</Select>
 									</FormControl>
 									<FormMessage className="text-red-400" />
 								</FormItem>

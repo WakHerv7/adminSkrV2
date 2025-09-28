@@ -422,7 +422,7 @@ export default function Home() {
 			</section>
 
 			<section className="w-full my-[50px]">
-				<Tabs defaultValue="01" className="w-full">
+				<Tabs defaultValue="02" className="w-full">
 					<div className="border-b-1">
 						<TabsList className="TabsList">
 							<TabsTrigger

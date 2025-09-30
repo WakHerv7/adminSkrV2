@@ -172,6 +172,7 @@ export const permissions: any = {
 		user_accounts: { root: ["view", "details"] },
 		transactions: { root: ["view", "details"] },
 		cards: { root: ["view", "details"] },
+		payment_services: { root: ["view", "details"] },
 		// card_details: { root: ["view", "topup", "withdraw", "edit"] },
 		wallet_transactions: { root: ["view", "details"] },
 		transfers: { root: ["view", "details"] },

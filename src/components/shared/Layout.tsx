@@ -104,7 +104,9 @@ const Layout: React.FC<LayoutProps> = ({
 		if (
 			token &&
 			user.admin_role === "guest" &&
-			!pathname.startsWith(urlsV1V2.dashboardHome.root)
+			!pathname.startsWith(urlsV1V2.dashboardHome.root) &&
+			!pathname.startsWith(urlsV2.payment_services.root) &&
+			!pathname.startsWith(urlsV2.earnings.root)
 		) {
 			router.push(urlsV1V2.dashboardHome.root);
 		}

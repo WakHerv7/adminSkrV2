@@ -223,6 +223,30 @@ const SideBar = (props: Props) => {
 			count: null,
 			icon: <Accueil />,
 		},
+		{
+			title: "Comptes utilisateurs",
+			slug: "usersAccounts",
+			canSee: hasPermission(user, "user_accounts", "view"),
+			path: urlsV2.usersAccounts.root,
+			count: null,
+			icon: <UsersV2 />,
+		},
+		{
+			title: "Services de paiement",
+			slug: "payment_services",
+			canSee: hasPermission(user, "payment_services", "view"),
+			path: urlsV2.payment_services.root,
+			count: null,
+			icon: <FaHandHoldingUsd size={20} />,
+		},
+		{
+			title: "Gains",
+			slug: "earnings",
+			canSee: hasPermission(user, "earnings", "view"),
+			path: urlsV2.earnings.root,
+			count: null,
+			icon: <BsBank2 size={18} />,
+		},
 	];
 
 	return (

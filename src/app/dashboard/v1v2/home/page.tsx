@@ -49,7 +49,7 @@ import {
 import { selectSearchTerm, setSearchTerm } from "@/redux/slices/search";
 import urlsV2 from "@/config/urls_v2";
 import LabelWithBadge from "@/components/shared/LabelWithBadge";
-import { TransactionService } from "@/api/services/v1v2/transaction";
+import { TransactionService } from "@/api/services/v2/transaction";
 import { CustomerService } from "@/api/services/v2/customer";
 import StatsPerCategoryType from "./components/StatsPerCategoryType";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";

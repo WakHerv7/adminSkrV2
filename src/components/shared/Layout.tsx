@@ -105,6 +105,7 @@ const Layout: React.FC<LayoutProps> = ({
 			token &&
 			user.admin_role === "guest" &&
 			!pathname.startsWith(urlsV1V2.dashboardHome.root) &&
+			!pathname.startsWith(urlsV2.usersAccounts.root) &&
 			!pathname.startsWith(urlsV2.payment_services.root) &&
 			!pathname.startsWith(urlsV2.earnings.root)
 		) {

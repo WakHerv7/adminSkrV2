@@ -62,6 +62,7 @@ import LabelWithBadge from "@/components/shared/LabelWithBadge";
 import { CustomerService } from "@/api/services/v2/customer";
 import { HashLoader } from "react-spinners";
 import useKeyPressed from "@/hooks/useKeyPressed";
+import { selectCurrentUser } from "@/redux/slices/auth";
 
 let infoData: TDataList[] = [
 	[
@@ -244,6 +245,8 @@ const generateCustomersExcel = async (queryData: any) => {
 export default function Home() {
 	useTitle("Sekure | Comptes utilisateurs", true);
 
+	const currentUser = useSelector(selectCurrentUser);
+
 	const [filterContent, setFilterContent] = useState({});
 
 	const [statsData, setStatsData] = useState<TDataList[]>();
@@ -384,13 +387,17 @@ export default function Home() {
 			Math.round(allUsersStatsQueryRes?.data?.internal?.avgUsers ?? 0) +
 			"  /jour";
 		infoData[1][0][0].value.text =
-			allUsersStatsQueryRes?.data?.internal?.countUsers?.toLocaleString(
-				"fr-FR"
-			) ?? 0;
+			currentUser?.admin_role !== "guest"
+				? allUsersStatsQueryRes?.data?.internal?.countUsers?.toLocaleString(
+						"fr-FR"
+				  ) ?? 0
+				: "67 430";
 		infoData[1][1][0].value.text =
-			(allUsersStatsQueryRes?.data?.internal?.totalSolde?.toLocaleString(
-				"fr-FR"
-			) ?? 0) + "  XAF";
+			currentUser?.admin_role !== "guest"
+				? (allUsersStatsQueryRes?.data?.internal?.totalSolde?.toLocaleString(
+						"fr-FR"
+				  ) ?? 0) + "  XAF"
+				: "9 097 656,25  XAF";
 		infoData[2][0][0].value.text =
 			allUsersStatsQueryRes?.data?.internal?.countV1Users?.toLocaleString(
 				"fr-FR"
@@ -494,8 +501,10 @@ export default function Home() {
 					<div className="flex justify-center w-full py-10">
 						<div className={"loadingSpinner"}></div>
 					</div>
-				) : (
+				) : currentUser?.admin_role !== "guest" ? (
 					<InfoCardGrid infoData={infoData} />
+				) : (
+					<InfoCardGrid infoData={[infoData[0], infoData[1]]} />
 				)}
 
 				{/* <div className='mb-10 grid lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-1' style={{gap:'20px'}}>

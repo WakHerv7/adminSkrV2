@@ -231,14 +231,14 @@ const SideBar = (props: Props) => {
 			count: null,
 			icon: <UsersV2 />,
 		},
-		{
-			title: "Services de paiement",
-			slug: "payment_services",
-			canSee: hasPermission(user, "payment_services", "view"),
-			path: urlsV2.payment_services.root,
-			count: null,
-			icon: <FaHandHoldingUsd size={20} />,
-		},
+		// {
+		// 	title: "Services de paiement",
+		// 	slug: "payment_services",
+		// 	canSee: hasPermission(user, "payment_services", "view"),
+		// 	path: urlsV2.payment_services.root,
+		// 	count: null,
+		// 	icon: <FaHandHoldingUsd size={20} />,
+		// },
 		{
 			title: "Gains",
 			slug: "earnings",

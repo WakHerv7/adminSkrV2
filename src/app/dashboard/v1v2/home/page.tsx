@@ -49,7 +49,7 @@ import {
 import { selectSearchTerm, setSearchTerm } from "@/redux/slices/search";
 import urlsV2 from "@/config/urls_v2";
 import LabelWithBadge from "@/components/shared/LabelWithBadge";
-import { TransactionService } from "@/api/services/v2/transaction";
+import { TransactionService } from "@/api/services/v1v2/transaction";
 import { CustomerService } from "@/api/services/v2/customer";
 import StatsPerCategoryType from "./components/StatsPerCategoryType";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -117,8 +117,8 @@ const getTransactionTrends = async ({ queryKey }: any) => {
 	const [_key, period, startDate, limitDate] = queryKey;
 	let params: any = {};
 	if (period) params.period = period;
-	if (startDate) params.startDate = startDate;
-	if (limitDate) params.limitDate = limitDate;
+	// if (startDate) params.startDate = startDate;
+	// if (limitDate) params.limitDate = limitDate;
 	const response = await TransactionService.get_stats_periodic(params);
 	const responseJson = await response.json();
 	if (!response.ok) {
@@ -130,8 +130,8 @@ const getTransactionTrends = async ({ queryKey }: any) => {
 const getUsersPerCountry = async ({ queryKey }: any) => {
 	const [_key, startDate, limitDate] = queryKey;
 	let params: any = {};
-	if (startDate) params.startDate = startDate;
-	if (limitDate) params.limitDate = limitDate;
+	// if (startDate) params.startDate = startDate;
+	// if (limitDate) params.limitDate = limitDate;
 	const response = await CustomerService.get_stats_countries(params);
 	// const response = await TransactionService.get_stats_countries();
 	const responseJson = await response.json();

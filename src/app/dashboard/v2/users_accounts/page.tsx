@@ -193,16 +193,16 @@ const getAllCustomers = async ({ queryKey }: any) => {
 			if (value && value !== "all") params[key] = value;
 		});
 	}
-	console.log("getAllCustomers searchTerm : ", st);
-	console.log("getAllCustomers filterContent : ", filterContent);
-	console.log("getAllCustomers params : ", params);
+	// console.log("getAllCustomers searchTerm : ", st);
+	// console.log("getAllCustomers filterContent : ", filterContent);
+	// console.log("getAllCustomers params : ", params);
 
 	const response = await CustomerService.get_all_customers(params);
 	const responseJson = await response.json();
 	if (!response.ok) {
 		throw new Error(responseJson.message || "Failed to get users");
 	}
-	console.log("responseJson.data : ", responseJson.data);
+	// console.log("responseJson.data : ", responseJson.data);
 
 	return responseJson.data;
 };
@@ -238,8 +238,45 @@ const generateCustomersExcel = async (queryData: any) => {
 		const responseBody = await response.json();
 		throw new Error(responseBody.message);
 	}
-	const responseJson = await response.json();
-	return responseJson;
+
+	// For direct streaming download
+	const blob = await response.blob();
+
+	// Log all response headers for debugging
+	console.log("=== Response Headers ===");
+	response.headers.forEach((value, key) => {
+		console.log(`${key}: ${value}`);
+	});
+
+	// Try to extract filename from Content-Disposition header
+	let filename = "comptes_clients.xlsx"; // Fallback name
+	const contentDisposition = response.headers.get("Content-Disposition");
+
+	if (contentDisposition) {
+		console.log("contentDisposition found:", contentDisposition);
+		const match = contentDisposition.match(
+			/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/
+		);
+		if (match && match[1]) {
+			filename = match[1].trim().replace(/['"]/g, "");
+			console.log("Extracted filename:", filename);
+		}
+	} else {
+		console.log("No Content-Disposition header found");
+		// For file downloads via fetch, headers might not include Content-Disposition
+		// as browsers usually hide them. We need to set a better fallback or use a different approach
+	}
+
+	const url = window.URL.createObjectURL(blob);
+	const a = document.createElement("a");
+	a.href = url;
+	a.download = filename;
+	document.body.appendChild(a);
+	a.click();
+	window.URL.revokeObjectURL(url);
+	document.body.removeChild(a);
+
+	return { success: true };
 };
 
 export default function Home() {
@@ -268,8 +305,6 @@ export default function Home() {
 		onSuccess: (data) => {
 			console.log("onSuccess : ", data);
 			toast.success(`Fichier excel généré avec succes.`);
-			redirectRef.current.href = data?.data;
-			redirectRef.current.click();
 		},
 	});
 
@@ -279,7 +314,7 @@ export default function Home() {
 		onError: (err) => {
 			toast.error("Failed to get users stats.");
 		},
-		refetchInterval: 30000, // Fetches data every 30 seconds
+		refetchInterval: 180000, // Fetches data every 3 minutes
 	});
 	const allUsersQueryRes = useQuery({
 		queryKey: ["allCustomers", searchTerm, filterContent],
@@ -288,11 +323,11 @@ export default function Home() {
 			toast.error("Failed to get users.");
 		},
 		// enabled: false,
-		// refetchInterval: 50000, // Fetches data every 60 seconds
+		refetchInterval: 180000, // Fetches data every 3 minutes
 	});
 
-	console.log("allUsersQueryRes.data : ", allUsersQueryRes.data);
-	console.log("allUsersStatsQueryRes.data : ", allUsersStatsQueryRes.data);
+	// console.log("allUsersQueryRes.data : ", allUsersQueryRes.data);
+	// console.log("allUsersStatsQueryRes.data : ", allUsersStatsQueryRes.data);
 
 	let rearrangedTableData: any[] = [];
 
@@ -629,7 +664,6 @@ export default function Home() {
 						color="#18BC7A"
 					/>
 				</div>
-				<a ref={redirectRef} download hidden href="#"></a>
 			</section>
 		</Layout>
 	);

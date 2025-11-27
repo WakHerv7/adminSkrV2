@@ -36,6 +36,7 @@ import { FaFilterCircleDollar } from "react-icons/fa6";
 import { HiOutlineMenu } from "react-icons/hi";
 import { AiFillBank } from "react-icons/ai";
 import { BsBank2 } from "react-icons/bs";
+import URLV3Config from "@/config/urls_v2";
 
 interface ISideBarLinks {
 	title: string;
@@ -52,8 +53,10 @@ type Props = {
 const SideBar = (props: Props) => {
 	const { isExpanded, setIsExpanded, user } = props;
 	const pathname = usePathname();
+	console.log("user dans sidebar :: ", user);
 
 	const currentVersion = useSelector(selectCurrentVersion);
+	console.log("currentVersion :: ", currentVersion);
 
 	const [isOpen, setIsOpen] = useState(false);
 
@@ -249,6 +252,15 @@ const SideBar = (props: Props) => {
 		},
 	];
 
+	const sideBarLinkV3 = [
+		{
+			title: "Acceuil",
+			path: URLV3Config.dashboardHome.root,
+			icon: <Accueil />,
+		},
+		{ title: "KYC", path: URLV3Config.kyc.root, icon: <Kyc /> },
+	];
+
 	return (
 		<div className="relative">
 			<div
@@ -329,7 +341,7 @@ const SideBar = (props: Props) => {
 													link.path.split("/")[3];
 											const iconColor = isActive
 												? "fill-[#fff]"
-												: "fill-[#444]"; // Adjust the color based on the condition
+												: "fill-[#444]";
 											if (link.canSee) {
 												return (
 													<li
@@ -344,17 +356,14 @@ const SideBar = (props: Props) => {
 														<Link
 															href={link.path}
 															className={`relative pl-[22px] pr-3 py-3 flex items-center justify-between gap-[15px] group 
-                      text-gray-700 group hover:bg-[#18BC7A] 
-                    hover:pl-7 transition-all ${
-						isActive ? "bg-[#18BC7A] pl-7" : ""
-					}
-                      text-sm group-hover:text-gray-100 transition-all ${
-							isActive ? "text-white" : ""
-						}`}
+									text-gray-700 group hover:bg-[#18BC7A] 
+									hover:pl-7 transition-all ${isActive ? "bg-[#18BC7A] pl-7" : ""}
+									text-sm group-hover:text-gray-100 transition-all ${
+										isActive ? "text-white" : ""
+									}`}
 														>
 															<div className="flex items-center gap-[15px]">
 																<div
-																	className=""
 																	style={{
 																		transform:
 																			!isExpanded
@@ -362,7 +371,6 @@ const SideBar = (props: Props) => {
 																				: "",
 																	}}
 																>
-																	{/* {link.icon} */}
 																	{React.cloneElement(
 																		link.icon,
 																		{
@@ -371,18 +379,9 @@ const SideBar = (props: Props) => {
 																		}
 																	)}
 																</div>
-																{/* <div className={`group-hover:text-gray-100`} style={{display: !isExpanded ? 'none':''}}>
-                          {link.title}
-                        </div> */}
 																{isExpanded ? (
 																	<div
 																		className={`group-hover:text-gray-100`}
-																		style={{
-																			display:
-																				!isExpanded
-																					? "none"
-																					: "",
-																		}}
 																	>
 																		{
 																			link.title
@@ -390,7 +389,7 @@ const SideBar = (props: Props) => {
 																	</div>
 																) : (
 																	<div
-																		className={`absolute top-0 left-[80px]  shadow-lg rounded-md bg-white px-3 py-3 hidden group-hover:block`}
+																		className={`absolute top-0 left-[80px] shadow-lg rounded-md bg-white px-3 py-3 hidden group-hover:block`}
 																		style={{
 																			zIndex: "1000",
 																			color: "#444",
@@ -404,19 +403,12 @@ const SideBar = (props: Props) => {
 																	</div>
 																)}
 															</div>
-															{link.count ? (
-																<div className="">
-																	<div
-																		className="absolute w-[20px] h-[20px] top-[10px] right-[10px] rounded-full bg-[#444] group-hover:bg-[#fff] text-center flex justify-center items-center 
-                        text-xs font-bold text-white group-hover:text-[#18BC7A]"
-																	>
-																		<span>
-																			14
-																		</span>
-																	</div>
+															{link.count && (
+																<div className="absolute w-[20px] h-[20px] top-[10px] right-[10px] rounded-full bg-[#444] group-hover:bg-[#fff] text-center flex justify-center items-center text-xs font-bold text-white group-hover:text-[#18BC7A]">
+																	<span>
+																		14
+																	</span>
 																</div>
-															) : (
-																<></>
 															)}
 														</Link>
 													</li>
@@ -424,6 +416,45 @@ const SideBar = (props: Props) => {
 											}
 										})}
 									</>
+								) : user?.roles?.includes("ADMIN") ? (
+									//  version 3 pour admin
+									sideBarLinkV3.map((link) => {
+										const isActive = pathname?.startsWith(
+											link.path
+										);
+										const iconColor = isActive
+											? "fill-[#fff]"
+											: "fill-[#444]";
+										return (
+											<li
+												key={link.title}
+												className="relative"
+											>
+												<Link
+													href={link.path}
+													className={`relative pl-[22px] pr-3 py-3 flex items-center justify-between gap-[15px] group 
+							text-gray-700 hover:bg-[#18BC7A] hover:pl-7 transition-all ${
+								isActive ? "bg-[#18BC7A] pl-7 text-white" : ""
+							} text-sm`}
+												>
+													<div className="flex items-center gap-[15px]">
+														{React.cloneElement(
+															link.icon,
+															{
+																className:
+																	iconColor,
+															}
+														)}
+														{isExpanded && (
+															<div>
+																{link.title}
+															</div>
+														)}
+													</div>
+												</Link>
+											</li>
+										);
+									})
 								) : (
 									<>
 										{(currentVersion == 2
@@ -437,7 +468,7 @@ const SideBar = (props: Props) => {
 													link.path.split("/")[3];
 											const iconColor = isActive
 												? "fill-[#fff]"
-												: "fill-[#444]"; // Adjust the color based on the condition
+												: "fill-[#444]";
 											if (link.canSee) {
 												return (
 													<li
@@ -452,17 +483,14 @@ const SideBar = (props: Props) => {
 														<Link
 															href={link.path}
 															className={`relative pl-[22px] pr-3 py-3 flex items-center justify-between gap-[15px] group 
-                      text-gray-700 group hover:bg-[#18BC7A] 
-                    hover:pl-7 transition-all ${
-						isActive ? "bg-[#18BC7A] pl-7" : ""
-					}
-                      text-sm group-hover:text-gray-100 transition-all ${
-							isActive ? "text-white" : ""
-						}`}
+									text-gray-700 group hover:bg-[#18BC7A] 
+									hover:pl-7 transition-all ${isActive ? "bg-[#18BC7A] pl-7" : ""}
+									text-sm group-hover:text-gray-100 transition-all ${
+										isActive ? "text-white" : ""
+									}`}
 														>
 															<div className="flex items-center gap-[15px]">
 																<div
-																	className=""
 																	style={{
 																		transform:
 																			!isExpanded
@@ -470,7 +498,6 @@ const SideBar = (props: Props) => {
 																				: "",
 																	}}
 																>
-																	{/* {link.icon} */}
 																	{React.cloneElement(
 																		link.icon,
 																		{
@@ -479,18 +506,9 @@ const SideBar = (props: Props) => {
 																		}
 																	)}
 																</div>
-																{/* <div className={`group-hover:text-gray-100`} style={{display: !isExpanded ? 'none':''}}>
-                          {link.title}
-                        </div> */}
 																{isExpanded ? (
 																	<div
 																		className={`group-hover:text-gray-100`}
-																		style={{
-																			display:
-																				!isExpanded
-																					? "none"
-																					: "",
-																		}}
 																	>
 																		{
 																			link.title
@@ -498,7 +516,7 @@ const SideBar = (props: Props) => {
 																	</div>
 																) : (
 																	<div
-																		className={`absolute top-0 left-[80px]  shadow-lg rounded-md bg-white px-3 py-3 hidden group-hover:block`}
+																		className={`absolute top-0 left-[80px] shadow-lg rounded-md bg-white px-3 py-3 hidden group-hover:block`}
 																		style={{
 																			zIndex: "1000",
 																			color: "#444",
@@ -512,19 +530,12 @@ const SideBar = (props: Props) => {
 																	</div>
 																)}
 															</div>
-															{link.count ? (
-																<div className="">
-																	<div
-																		className="absolute w-[20px] h-[20px] top-[10px] right-[10px] rounded-full bg-[#444] group-hover:bg-[#fff] text-center flex justify-center items-center 
-                        text-xs font-bold text-white group-hover:text-[#18BC7A]"
-																	>
-																		<span>
-																			14
-																		</span>
-																	</div>
+															{link.count && (
+																<div className="absolute w-[20px] h-[20px] top-[10px] right-[10px] rounded-full bg-[#444] group-hover:bg-[#fff] text-center flex justify-center items-center text-xs font-bold text-white group-hover:text-[#18BC7A]">
+																	<span>
+																		14
+																	</span>
 																</div>
-															) : (
-																<></>
 															)}
 														</Link>
 													</li>

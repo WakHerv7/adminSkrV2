@@ -1,0 +1,185 @@
+import { AuthService } from "@/api/services/auth";
+import CButton from "@/components/shared/CButton";
+import URLConfigV3 from "@/config/urls_v3";
+import { setCredentials } from "@/redux/slices/auth";
+import { loginSchema } from "@/validation/FormValidation";
+import { zodResolver } from "@hookform/resolvers/zod";
+import classNames from "classnames";
+import { useRouter } from "next/navigation";
+import React, { useState } from "react";
+import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
+import { FaChevronRight, FaEye, FaEyeSlash } from "react-icons/fa";
+import { useMutation } from "react-query";
+import { useDispatch } from "react-redux";
+import { HashLoader } from "react-spinners";
+import { z } from "zod";
+import {
+	Form,
+	FormControl,
+	FormField,
+	FormItem,
+	FormLabel,
+	FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+
+const handleLogin = async (data: z.infer<typeof loginSchema>) => {
+	const response = await AuthService.loginV3(data);
+	if (!response.ok) {
+		const responseBody = await response.json();
+		// console.error(response);
+		if (response.status === 403) {
+			throw new Error(responseBody.message);
+		} else {
+			throw new Error(
+				"Echec authentification. Veuillez indiquer votre email et votre mot de passe !"
+			);
+		}
+	}
+	const responseJson = await response.json();
+	return responseJson;
+};
+
+const LoginV3Form = () => {
+	const [passwordVisible, setPasswordVisible] = useState<boolean>();
+	const previousUrl = window.sessionStorage.getItem("previousUrl");
+	const router = useRouter();
+	const dispatch = useDispatch();
+	const form = useForm<z.infer<typeof loginSchema>>({
+		resolver: zodResolver(loginSchema),
+		defaultValues: {
+			email: "",
+			password: "",
+		},
+	});
+
+	const mutation = useMutation({
+		mutationFn: handleLogin,
+		onError: (err: any) => {
+			console.error("Login onError : ", err.message);
+			toast.error(err.message);
+		},
+		onSuccess: (data) => {
+			console.log("Login onSuccess : ", data);
+			const token = data.data.accessToken;
+			const getSekureApiToken = data.getSekureApiToken;
+			const user = data.data.admin;
+			localStorage.setItem("sktoken", token);
+			toast.success("Login successful! Redirecting...");
+			dispatch(setCredentials({ token, getSekureApiToken, user }));
+			console.log("token", token);
+			console.log("user", user);
+			// router.push("/verify-token");
+			router.push(previousUrl || URLConfigV3.dashboardHome.root);
+		},
+	});
+
+	const onSubmit = (data: any) => {
+		mutation.mutate(data);
+	};
+	const onError = (err: any) => {
+		console.error("any", err);
+	};
+	return (
+		<Form {...form}>
+			<form onSubmit={form.handleSubmit(onSubmit, onError)}>
+				<div className="space-y-[20px]">
+					<FormField
+						control={form.control}
+						name="email"
+						render={({ field }) => (
+							<FormItem>
+								<FormLabel className="text-gray-900 text-sm tracking-tight">
+									Adresse email
+								</FormLabel>
+								<FormControl>
+									<Input
+										className="px-6 w-[272px] bg-[#F4EFE3]"
+										{...field}
+									/>
+								</FormControl>
+								<FormMessage className="text-red-400" />
+							</FormItem>
+						)}
+					/>
+					<FormField
+						control={form.control}
+						name="password"
+						render={({ field }) => (
+							<FormItem>
+								<FormLabel className="text-gray-900 text-sm font-[500] tracking-tight">
+									Mot de passe
+								</FormLabel>
+								<FormControl className="relative">
+									<div>
+										<Input
+											type={`${
+												passwordVisible
+													? "text"
+													: "password"
+											}`}
+											className="px-6 w-full bg-[#F4EFE3]"
+											{...field}
+										/>
+										<div className="absolute text-gray-500 cursor-pointer right-[10px] top-[12px]">
+											{passwordVisible ? (
+												<FaEyeSlash
+													onClick={() =>
+														setPasswordVisible(
+															false
+														)
+													}
+												/>
+											) : (
+												<FaEye
+													onClick={() =>
+														setPasswordVisible(true)
+													}
+												/>
+											)}
+										</div>
+									</div>
+								</FormControl>
+								<FormMessage className="text-red-400" />
+							</FormItem>
+						)}
+					/>
+				</div>
+
+				{/* <div className="text-right">
+          <a href="#" className="inline-block w-[272px] text-sm font-[400]">Mot de passe oublié ?</a>
+        </div> */}
+				{/* <Link href="#" className="text-gray-800 font-semibold text-righttext-sm">Forgotten Password?</Link> */}
+				<div className={`mt-[10vh]`}>
+					<CButton
+						text={"Connexion"}
+						btnStyle={"green"}
+						type={"submit"}
+						// href={`/`}
+						iconLeft={<FaChevronRight />}
+						width={"100%"}
+						height={"35px"}
+					/>
+				</div>
+				<div
+					className={classNames(
+						"transition-all invisible z-20 bg-blue-900/30 opacity-0 absolute top-0 left-0 h-full w-full flex items-center justify-center",
+						{
+							"!opacity-100 !visible z-20": mutation.isLoading,
+						}
+					)}
+				>
+					<HashLoader
+						className="shrink-0"
+						size={50}
+						color="#18BC7A"
+					/>
+				</div>
+				{/* <Button type="submit" className="w-[272px] mt-[10vh] bg-[#18BC7A] hover:bg-[#FFDB5A] hover:text-[#18BC7A] rounded-full">Connexion</Button> */}
+			</form>
+		</Form>
+	);
+};
+
+export default LoginV3Form;

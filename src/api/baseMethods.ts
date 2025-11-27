@@ -1,204 +1,244 @@
-
 class BaseMethods {
-     //////////////// Internal usage //////////////////////
-     static getHeaders(isFile: boolean = false): Headers {
-        const headers = new Headers();
-        if (!isFile) {
-            headers.append('Content-Type', 'application/json');
-        }
-        headers.append('Accept', 'application/json');
-        headers.append('Access-Control-Allow-Origin', '*');
-        headers.append('Origin', '*');
-        headers.append('Credentials', 'same-origin');
-        return headers;
-    }
+	//////////////// Internal usage //////////////////////
+	static getHeaders(isFile: boolean = false): Headers {
+		const headers = new Headers();
+		if (!isFile) {
+			headers.append("Content-Type", "application/json");
+		}
+		headers.append("Accept", "application/json");
 
-    static getHeadersAuth(isFile: boolean = false, inputToken?:string): Headers {
-        const headers = BaseMethods.getHeaders(isFile);
-        const token = inputToken ? inputToken :
-            localStorage.getItem('sktoken')? 
-                localStorage.getItem('sktoken') || ''
-                : '';
-        // TODO: redirect if not logged in
-        // if (token === '') {
-        //     window.location.pathname = `/auth/login/?redirect=${window.location.pathname}`;
-        // }
-        headers.append('Authorization', `Bearer ${token}`);
-        return headers;
-    }
+		// ❌ Ces headers ne doivent PAS être ajoutés côté client
+		// headers.append("Access-Control-Allow-Origin", "*");
+		// headers.append("Origin", "*");
+		// headers.append("Credentials", "same-origin");
 
-    ///////////////// External usage ////////////////////
-    static postRequest = async (
-        url: string, 
-        body: any, 
-        required_auth: boolean, 
-        queryParams?: Record<string, string>,
-        inputToken?:string
-        ): Promise<Response> => {
-        // console.log({ url });
-        // console.log({ body });
-        // console.log({ required_auth });
-        // console.log({ queryParams });
-        let finalUrl = url;
-        if (queryParams && Object.keys(queryParams).length > 0) {
-            const params = new URLSearchParams(queryParams);
-            finalUrl += '?' + params.toString();
-        }
+		return headers;
+	}
 
-        let headers: HeadersInit;
-        if (required_auth) {
-            headers = BaseMethods.getHeadersAuth(false, inputToken);
-        } else {
-            headers = BaseMethods.getHeaders();
-        }
+	static getHeadersAuth(
+		isFile: boolean = false,
+		inputToken?: string
+	): Headers {
+		const headers = BaseMethods.getHeaders(isFile);
+		const token = inputToken
+			? inputToken
+			: localStorage.getItem("sktoken")
+			? localStorage.getItem("sktoken") || ""
+			: "";
+		// TODO: redirect if not logged in
+		// if (token === '') {
+		//     window.location.pathname = `/auth/login/?redirect=${window.location.pathname}`;
+		// }
+		headers.append("Authorization", `Bearer ${token}`);
+		return headers;
+	}
 
-        const requestOptions: RequestInit = {
-            method: 'POST',
-            headers: headers,
-            mode: 'cors',
-            cache: 'default',
-            body: JSON.stringify(body),
-        };
+	///////////////// External usage ////////////////////
+	static postRequest = async (
+		url: string,
+		body: any,
+		required_auth: boolean,
+		queryParams?: Record<string, string>,
+		inputToken?: string
+	): Promise<Response> => {
+		console.log({ url });
+		console.log({ body });
+		console.log({ required_auth });
+		console.log({ queryParams });
 
-        return fetch(finalUrl, requestOptions);
-    };
+		let finalUrl = url;
+		if (queryParams && Object.keys(queryParams).length > 0) {
+			const params = new URLSearchParams(queryParams);
+			finalUrl += "?" + params.toString();
+		}
 
-    static postFileRequest = async (url: string, body: any, required_auth: boolean, queryParams?: Record<string, string>): Promise<Response> => {
-        let finalUrl = url;
-        if (queryParams && Object.keys(queryParams).length > 0) {
-            const params = new URLSearchParams(queryParams);
-            finalUrl += '?' + params.toString();
-        }
-        const head = required_auth
-            ? BaseMethods.getHeadersAuth(true)
-            : BaseMethods.getHeaders(true);
+		let headers: HeadersInit;
+		if (required_auth) {
+			headers = BaseMethods.getHeadersAuth(false, inputToken);
+		} else {
+			headers = BaseMethods.getHeaders();
+		}
 
-        const headers: RequestInit = {
-            method: 'POST',
-            headers: head,
-            mode: 'cors',
-            cache: 'default',
-            body: body,
-        };
-        const response = await fetch(finalUrl, headers)
-            .then((response) => {
-                return response;
-            })
-            .catch((err) => {
-                return err;
-            });
-        return response;
-    };
+		const requestOptions: RequestInit = {
+			method: "POST",
+			headers: headers,
+			mode: "cors",
+			// credentials: "include",
+			cache: "default",
+			body: JSON.stringify(body),
+		};
 
-    static getRequest = async(url: string, required_auth: boolean, queryParams?: Record<string, string>, inputToken?:string) => {
-        let finalUrl = url;
+		return fetch(finalUrl, requestOptions);
+	};
 
-        // Append query parameters if provided
-        if (queryParams && Object.keys(queryParams).length > 0) {
-            const params = new URLSearchParams(queryParams);
-            finalUrl += '?' + params.toString();
-        }
-        // console.log(`finalUrl : ${finalUrl}`, queryParams);
-        
-        const head = required_auth
-            ? BaseMethods.getHeadersAuth(false, inputToken)
-            : BaseMethods.getHeaders();
+	static postFileRequest = async (
+		url: string,
+		body: any,
+		required_auth: boolean,
+		queryParams?: Record<string, string>
+	): Promise<Response> => {
+		let finalUrl = url;
+		if (queryParams && Object.keys(queryParams).length > 0) {
+			const params = new URLSearchParams(queryParams);
+			finalUrl += "?" + params.toString();
+		}
+		const head = required_auth
+			? BaseMethods.getHeadersAuth(true)
+			: BaseMethods.getHeaders(true);
 
-        const headers: RequestInit = {
-            method: 'GET',
-            headers: head,
-            mode: 'cors',
-            cache: 'default',
-        };
-        return fetch(finalUrl, headers);
-    };
+		const headers: RequestInit = {
+			method: "POST",
+			headers: head,
+			mode: "cors",
+			cache: "default",
+			body: body,
+		};
+		const response = await fetch(finalUrl, headers)
+			.then((response) => {
+				return response;
+			})
+			.catch((err) => {
+				return err;
+			});
+		return response;
+	};
 
-    static putFileRequest = async (url: string, body: any, required_auth: boolean, queryParams?: Record<string, string>): Promise<Response> => {
-        let finalUrl = url;
-        if (queryParams && Object.keys(queryParams).length > 0) {
-            const params = new URLSearchParams(queryParams);
-            finalUrl += '?' + params.toString();
-        }
+	static getRequest = async (
+		url: string,
+		required_auth: boolean,
+		queryParams?: Record<string, string>,
+		inputToken?: string
+	) => {
+		let finalUrl = url;
 
-        const head = required_auth
-            ? BaseMethods.getHeadersAuth(true)
-            : BaseMethods.getHeaders(true);
+		// Append query parameters if provided
+		if (queryParams && Object.keys(queryParams).length > 0) {
+			const params = new URLSearchParams(queryParams);
+			finalUrl += "?" + params.toString();
+		}
+		// console.log(`finalUrl : ${finalUrl}`, queryParams);
 
-        const headers: RequestInit = {
-            method: 'PUT',
-            headers: head,
-            mode: 'cors',
-            cache: 'default',
-            body: body,
-        };
-        const response = await fetch(finalUrl, headers)
-            .then((response) => {
-                return response;
-            })
-            .catch((err) => {
-                return err;
-            });
-        return response;
-    };
+		const head = required_auth
+			? BaseMethods.getHeadersAuth(false, inputToken)
+			: BaseMethods.getHeaders();
 
-    static putRequest = async (url: string, body: any, required_auth: boolean, queryParams?: Record<string, string>): Promise<Response> => {
-        let finalUrl = url;
-        if (queryParams && Object.keys(queryParams).length > 0) {
-            const params = new URLSearchParams(queryParams);
-            finalUrl += '?' + params.toString();
-        }
+		const headers: RequestInit = {
+			method: "GET",
+			headers: head,
+			mode: "cors",
+			cache: "default",
+			// credentials: "include",
+		};
+		return fetch(finalUrl, headers);
+	};
 
-        const head = required_auth
-            ? BaseMethods.getHeadersAuth()
-            : BaseMethods.getHeaders();
+	static putFileRequest = async (
+		url: string,
+		body: any,
+		required_auth: boolean,
+		queryParams?: Record<string, string>
+	): Promise<Response> => {
+		let finalUrl = url;
+		if (queryParams && Object.keys(queryParams).length > 0) {
+			const params = new URLSearchParams(queryParams);
+			finalUrl += "?" + params.toString();
+		}
 
-        const headers: RequestInit = {
-            method: 'PUT',
-            headers: head,
-            mode: 'cors',
-            cache: 'default',
-            body: JSON.stringify(body),
-        };
-        return fetch(finalUrl, headers);
-    };
+		const head = required_auth
+			? BaseMethods.getHeadersAuth(true)
+			: BaseMethods.getHeaders(true);
 
-    static patchRequest = async (url: string, body: any, required_auth: boolean, queryParams?: Record<string, string>): Promise<Response> => {
-        let finalUrl = url;
-        if (queryParams && Object.keys(queryParams).length > 0) {
-            const params = new URLSearchParams(queryParams);
-            finalUrl += '?' + params.toString();
-        }
+		const headers: RequestInit = {
+			method: "PUT",
+			headers: head,
+			mode: "cors",
+			cache: "default",
+			body: body,
+			// credentials: "include",
+		};
+		const response = await fetch(finalUrl, headers)
+			.then((response) => {
+				return response;
+			})
+			.catch((err) => {
+				return err;
+			});
+		return response;
+	};
 
-        const head = required_auth
-            ? BaseMethods.getHeadersAuth()
-            : BaseMethods.getHeaders();
+	static putRequest = async (
+		url: string,
+		body: any,
+		required_auth: boolean,
+		queryParams?: Record<string, string>
+	): Promise<Response> => {
+		let finalUrl = url;
+		if (queryParams && Object.keys(queryParams).length > 0) {
+			const params = new URLSearchParams(queryParams);
+			finalUrl += "?" + params.toString();
+		}
 
-        const headers: RequestInit = {
-            method: 'PATCH',
-            headers: head,
-            mode: 'cors',
-            cache: 'default',
-            body: JSON.stringify(body),
-        };
-        return fetch(finalUrl, headers);
-    };
+		const head = required_auth
+			? BaseMethods.getHeadersAuth()
+			: BaseMethods.getHeaders();
 
-    static deleteRequest = async (url: string, body: any, required_auth: boolean): Promise<Response> => {
-        let head = required_auth
-            ? BaseMethods.getHeadersAuth()
-            : BaseMethods.getHeaders();
+		const headers: RequestInit = {
+			method: "PUT",
+			headers: head,
+			mode: "cors",
+			cache: "default",
+			body: JSON.stringify(body),
+			// credentials: "include",
+		};
+		return fetch(finalUrl, headers);
+	};
 
-        let headers: RequestInit = {
-            method: 'DELETE',
-            headers: head,
-            mode: 'cors',
-            cache: 'default',
-            body: JSON.stringify(body),
-        };
-        return fetch(url, headers);
-    };
+	static patchRequest = async (
+		url: string,
+		body: any,
+		required_auth: boolean,
+		queryParams?: Record<string, string>
+	): Promise<Response> => {
+		let finalUrl = url;
+		if (queryParams && Object.keys(queryParams).length > 0) {
+			const params = new URLSearchParams(queryParams);
+			finalUrl += "?" + params.toString();
+		}
+
+		const head = required_auth
+			? BaseMethods.getHeadersAuth()
+			: BaseMethods.getHeaders();
+
+		const headers: RequestInit = {
+			method: "PATCH",
+			headers: head,
+			mode: "cors",
+			cache: "default",
+			body: JSON.stringify(body),
+			credentials: "include",
+		};
+		return fetch(finalUrl, headers);
+	};
+
+	static deleteRequest = async (
+		url: string,
+		body: any,
+		required_auth: boolean
+	): Promise<Response> => {
+		let head = required_auth
+			? BaseMethods.getHeadersAuth()
+			: BaseMethods.getHeaders();
+
+		let headers: RequestInit = {
+			method: "DELETE",
+			headers: head,
+			mode: "cors",
+			cache: "default",
+			body: JSON.stringify(body),
+			credentials: "include",
+		};
+		return fetch(url, headers);
+	};
 }
 
 export default BaseMethods;
-
-

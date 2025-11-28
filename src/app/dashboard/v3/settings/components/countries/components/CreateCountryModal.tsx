@@ -60,6 +60,7 @@ const CreateCountryModal: React.FC<CreateCountryModalProps> = ({
 			phone_length: data.phone_length,
 		};
 		onSubmit(submitData);
+		form.reset();
 	};
 
 	const handleClose = () => {

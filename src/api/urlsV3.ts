@@ -32,3 +32,5 @@ export const kycUrlsV3 = {
 };
 
 export const BASE_URL_KYC_RAISON_REJECT = `${BASE_URL_V3}/kyc-management/kyc-raison-rejects`;
+
+export const COUNTRIES_URL_V3 = `${BASE_URL_V3}/cms/countries`;

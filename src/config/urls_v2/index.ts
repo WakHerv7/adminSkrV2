@@ -4,9 +4,9 @@ export type URLType = { [key: string]: string };
 
 // ALL APP ROUTES
 export const rootUrl = "/";
-export const dashboardRootUrlV2 = "/dashboard/v3";
+export const dashboardRootUrlV2 = "/dashboard/v2";
 
-const URLV3Config = {
+const urlsV2 = {
 	root: rootUrl,
 	notFound: `/not-found`,
 	dashboard: dashboardRootUrlV2,
@@ -77,7 +77,7 @@ const URLV3Config = {
 	// },
 };
 
-export default URLV3Config;
+export default urlsV2;
 
 function dashboardHome(prefix: string = "") {
 	const PATH = `${dashboardRootUrlV2}/home`;

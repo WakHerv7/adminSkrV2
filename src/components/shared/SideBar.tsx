@@ -37,6 +37,7 @@ import { HiOutlineMenu } from "react-icons/hi";
 import { AiFillBank } from "react-icons/ai";
 import { BsBank2 } from "react-icons/bs";
 import URLV3Config from "@/config/urls_v2";
+import URLConfigV3 from "@/config/urls_v3";
 
 interface ISideBarLinks {
 	title: string;
@@ -255,10 +256,15 @@ const SideBar = (props: Props) => {
 	const sideBarLinkV3 = [
 		{
 			title: "Acceuil",
-			path: URLV3Config.dashboardHome.root,
+			path: URLConfigV3.dashboardHome.root,
 			icon: <Accueil />,
 		},
-		{ title: "KYC", path: URLV3Config.kyc.root, icon: <Kyc /> },
+		{ title: "KYC", path: URLConfigV3.kyc.root, icon: <Kyc /> },
+		{
+			title: "Settings",
+			path: URLConfigV3.settings.root,
+			icon: <Parameters />,
+		},
 	];
 
 	return (

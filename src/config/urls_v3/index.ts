@@ -21,6 +21,9 @@ const URLConfigV3 = {
 	usersAccounts: {
 		...usersAccounts(),
 	},
+	settings: {
+		root: `${dashboardRootUrlV3}/settings`,
+	},
 };
 
 export default URLConfigV3;

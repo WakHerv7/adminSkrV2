@@ -43,24 +43,6 @@ const Kyc = () => {
 	});
 	dispatch(setKYCPending(pendingKyc.data?.data));
 
-	// const completedKyc = useQuery({
-	// 	queryKey: ["completedKyc", "COMPLETED"],
-	// 	queryFn: handleGetUsers,
-	// 	onError: (err: any) => {
-	// 		console.error("completed Kyc onError", err.message);
-	// 	},
-	// });
-	// dispatch(setKYCAccepted(completedKyc.data?.data));
-
-	// const rejectedKyc = useQuery({
-	// 	queryKey: ["rejectedKyc", "REJECTED"],
-	// 	queryFn: handleGetUsers,
-	// 	onError: (err: any) => {
-	// 		console.error("");
-	// 	},
-	// });
-	// dispatch(setKYCDeclined(rejectedKyc.data?.data));
-
 	const allKyc = useQuery({
 		queryKey: ["allKYC"],
 		queryFn: handleGetUsers,

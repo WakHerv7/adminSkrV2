@@ -1,1 +1,1 @@
-export {KYCRejected} from './KYCRejected';
+// export {KYCRejected} from './KYCRejected';

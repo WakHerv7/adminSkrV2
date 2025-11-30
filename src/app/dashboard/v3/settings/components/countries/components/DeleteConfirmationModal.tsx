@@ -48,7 +48,7 @@ const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = ({
 
 				<p className="text-sm text-gray-500 mb-6">
 					Êtes-vous sûr de vouloir supprimer le pays{" "}
-					<strong>"{countryName}"</strong> ? Cette action est
+					<strong>{`"${countryName}"`}</strong> ? Cette action est
 					irréversible.
 				</p>
 

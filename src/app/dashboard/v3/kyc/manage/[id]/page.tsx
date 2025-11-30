@@ -416,7 +416,7 @@ const ManageKyc = () => {
 							</div>
 							<div>
 								<p className="text-sm text-gray-500 mb-1">
-									Date d'émission
+									{`Date d'émission`}
 								</p>
 								<p className="font-medium text-gray-900">
 									{kycData.documentIssueDate
@@ -428,7 +428,7 @@ const ManageKyc = () => {
 							</div>
 							<div>
 								<p className="text-sm text-gray-500 mb-1">
-									Date d'expiration
+									{`Date d'expiration`}
 								</p>
 								<p className="font-medium text-gray-900">
 									{kycData.documentDueDate
@@ -440,7 +440,7 @@ const ManageKyc = () => {
 							</div>
 							<div>
 								<p className="text-sm text-gray-500 mb-1">
-									Pays d'émission
+									{`Pays d'émission`}
 								</p>
 								<p className="font-medium text-gray-900">
 									{kycData.documentIssuingCountry ||

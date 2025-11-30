@@ -1,5 +1,6 @@
 import BaseMethods from "../baseMethods";
 import { authUrls, userUrls } from "../urls";
+import { authUrlsV3 } from "../urlsV3";
 
 export class AuthService {
 	static login = (info: any) =>
@@ -14,4 +15,6 @@ export class AuthService {
 	//     BaseMethods.postRequest(authUrls.REGISTER_USER, info, false);
 	// static current_user = () =>
 	//     BaseMethods.getRequest(userUrls.CURRENT_USER, true);
+	static loginV3 = (info: any) =>
+		BaseMethods.postRequest(authUrlsV3.LOGIN_USER, info, false);
 }

@@ -4,12 +4,14 @@ import { isObject } from "@/utils/utils";
 
 export class KYCServiceV3 {
 	static getkycs = (params: any) => {
+		console.log("params dans le service", params);
 		let query_params: any = {};
 		if (isObject(params)) {
 			Object.entries(params).map(([key, value]: any[]) => {
 				if (value) query_params[key] = value;
 			});
 		}
+		console.log("query params", query_params);
 
 		return BaseMethods.getRequest(kycUrlsV3.GET_KYCS, true, query_params);
 	};

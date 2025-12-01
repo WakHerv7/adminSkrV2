@@ -1,5 +1,4 @@
 import { KYCServiceV3 } from "@/api/services/v3/kyc";
-import { UserManagementServiceV3 } from "@/api/services/v3/userManagement";
 import CButton from "@/components/shared/CButton";
 import CustomTable from "@/components/shared/CustomTable";
 import { FourDots } from "@/components/shared/icons";
@@ -25,10 +24,9 @@ const handleGetKycs = async ({ queryKey }: any) => {
 
 	return responseJson;
 };
-
-const DeclinedKYC = () => {
-	const declinedKycQuery = useQuery({
-		queryKey: ["declined-kyc", "Declined"],
+const ApprovedKyc = () => {
+	const approvedKycQuery = useQuery({
+		queryKey: ["approved-kyc", "Approved"],
 		queryFn: handleGetKycs,
 		onError: (err: any) => {
 			toast.error(err.message);
@@ -38,7 +36,7 @@ const DeclinedKYC = () => {
 	// --------------------------------
 	//  Remplissage tableau
 	// --------------------------------
-	const rearrangedTableData = declinedKycQuery.data?.data?.map(
+	const rearrangedTableData = approvedKycQuery.data?.data?.map(
 		(item: any, index: number) => {
 			return {
 				serial: index + 1,
@@ -76,6 +74,7 @@ const DeclinedKYC = () => {
 			};
 		}
 	);
+
 	return (
 		<section>
 			<CustomTable
@@ -84,11 +83,13 @@ const DeclinedKYC = () => {
 				// filter
 				threeButtons
 				isLoading={
-					declinedKycQuery.isLoading && declinedKycQuery.isFetching
+					approvedKycQuery.isLoading && approvedKycQuery.isFetching
 				}
+				// search={search}
+				// setSearch={setSearch}
 			/>
 		</section>
 	);
 };
 
-export default DeclinedKYC;
+export default ApprovedKyc;

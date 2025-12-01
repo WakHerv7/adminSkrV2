@@ -547,13 +547,13 @@ const ManageKyc = () => {
 				</div>
 
 				{/* Section Actions */}
-				<div className="lg:col-span-1">
-					<div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 sticky top-6">
-						<h3 className="text-lg font-semibold text-gray-900 mb-4">
-							Actions
-						</h3>
-						<div className="space-y-3">
-							{kycData.status !== "Pending" && (
+				{kycData.status !== "Approved" && (
+					<div className="lg:col-span-1">
+						<div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 sticky top-6">
+							<h3 className="text-lg font-semibold text-gray-900 mb-4">
+								Actions
+							</h3>
+							<div className="space-y-3">
 								<>
 									<button
 										onClick={() => handleAction("approve")}
@@ -576,32 +576,37 @@ const ManageKyc = () => {
 										<ChevronRight className="w-5 h-5" />
 									</button>
 								</>
-							)}
-						</div>
+							</div>
 
-						{kycData.raisonsRejectCodes &&
-							kycData.raisonsRejectCodes.length > 0 && (
-								<div className="mt-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-									<p className="text-sm font-medium text-red-800 mb-2">
-										Raisons du rejet:
-									</p>
-									<ul className="text-sm text-red-700 space-y-1">
-										{kycData.raisonsRejectCodes.map(
-											(reason: string, index: number) => (
-												<li key={index}>• {reason}</li>
-											)
-										)}
-									</ul>
-								</div>
-							)}
+							{kycData.raisonsRejectCodes &&
+								kycData.raisonsRejectCodes.length > 0 && (
+									<div className="mt-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+										<p className="text-sm font-medium text-red-800 mb-2">
+											Raisons du rejet:
+										</p>
+										<ul className="text-sm text-red-700 space-y-1">
+											{kycData.raisonsRejectCodes.map(
+												(
+													reason: string,
+													index: number
+												) => (
+													<li key={index}>
+														• {reason}
+													</li>
+												)
+											)}
+										</ul>
+									</div>
+								)}
+						</div>
 					</div>
-				</div>
+				)}
 			</div>
 
 			{/* Modal pour agrandir les images */}
 			{selectedImage && (
 				<div
-					className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4"
+					className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-[1000] p-4"
 					onClick={() => setSelectedImage(null)}
 				>
 					<div className="relative max-w-4xl max-h-full">

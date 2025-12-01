@@ -11,45 +11,47 @@ import { setKYCDeclined, setKYCPending } from "@/redux/slices_v2/kyc";
 import { setKYCAccepted } from "@/redux/slices/kyc";
 import { KYCServiceV3 } from "@/api/services/v3/kyc";
 import DeclinedKYC from "./components/declinedKYC/DeclinedKYC";
+import ApprovedKyc from "./components/approvedKyc/ApprovedKyc";
+import AllKyc from "./components/AllKyc/AllKyc";
 
-const handleGetUsers = async ({ queryKey }: any) => {
-	const [_key, kycStatus] = queryKey;
+// const handleGetUsers = async ({ queryKey }: any) => {
+// 	const [_key, kycStatus] = queryKey;
 
-	const response = await UserManagementServiceV3.getUsers({
-		kycStatus: kycStatus,
-	});
+// 	const response = await UserManagementServiceV3.getUsers({
+// 		kycStatus: kycStatus,
+// 	});
 
-	const responseJson = await response.json();
+// 	const responseJson = await response.json();
 
-	if (!response.ok) {
-		throw new Error(
-			responseJson.message ||
-				"Erreur lors de la récupération des utilisateurs"
-		);
-	}
+// 	if (!response.ok) {
+// 		throw new Error(
+// 			responseJson.message ||
+// 				"Erreur lors de la récupération des utilisateurs"
+// 		);
+// 	}
 
-	return responseJson.data;
-};
+// 	return responseJson.data;
+// };
 
 const Kyc = () => {
-	const dispatch = useDispatch();
+	// const dispatch = useDispatch();
 
-	const pendingKyc = useQuery({
-		queryKey: ["pendingKyc"],
-		queryFn: handleGetUsers,
-		onError: (err: any) => {
-			console.error("Pending Kyc onError", err.message);
-		},
-	});
-	dispatch(setKYCPending(pendingKyc.data?.data));
+	// const pendingKyc = useQuery({
+	// 	queryKey: ["pendingKyc"],
+	// 	queryFn: handleGetUsers,
+	// 	onError: (err: any) => {
+	// 		console.error("Pending Kyc onError", err.message);
+	// 	},
+	// });
+	// dispatch(setKYCPending(pendingKyc.data?.data));
 
-	const allKyc = useQuery({
-		queryKey: ["allKYC"],
-		queryFn: handleGetUsers,
-		onError: (err: any) => {
-			console.error("KYC onError : ", err.message);
-		},
-	});
+	// const allKyc = useQuery({
+	// 	queryKey: ["allKYC"],
+	// 	queryFn: handleGetUsers,
+	// 	onError: (err: any) => {
+	// 		console.error("KYC onError : ", err.message);
+	// 	},
+	// });
 	// dispatch(setKYC)
 
 	return (
@@ -66,7 +68,7 @@ const Kyc = () => {
 							</TabsTrigger>
 							<TabsTrigger
 								className="TabsTrigger border-b-1 md:border-b-0"
-								value="accepted"
+								value="approved"
 							>
 								KYC approuvés
 							</TabsTrigger>
@@ -74,14 +76,14 @@ const Kyc = () => {
 								className="TabsTrigger border-b-1 md:border-b-0"
 								value="declined"
 							>
-								<DeclinedKYC />
+								KYC Rejetés
 							</TabsTrigger>
-							<TabsTrigger
+							{/* <TabsTrigger
 								className="TabsTrigger border-b-1 md:border-b-0"
 								value="none"
 							>
 								Pas de KYC
-							</TabsTrigger>
+							</TabsTrigger> */}
 							<TabsTrigger
 								className="TabsTrigger border-b-1 md:border-b-0"
 								value="all"
@@ -91,11 +93,18 @@ const Kyc = () => {
 						</TabsList>
 					</div>
 					<div className={`mt-5`}>
-						<TabsContent value="all">
-							<p>All KYC content</p>
-						</TabsContent>
 						<TabsContent value="pending">
-							<KycPendingV3 isLoading={allKyc.isLoading} />
+							<KycPendingV3 />
+						</TabsContent>
+						<TabsContent value="approved">
+							<ApprovedKyc />
+						</TabsContent>
+						<TabsContent value="declined">
+							<DeclinedKYC />
+						</TabsContent>
+
+						<TabsContent value="all">
+							<AllKyc />
 						</TabsContent>
 					</div>
 				</Tabs>

@@ -26,7 +26,7 @@ const handleGetKycs = async ({ queryKey }: any) => {
 };
 const ApprovedKyc = () => {
 	const approvedKycQuery = useQuery({
-		queryKey: ["approved-kyc", "Approved"],
+		queryKey: ["approved-kyc", "COMPLETED"],
 		queryFn: handleGetKycs,
 		onError: (err: any) => {
 			toast.error(err.message);
@@ -49,8 +49,8 @@ const ApprovedKyc = () => {
 				phone: item.user.phoneNumber,
 
 				status:
-					item.status === "Approved" ? (
-						<LabelWithBadge label="Approuvé" badgeColor="#18BC7A" />
+					item.status === "COMPLETED" ? (
+						<LabelWithBadge label="Completed" badgeColor="#18BC7A" />
 					) : item.status === "Declined" ? (
 						<LabelWithBadge label="Refusé" badgeColor="#F85D4B" />
 					) : item.status === "PENDDING" ? (

@@ -28,7 +28,7 @@ const handleGetKycs = async ({ queryKey }: any) => {
 
 const DeclinedKYC = () => {
 	const declinedKycQuery = useQuery({
-		queryKey: ["declined-kyc", "Declined"],
+		queryKey: ["declined-kyc", "REJECTED"],
 		queryFn: handleGetKycs,
 		onError: (err: any) => {
 			toast.error(err.message);
@@ -53,7 +53,7 @@ const DeclinedKYC = () => {
 				status:
 					item.status === "Approved" ? (
 						<LabelWithBadge label="Approuvé" badgeColor="#18BC7A" />
-					) : item.status === "Declined" ? (
+					) : item.status === "REJECTED" ? (
 						<LabelWithBadge label="Refusé" badgeColor="#F85D4B" />
 					) : item.status === "PENDDING" ? (
 						<LabelWithBadge label="En Attente" badgeColor="#999" />

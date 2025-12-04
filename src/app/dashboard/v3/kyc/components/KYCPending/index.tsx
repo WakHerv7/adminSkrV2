@@ -37,7 +37,7 @@ const KycPendingV3 = ({ isLoading, search, setSearch }: Props) => {
 	const kycPending = useSelector(selectKYCPending);
 
 	const pendingKycQuery = useQuery({
-		queryKey: ["pending-kyc", "PENDDING"],
+		queryKey: ["pending-kyc", "PENDING"],
 		queryFn: handleGetKycs,
 		onError: (err: any) => {
 			toast.error(err.message);

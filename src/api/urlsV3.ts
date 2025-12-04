@@ -34,3 +34,11 @@ export const kycUrlsV3 = {
 export const BASE_URL_KYC_RAISON_REJECT = `${BASE_URL_V3}/kyc-management/kyc-raison-rejects`;
 
 export const COUNTRIES_URL_V3 = `${BASE_URL_V3}/cms/countries`;
+
+export const SERVICE_PROVIDER_URL_V3 = `${BASE_URL_V3}/payment/providers`;
+
+export const PAYMENT_PROVIDER_URL_V3 = `${BASE_URL_V3}/payment/payment-providers`;
+
+export const CSP_URL_V3 = `${BASE_URL_V3}/payment/country-service-provided`;
+
+export const SERVICE_URL_V3 = `${BASE_URL_V3}/payment/services`;

@@ -215,7 +215,7 @@ class BaseMethods {
 			mode: "cors",
 			cache: "default",
 			body: JSON.stringify(body),
-			credentials: "include",
+			// credentials: "include",
 		};
 		return fetch(finalUrl, headers);
 	};

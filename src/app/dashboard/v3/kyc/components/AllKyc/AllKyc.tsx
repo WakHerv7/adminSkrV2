@@ -50,12 +50,17 @@ const AllKyc = () => {
 				phone: item.user.phoneNumber,
 
 				status:
-					item.status === "Approved" ? (
-						<LabelWithBadge label="Approuvé" badgeColor="#18BC7A" />
-					) : item.status === "Declined" ? (
+					item.status === "COMPLETED" ? (
+						<LabelWithBadge
+							label="Completed"
+							badgeColor="#18BC7A"
+						/>
+					) : item.status === "REJECTED" ? (
 						<LabelWithBadge label="Refusé" badgeColor="#F85D4B" />
-					) : item.status === "PENDDING" ? (
+					) : item.status === "PENDING" ? (
 						<LabelWithBadge label="En Attente" badgeColor="#999" />
+					) : item.status === "IN_PROGRESS" ? (
+						<LabelWithBadge label="En cours" badgeColor="#3498DB" />
 					) : (
 						<LabelWithBadge label="Aucun" badgeColor="#000" />
 					),

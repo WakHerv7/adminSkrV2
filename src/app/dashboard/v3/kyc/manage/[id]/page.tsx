@@ -134,21 +134,21 @@ const ManageKyc = () => {
 
 	const getStatusBadge = (status: string) => {
 		const statusConfig = {
-			Approved: {
+			COMPLETED: {
 				icon: CheckCircle,
 				bg: "bg-green-50",
 				text: "text-[#18bc7a]",
 				border: "border-[#18bc7a]",
-				label: "Approuvé",
+				label: "Completed",
 			},
-			Pending: {
+			PENDING: {
 				icon: Clock,
 				bg: "bg-yellow-50",
 				text: "text-yellow-700",
 				border: "border-yellow-300",
 				label: "En attente",
 			},
-			Declined: {
+			REJECTED: {
 				icon: XCircle,
 				bg: "bg-red-50",
 				text: "text-red-700",
@@ -159,7 +159,7 @@ const ManageKyc = () => {
 
 		const config =
 			statusConfig[status as keyof typeof statusConfig] ||
-			statusConfig.Pending;
+			statusConfig.PENDING;
 		const Icon = config.icon;
 
 		return (
@@ -547,7 +547,7 @@ const ManageKyc = () => {
 				</div>
 
 				{/* Section Actions */}
-				{kycData.status !== "Approved" && (
+				{kycData.status !== "COMPLETED" && (
 					<div className="lg:col-span-1">
 						<div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 sticky top-6">
 							<h3 className="text-lg font-semibold text-gray-900 mb-4">
@@ -578,14 +578,14 @@ const ManageKyc = () => {
 								</>
 							</div>
 
-							{kycData.raisonsRejectCodes &&
-								kycData.raisonsRejectCodes.length > 0 && (
+							{kycData.rejectionReasonCodes &&
+								kycData.rejectionReasonCodes.length > 0 && (
 									<div className="mt-6 p-4 bg-red-50 border border-red-200 rounded-lg">
 										<p className="text-sm font-medium text-red-800 mb-2">
 											Raisons du rejet:
 										</p>
 										<ul className="text-sm text-red-700 space-y-1">
-											{kycData.raisonsRejectCodes.map(
+											{kycData.rejectionReasonCodes.map(
 												(
 													reason: string,
 													index: number
@@ -665,7 +665,7 @@ const ManageKyc = () => {
 								onClick={() =>
 									updateKyc.mutate({
 										kycId: kycData.id,
-										data: { status: "Approved" },
+										data: { status: "COMPLETED" },
 									})
 								}
 								disabled={updateKyc.isLoading}
@@ -774,7 +774,7 @@ const ManageKyc = () => {
 									updateKyc.mutate({
 										kycId: kycData.id,
 										data: {
-											status: "Declined",
+											status: "REJECTED",
 											raisonsRejectCodes: validReasons,
 										},
 									});

@@ -182,7 +182,7 @@ const CSP = () => {
 	const cspTableData = cspQuery.data?.data?.map(
 		(item: any, index: number) => ({
 			serial: index + 1,
-			operator: item.operator?.toUpperCase(),
+			operator: item.operator,
 			service: item.serviceProvided?.service?.name ?? "",
 			feesRate: `${item.feesRate}%`,
 			fees: item.fees,

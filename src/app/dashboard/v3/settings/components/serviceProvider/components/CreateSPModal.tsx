@@ -133,7 +133,7 @@ const CreateSPModal: React.FC<CreateServiceProviderModalProps> = ({
 	const modalContent = (
 		<div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
 			<h3 className="text-lg font-semibold leading-6 text-gray-900 mb-6">
-				Créer un nouveau Service Provider
+				Créer un nouveau Provider
 			</h3>
 
 			<Form {...form}>
@@ -358,7 +358,7 @@ const CreateSPModal: React.FC<CreateServiceProviderModalProps> = ({
 							className="px-6 py-2 bg-[#18BC7A] text-white rounded-full text-sm hover:bg-[#16a56c] transition font-medium disabled:opacity-50 disabled:cursor-not-allowed"
 							disabled={isLoading}
 						>
-							{isLoading ? "Création..." : "Créer le SP"}
+							{isLoading ? "Création..." : "Créer le provider"}
 						</button>
 					</div>
 

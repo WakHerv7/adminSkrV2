@@ -16,7 +16,22 @@ import {
 	handleGetSPs,
 	handleUpdateServiceProvider,
 } from "@/api/handlers/serviceProvider.handle";
+import { PaymentProviderServiceV3 } from "@/api/services/v3/Payment_Provider";
 
+const handleGetPaymentProviders = async ({ queryKey }: any) => {
+	const [_key] = queryKey;
+
+	const response = await PaymentProviderServiceV3.getAll();
+	const responseJson = await response.json();
+
+	if (!response.ok) {
+		throw new Error(
+			responseJson.message || "Failed to fetch Payment Providers"
+		);
+	}
+
+	return responseJson;
+};
 const ServiceProvider = () => {
 	const queryClient = useQueryClient();
 	const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -29,6 +44,15 @@ const ServiceProvider = () => {
 		queryKey: ["service-provider"],
 		queryFn: handleGetSPs,
 		onError: (err: any) => {
+			toast.error(err.message);
+		},
+	});
+
+	const paymentProviderQuery = useQuery({
+		queryKey: ["payment-providers"],
+		queryFn: handleGetPaymentProviders,
+		onError: (err: any) => {
+			console.error("Erreur lors du chargement:", err);
 			toast.error(err.message);
 		},
 	});
@@ -183,7 +207,7 @@ const ServiceProvider = () => {
 					Gestion des Services Provider
 				</h2>
 				<CButton
-					text="Créer un nouveau SP"
+					text="Créer un nouveau provider"
 					btnStyle="green"
 					onClick={() => setIsCreateModalOpen(true)}
 					height="40px"
@@ -218,6 +242,7 @@ const ServiceProvider = () => {
 					setIsEditModalOpen(false);
 					setSelectedServiceProvider(null);
 				}}
+				paymentProviders={paymentProviderQuery.data?.data}
 				onSubmit={updateServiceProvider}
 				isLoading={updateMutation.isLoading}
 				initialData={selectedServiceProvider}

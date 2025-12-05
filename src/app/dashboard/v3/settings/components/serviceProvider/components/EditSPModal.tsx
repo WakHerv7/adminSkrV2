@@ -43,6 +43,7 @@ interface EditSPModalProps {
 	onSubmit: (data: ServiceProviderFormData) => void;
 	isLoading: boolean;
 	initialData: any;
+	paymentProviders: Array<{ id: string; name: string }>;
 }
 
 // Composant CustomSelect pour le dropdown
@@ -152,6 +153,7 @@ const EditSPModal: React.FC<EditSPModalProps> = ({
 	onSubmit,
 	isLoading,
 	initialData,
+	paymentProviders,
 }) => {
 	const form = useForm<ServiceProviderFormData>({
 		resolver: zodResolver(serviceProviderSchema),
@@ -162,10 +164,21 @@ const EditSPModal: React.FC<EditSPModalProps> = ({
 		},
 	});
 
+	// Formater les options pour le dropdown
+	const paymentProviderOptions =
+		paymentProviders?.map((pp) => ({
+			value: pp.id,
+			label: pp.name,
+		})) || [];
+
 	// Mettre à jour le formulaire quand initialData change
 	useEffect(() => {
 		if (initialData) {
 			console.log("Préremplissage avec les données:", initialData);
+			console.log(
+				"Payment Provider ID:",
+				initialData.paymentProviderId || initialData.paymentProvider?.id
+			);
 
 			const formattedData = {
 				name: initialData.name || "",
@@ -176,9 +189,12 @@ const EditSPModal: React.FC<EditSPModalProps> = ({
 					"",
 			};
 
+			console.log("Données formatées:", formattedData);
+			console.log("Options disponibles:", paymentProviderOptions);
+
 			form.reset(formattedData);
 		}
-	}, [initialData, form]);
+	}, [initialData, form, paymentProviderOptions]);
 
 	const handleFormSubmit = (data: ServiceProviderFormData) => {
 		console.log("Données soumises:", data);
@@ -201,14 +217,6 @@ const EditSPModal: React.FC<EditSPModalProps> = ({
 	const onError = (errors: any) => {
 		console.error("Erreurs de validation:", errors);
 	};
-
-	// Options simulées pour les payment providers
-	// Dans la vraie app, vous devriez les charger via useQuery
-	const paymentProviderOptions = [
-		{ value: "uuid1", label: "MTN Mobile Money" },
-		{ value: "uuid2", label: "Orange Money" },
-		{ value: "uuid3", label: "Moov Money" },
-	];
 
 	const modalContent = (
 		<div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">

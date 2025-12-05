@@ -13,47 +13,9 @@ import { KYCServiceV3 } from "@/api/services/v3/kyc";
 import DeclinedKYC from "./components/declinedKYC/DeclinedKYC";
 import ApprovedKyc from "./components/approvedKyc/ApprovedKyc";
 import AllKyc from "./components/AllKyc/AllKyc";
-
-// const handleGetUsers = async ({ queryKey }: any) => {
-// 	const [_key, kycStatus] = queryKey;
-
-// 	const response = await UserManagementServiceV3.getUsers({
-// 		kycStatus: kycStatus,
-// 	});
-
-// 	const responseJson = await response.json();
-
-// 	if (!response.ok) {
-// 		throw new Error(
-// 			responseJson.message ||
-// 				"Erreur lors de la récupération des utilisateurs"
-// 		);
-// 	}
-
-// 	return responseJson.data;
-// };
+import InProgressKYC from "./components/inProgress/InProgressKYC";
 
 const Kyc = () => {
-	// const dispatch = useDispatch();
-
-	// const pendingKyc = useQuery({
-	// 	queryKey: ["pendingKyc"],
-	// 	queryFn: handleGetUsers,
-	// 	onError: (err: any) => {
-	// 		console.error("Pending Kyc onError", err.message);
-	// 	},
-	// });
-	// dispatch(setKYCPending(pendingKyc.data?.data));
-
-	// const allKyc = useQuery({
-	// 	queryKey: ["allKYC"],
-	// 	queryFn: handleGetUsers,
-	// 	onError: (err: any) => {
-	// 		console.error("KYC onError : ", err.message);
-	// 	},
-	// });
-	// dispatch(setKYC)
-
 	return (
 		<Layout title="Validation KYC v3">
 			<section>
@@ -78,12 +40,13 @@ const Kyc = () => {
 							>
 								KYC Rejetés
 							</TabsTrigger>
-							{/* <TabsTrigger
+							<TabsTrigger
 								className="TabsTrigger border-b-1 md:border-b-0"
-								value="none"
+								value="inProgress"
 							>
-								Pas de KYC
-							</TabsTrigger> */}
+								En progression
+							</TabsTrigger>
+
 							<TabsTrigger
 								className="TabsTrigger border-b-1 md:border-b-0"
 								value="all"
@@ -101,6 +64,9 @@ const Kyc = () => {
 						</TabsContent>
 						<TabsContent value="declined">
 							<DeclinedKYC />
+						</TabsContent>
+						<TabsContent value="inProgress">
+							<InProgressKYC />
 						</TabsContent>
 
 						<TabsContent value="all">

@@ -31,7 +31,7 @@ const nextConfig = {
         return [
           {
             source: "/",
-            destination: "/login",
+            destination: "/loginv3",
             permanent: false,
           },
           {

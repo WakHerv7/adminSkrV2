@@ -32,7 +32,7 @@ const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = ({
 				</h3>
 
 				<p className="text-sm text-gray-500 mb-6">
-					Êtes-vous sûr de vouloir supprimer "{itemName}" ? Cette
+					{`Êtes-vous sûr de vouloir supprimer "${itemName}" ? Cette action est irréversible.`}
 				</p>
 
 				<div className="flex gap-3 w-full">

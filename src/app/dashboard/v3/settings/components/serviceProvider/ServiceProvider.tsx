@@ -148,6 +148,7 @@ const ServiceProvider = () => {
 			serial: index + 1,
 			name: item.name,
 			logo: item.logo ? (
+				// eslint-disable-next-line @next/next/no-img-element
 				<img
 					src={item.logo}
 					alt={item.name}

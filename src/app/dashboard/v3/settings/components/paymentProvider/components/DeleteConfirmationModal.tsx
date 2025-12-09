@@ -32,7 +32,7 @@ const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = ({
 			<p className="text-gray-600 mb-6">
 				{message}{" "}
 				<span className="font-semibold text-gray-900">
-					"{itemName}"
+					{`"${itemName}"`}
 				</span>{" "}
 				?
 			</p>

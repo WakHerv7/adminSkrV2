@@ -31,8 +31,7 @@ const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = ({
 				</h3>
 
 				<p className="text-sm text-gray-500 mb-6">
-					Êtes-vous sûr de vouloir supprimer le service "{serviceName}
-					" ?
+					{`Êtes-vous sûr de vouloir supprimer le service "${serviceName}" ?`}
 				</p>
 
 				<div className="flex gap-3 w-full">

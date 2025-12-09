@@ -31,8 +31,7 @@ const ActivateConfirmationModal: React.FC<ActivateConfirmationModalProps> = ({
 				</h3>
 
 				<p className="text-sm text-gray-500 mb-6">
-					Êtes-vous sûr de vouloir activer le provider "{providerName}
-					" ?
+					{`Êtes-vous sûr de vouloir activer le provider "${providerName}" ?`}
 				</p>
 
 				<div className="flex gap-3 w-full">

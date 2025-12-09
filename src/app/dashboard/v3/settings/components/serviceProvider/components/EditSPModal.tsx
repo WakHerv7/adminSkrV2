@@ -165,11 +165,14 @@ const EditSPModal: React.FC<EditSPModalProps> = ({
 	});
 
 	// Formater les options pour le dropdown
-	const paymentProviderOptions =
-		paymentProviders?.map((pp) => ({
-			value: pp.id,
-			label: pp.name,
-		})) || [];
+	const paymentProviderOptions = React.useMemo(
+		() =>
+			paymentProviders?.map((pp) => ({
+				value: pp.id,
+				label: pp.name,
+			})) || [],
+		[paymentProviders]
+	);
 
 	// Mettre à jour le formulaire quand initialData change
 	useEffect(() => {

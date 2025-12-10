@@ -1,5 +1,6 @@
 import BaseMethods from "@/api/baseMethods";
 import { cardsUrlV3 } from "@/api/urlsV3";
+import { string } from "zod";
 
 export class CardsServiceV3 {
 	static getCards = (
@@ -46,6 +47,38 @@ export class CardsServiceV3 {
 			cardsUrlV3.ALL_CARDS_TRANSACTION(userId),
 			true,
 			query_params
+		);
+	};
+
+	static getCardTransactions = (cardId: string) => {
+		console.log("dans le service", cardId);
+		return BaseMethods.getRequest(
+			cardsUrlV3.CARD_TRANSACTION(cardId),
+			true
+		);
+	};
+
+	static terminateCard = (cardId: string) => {
+		return BaseMethods.postRequest(
+			cardsUrlV3.TERMINATE_CARD(cardId),
+			{},
+			true
+		);
+	};
+
+	static freezeCard = (cardId: string) => {
+		return BaseMethods.postRequest(
+			cardsUrlV3.FREEZE_CARD(cardId),
+			{},
+			true
+		);
+	};
+
+	static unfreezeCard = (cardId: string) => {
+		return BaseMethods.postRequest(
+			cardsUrlV3.UNFREEZE_CARD(cardId),
+			{},
+			true
 		);
 	};
 }

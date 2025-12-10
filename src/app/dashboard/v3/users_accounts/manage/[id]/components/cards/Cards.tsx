@@ -107,11 +107,11 @@ const Cards = () => {
 	};
 
 	const handleCardClick = (cardId: string) => {
-		router.push(`/manage/${cardId}`);
+		router.push(`/dashboard/v3/cards/${cardId}`);
 	};
 
 	// Fonction pour le badge de statut des transactions
-	const getTransactionStatusBadge = (status: string) => {
+	 const getTransactionStatusBadge = (status: string) => {
 		switch (status) {
 			case "SUCCESS":
 				return <LabelWithBadge label="Succès" badgeColor="#18BC7A" />;
@@ -136,7 +136,7 @@ const Cards = () => {
 					reference: transaction.reference || "N/A",
 					type: transaction.type,
 					formattedAmount: `${transaction.amount} ${transaction.currency}`,
-					status: <span>{transaction.status}</span>,
+					status: getTransactionStatusBadge(transaction.status),
 					cardBalanceAfter: transaction.cardBalanceAfter.toString(),
 					date: new Date(transaction.createdAt).toLocaleDateString(
 						"fr-FR"
@@ -172,7 +172,7 @@ const Cards = () => {
 				<div className="text-center">
 					<div className="text-red-500 text-xl mb-2">⚠️</div>
 					<p className="text-slate-600">
-						Erreur lors du chargement des cartes
+						{"Erreur lors du chargement des cartes"}
 					</p>
 				</div>
 			</div>
@@ -188,7 +188,7 @@ const Cards = () => {
 				<div>
 					<div className="mb-8">
 						<h1 className="text-2xl font-bold text-slate-800 mb-2">
-							Cards List
+							{"	Cards List"}
 						</h1>
 					</div>
 
@@ -196,7 +196,7 @@ const Cards = () => {
 						<div className="text-center py-16">
 							<CreditCard className="w-16 h-16 text-slate-300 mx-auto mb-4" />
 							<p className="text-slate-500 text-lg">
-								Aucune carte disponible
+								{"	Aucune carte disponible"}
 							</p>
 						</div>
 					) : (
@@ -261,7 +261,7 @@ const Cards = () => {
 													<div className="flex justify-between items-end">
 														<div>
 															<div className="text-xs opacity-70 mb-1">
-																Titulaire
+																{"	Titulaire"}
 															</div>
 															<div className="text-sm font-semibold truncate max-w-[180px]">
 																{
@@ -290,7 +290,7 @@ const Cards = () => {
 											<div className="flex items-center justify-between">
 												<div>
 													<div className="text-xs text-slate-500 mb-1">
-														Solde disponible
+														{"Solde disponible"}
 													</div>
 													<div className="text-2xl font-bold text-slate-800">
 														{parseFloat(
@@ -301,7 +301,7 @@ const Cards = () => {
 												</div>
 												<div className="text-right">
 													<div className="text-xs text-slate-500 mb-1">
-														Créée le
+														{"Créée le"}
 													</div>
 													<div className="text-sm font-medium text-slate-700">
 														{new Date(
@@ -331,18 +331,18 @@ const Cards = () => {
 					<div className="mb-6 flex items-center justify-between">
 						<div>
 							<h2 className="text-xl font-bold text-slate-800 mb-1">
-								Historique des Transactions
+								{"Historique des Transactions"}
 							</h2>
 							<p className="text-slate-600 text-sm">
 								{getAllCardsTransaction.data?.data?.meta
 									?.total || 0}{" "}
-								transactions récentes
+								{"transactions récentes"}
 							</p>
 						</div>
 						<div className="flex items-center gap-2 text-slate-600">
 							<ArrowRightLeft className="w-5 h-5" />
 							<span className="text-sm font-medium">
-								Transactions
+								{"Transactions"}
 							</span>
 						</div>
 					</div>

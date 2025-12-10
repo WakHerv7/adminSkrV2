@@ -4,7 +4,7 @@ import Link from "next/link";
 
 interface ModalProps {
 	index?: number | string;
-	name: string;
+	name?: string;
 	item?: any[];
 	isOpen?: boolean;
 	setIsOpen?: (data?: any) => void;

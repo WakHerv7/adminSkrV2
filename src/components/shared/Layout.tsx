@@ -69,8 +69,14 @@ const Layout: React.FC<LayoutProps> = ({
 		if (
 			token &&
 			pathname !== "/login" &&
-			(!user?.role || user?.role !== "admin" || !user?.admin_role)
+			(!user || // pas d'utilisateur
+				(user.role && user.role !== "admin") || // rôle admin explicite absent
+				(user.admin_role !== undefined && !user.admin_role) || // admin_role faux
+				// ici on laisse passer les utilisateurs sans roles (comme Guest), sinon on vérifie "ADMIN"
+				(user.roles && !user.roles.includes("ADMIN")))
 		) {
+			console.log("Voici l'utilisateur :", user);
+			console.log("Le rejet c'est ici");
 			router.push("/login");
 		}
 

@@ -9,7 +9,7 @@ import { selectKYCPending } from "@/redux/slices_v2/kyc";
 import { getFormattedDateTime } from "@/utils/DateFormat";
 import React from "react";
 import toast from "react-hot-toast";
-import { useQuery } from "react-query";
+import { QueryFunctionContext, useQuery } from "react-query";
 import { useSelector } from "react-redux";
 
 type Props = {
@@ -18,30 +18,31 @@ type Props = {
 	setSearch?: (data?: any) => void;
 };
 
-const handleGetKycs = async ({ queryKey }: any) => {
-	const [_key, status, page, limit] = queryKey;
-	console.log("status dans la page", status);
+const handleGetKycs = async (
+	context: QueryFunctionContext<[string, string | string[]]>
+) => {
+	const [_key, status] = context.queryKey;
 
-	const response = await KYCServiceV3.getkycs({ status, page, limit });
+	// Convertir en string unique si c'est un tableau
+	const statusQuery = Array.isArray(status) ? status.join(",") : status;
 
-	const responseJson = await response.json();
+	const response = await KYCServiceV3.getkycs({ status: statusQuery });
+	const data = await response.json();
 
 	if (!response.ok) {
-		throw new Error(responseJson.message || "Failed to get Kycs");
+		throw new Error(data.message || "Failed to get Kycs");
 	}
 
-	return responseJson;
+	return data;
 };
 
 const KycPendingV3 = ({ isLoading, search, setSearch }: Props) => {
 	const kycPending = useSelector(selectKYCPending);
 
 	const pendingKycQuery = useQuery({
-		queryKey: ["pending-kyc", "PENDING"],
+		queryKey: ["pending-kyc", ["PENDING", "IN_PROGRESS"]],
 		queryFn: handleGetKycs,
-		onError: (err: any) => {
-			toast.error(err.message);
-		},
+		onError: (err: any) => toast.error(err.message),
 	});
 
 	// --------------------------------

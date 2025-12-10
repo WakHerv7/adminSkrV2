@@ -507,20 +507,20 @@ const CardDetailsPage = () => {
 							</div>
 							<div className="space-y-2 text-sm">
 								<p className="text-slate-700">
-									{cardData.billingAddress.addressLine1}
+									{cardData?.billingAddress?.addressLine1}
 								</p>
-								{cardData.billingAddress.addressLine2 && (
+								{cardData?.billingAddress?.addressLine2 && (
 									<p className="text-slate-700">
-										{cardData.billingAddress.addressLine2}
+										{cardData?.billingAddress?.addressLine2}
 									</p>
 								)}
 								<p className="text-slate-700">
-									{cardData.billingAddress.city},{" "}
-									{cardData.billingAddress.state}{" "}
-									{cardData.billingAddress.postalCode}
+									{cardData?.billingAddress?.city},{" "}
+									{cardData?.billingAddress?.state}{" "}
+									{cardData?.billingAddress?.postalCode}
 								</p>
 								<p className="text-slate-700 font-semibold">
-									{cardData.billingAddress.country}
+									{cardData?.billingAddress?.country}
 								</p>
 							</div>
 						</div>

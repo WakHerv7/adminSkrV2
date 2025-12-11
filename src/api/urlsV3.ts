@@ -60,3 +60,23 @@ export const cardsUrlV3 = {
 	CARD_TRANSACTION: (cardId: string) =>
 		`${CARDS_BASE_URLS_V3}/cards/${cardId}/transactions`,
 };
+
+// Transactions Management Service
+const TRANSACTIONS_BASE_URL_V3 = `${BASE_URL_V3}/tms/api/admin`;
+export const transactionsUrlV3 = {
+	// User wallets
+	GET_USER_WALLETS: (userId: string) =>
+		`${TRANSACTIONS_BASE_URL_V3}/users/${userId}/wallets`,
+	GET_USER_DEFAULT_WALLET: (userId: string) =>
+		`${TRANSACTIONS_BASE_URL_V3}/users/${userId}/default-wallet`,
+	GET_USER_BALANCE: (userId: string) =>
+		`${TRANSACTIONS_BASE_URL_V3}/users/${userId}/balance`,
+	// User transactions
+	GET_USER_TRANSACTIONS: (userId: string) =>
+		`${TRANSACTIONS_BASE_URL_V3}/users/${userId}/transactions`,
+	// Transaction details
+	GET_TRANSACTION_DETAILS: (transactionId: string) =>
+		`${TRANSACTIONS_BASE_URL_V3}/transactions/${transactionId}`,
+	// All transactions (admin)
+	GET_ALL_TRANSACTIONS: `${TRANSACTIONS_BASE_URL_V3}/transactions`,
+};

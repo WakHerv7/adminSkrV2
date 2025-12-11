@@ -2,6 +2,19 @@ import BaseMethods from "@/api/baseMethods";
 import { usermanagementUrlsV3 } from "@/api/urlsV3";
 import { isObject } from "@/utils/utils";
 
+export interface UpdateUserProfileData {
+	firstName?: string;
+	lastName?: string;
+	email?: string;
+	state?: string;
+	address?: string;
+	gender?: string;
+	dateOfBirth?: string;
+	city?: string;
+	referralSource?: string;
+	usageReason?: string;
+}
+
 export class UserManagementServiceV3 {
 	static getUsers = (params?: { filters?: Record<string, any> }) => {
 		const filters = params?.filters ?? {};
@@ -23,6 +36,14 @@ export class UserManagementServiceV3 {
 	static getUserDeatails = (userId: string) => {
 		return BaseMethods.getRequest(
 			usermanagementUrlsV3.GET_USERS_DETAILS(userId),
+			true
+		);
+	};
+
+	static updateUserProfile = (userId: string, data: UpdateUserProfileData) => {
+		return BaseMethods.patchRequest(
+			usermanagementUrlsV3.UPDATE_USER_PROFILE(userId),
+			data,
 			true
 		);
 	};

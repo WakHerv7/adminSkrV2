@@ -14,6 +14,8 @@ export const usermanagementUrlsV3 = {
 	GET_ALL_USERS: `${BASE_URL_USERMANAGEMENT}`,
 	GET_USERS_DETAILS: (userId: string) =>
 		`${BASE_URL_USERMANAGEMENT}/${userId}`,
+	UPDATE_USER_PROFILE: (userId: string) =>
+		`${BASE_URL_USERMANAGEMENT}/${userId}/profile`,
 	DEACTIVATE_USER: (userId: string) =>
 		`${BASE_URL_USERMANAGEMENT}/${userId}/deactivate`,
 	ACTIVATE_USER: (userId: string) =>

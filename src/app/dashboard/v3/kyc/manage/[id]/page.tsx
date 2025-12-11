@@ -19,8 +19,12 @@ import {
 	ChevronRight,
 	Plus,
 	Trash2,
+	Check,
+	X,
+	ChevronDown,
 } from "lucide-react";
 import { KYCRaisonRejectServiceV3 } from "@/api/services/v3/kycRaisonReject";
+import { kycRejectReasonsEN } from "@/constants/v3/kycRejectReasons";
 
 const handleGetKyc = async ({ queryKey }: any) => {
 	const [_key, userId] = queryKey;
@@ -69,6 +73,40 @@ const ManageKyc = () => {
 	const [showApproveModal, setShowApproveModal] = useState(false);
 	const [rejectReasons, setRejectReasons] = useState<string[]>([""]);
 	const [isSubmitting, setIsSubmitting] = useState(false);
+	const [selectedPredefinedReasons, setSelectedPredefinedReasons] = useState<
+		string[]
+	>([]);
+	const [customRejectReasons, setCustomRejectReasons] = useState<string[]>([
+		"",
+	]);
+
+	const [additionalReason, setAdditionalReason] = useState("");
+	const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+	const [selectedRejectReasons, setSelectedRejectReasons] = useState<
+		string[]
+	>([]);
+	const [dropdownOpen, setDropdownOpen] = useState(false);
+	const [selectedReasons, setSelectedReasons] = useState<string[]>([]);
+	const [customReason, setCustomReason] = useState("");
+
+	// Fonctions pour gérer les raisons personnalisées
+	const addCustomRejectReason = () => {
+		setCustomRejectReasons([...customRejectReasons, ""]);
+	};
+
+	const removeCustomRejectReason = (index: number) => {
+		if (customRejectReasons.length > 1) {
+			const newReasons = [...customRejectReasons];
+			newReasons.splice(index, 1);
+			setCustomRejectReasons(newReasons);
+		}
+	};
+
+	const updateCustomRejectReason = (index: number, value: string) => {
+		const newReasons = [...customRejectReasons];
+		newReasons[index] = value;
+		setCustomRejectReasons(newReasons);
+	};
 
 	const kycQuery = useQuery({
 		queryKey: ["kyc-details", userId],
@@ -698,59 +736,213 @@ const ManageKyc = () => {
 							</h3>
 						</div>
 						<p className="text-gray-600 mb-4">
-							Veuillez indiquer les raisons du rejet de ce KYC :
+							Veuillez sélectionner les raisons du rejet de ce KYC
+							:
 						</p>
 
-						{/* Liste des champs de raisons */}
-						<div className="space-y-3 mb-4">
-							{rejectReasons.map((reason, index) => (
-								<div key={index} className="flex gap-2">
-									<textarea
-										value={reason}
-										onChange={(e) =>
-											updateRejectReason(
-												index,
-												e.target.value
-											)
-										}
-										placeholder={`Raison ${
-											index + 1
-										}: Ex: Document illisible, informations incohérentes...`}
-										className="flex-1 h-24 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#18bc7a] focus:border-transparent resize-none"
-										disabled={updateKyc.isLoading}
+						{/* VRAIE LISTE DÉROULANTE PERSONNALISÉE */}
+						<div className="mb-6">
+							<label className="block text-sm font-medium text-gray-700 mb-2">
+								Sélectionnez les raisons :
+							</label>
+
+							{/* Bouton qui ouvre la liste déroulante */}
+							<div className="relative">
+								<button
+									type="button"
+									onClick={() =>
+										setDropdownOpen(!dropdownOpen)
+									}
+									className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-white text-left flex justify-between items-center hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-[#18bc7a] focus:border-transparent"
+									disabled={updateKyc.isLoading}
+								>
+									<span className="truncate">
+										{selectedReasons.length === 0
+											? "Cliquez pour sélectionner les raisons"
+											: `${selectedReasons.length} raison(s) sélectionnée(s)`}
+									</span>
+									<ChevronDown
+										className={`w-5 h-5 text-gray-500 transition-transform ${
+											dropdownOpen
+												? "transform rotate-180"
+												: ""
+										}`}
 									/>
-									{rejectReasons.length > 1 && (
+								</button>
+
+								{/* Liste déroulante qui s'ouvre au clic */}
+								{dropdownOpen && (
+									<div className="absolute z-50 mt-1 w-full bg-white border border-gray-300 rounded-lg shadow-lg max-h-96 overflow-y-auto">
+										<div className="p-2">
+											{/* Option pour tout sélectionner */}
+											<div
+												className="flex items-center gap-3 p-3 hover:bg-gray-50 rounded cursor-pointer border-b border-gray-200 mb-1"
+												onClick={() => {
+													if (
+														selectedReasons.length ===
+														Object.keys(
+															kycRejectReasonsEN
+														).length
+													) {
+														setSelectedReasons([]);
+													} else {
+														setSelectedReasons(
+															Object.keys(
+																kycRejectReasonsEN
+															)
+														);
+													}
+												}}
+											>
+												<div className="w-5 h-5 border-2 rounded flex items-center justify-center">
+													{selectedReasons.length ===
+													Object.keys(
+														kycRejectReasonsEN
+													).length ? (
+														<Check className="w-3 h-3 text-[#18bc7a]" />
+													) : null}
+												</div>
+												<span className="font-medium text-gray-700">
+													{selectedReasons.length ===
+													Object.keys(
+														kycRejectReasonsEN
+													).length
+														? "Tout désélectionner"
+														: "Tout sélectionner"}
+												</span>
+											</div>
+
+											{/* Liste des raisons */}
+											{Object.entries(
+												kycRejectReasonsEN
+											).map(([key, value]) => (
+												<div
+													key={key}
+													className="flex items-center gap-3 p-3 hover:bg-gray-50 rounded cursor-pointer"
+													onClick={() => {
+														if (
+															selectedReasons.includes(
+																key
+															)
+														) {
+															setSelectedReasons(
+																(prev) =>
+																	prev.filter(
+																		(
+																			item
+																		) =>
+																			item !==
+																			key
+																	)
+															);
+														} else {
+															setSelectedReasons(
+																(prev) => [
+																	...prev,
+																	key,
+																]
+															);
+														}
+													}}
+												>
+													<div
+														className={`w-5 h-5 border-2 rounded flex items-center justify-center ${
+															selectedReasons.includes(
+																key
+															)
+																? "bg-[#18bc7a] border-[#18bc7a]"
+																: "border-gray-300"
+														}`}
+													>
+														{selectedReasons.includes(
+															key
+														) && (
+															<Check className="w-3 h-3 text-white" />
+														)}
+													</div>
+													<span className="text-gray-700">
+														{value}
+													</span>
+												</div>
+											))}
+										</div>
+									</div>
+								)}
+							</div>
+
+							{/* Affichage des raisons sélectionnées */}
+							{selectedReasons.length > 0 && (
+								<div className="mt-3">
+									<div className="flex items-center justify-between mb-2">
+										<p className="text-sm font-medium text-gray-700">
+											Raisons sélectionnées :
+										</p>
 										<button
+											type="button"
 											onClick={() =>
-												removeRejectReason(index)
+												setSelectedReasons([])
 											}
-											disabled={updateKyc.isLoading}
-											className="px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg transition disabled:opacity-50"
-											title="Supprimer cette raison"
+											className="text-sm text-red-600 hover:text-red-800"
 										>
-											<Trash2 className="w-5 h-5" />
+											Tout effacer
 										</button>
-									)}
+									</div>
+									<div className="flex flex-wrap gap-2 max-h-48 overflow-y-auto p-2 bg-gray-50 rounded-lg">
+										{selectedReasons.map((key) => (
+											<div
+												key={key}
+												className="inline-flex items-center gap-2 bg-white border border-gray-300 text-gray-700 px-3 py-2 rounded-lg shadow-sm"
+											>
+												<span className="text-sm">
+													{kycRejectReasonsEN[key]}
+												</span>
+												<button
+													type="button"
+													onClick={() =>
+														setSelectedReasons(
+															(prev) =>
+																prev.filter(
+																	(item) =>
+																		item !==
+																		key
+																)
+														)
+													}
+													className="text-gray-400 hover:text-red-600"
+												>
+													<X className="w-4 h-4" />
+												</button>
+											</div>
+										))}
+									</div>
 								</div>
-							))}
+							)}
 						</div>
 
-						{/* Bouton pour ajouter une nouvelle raison */}
-						<button
-							onClick={addRejectReason}
-							disabled={updateKyc.isLoading}
-							className="w-full px-4 py-2 mb-4 border-2 border-dashed border-gray-300 text-gray-600 rounded-lg hover:border-[#18bc7a] hover:text-[#18bc7a] transition disabled:opacity-50 flex items-center justify-center gap-2"
-						>
-							<Plus className="w-5 h-5" />
-							Ajouter une raison supplémentaire
-						</button>
+						{/* Champ pour raison personnalisée supplémentaire */}
+						<div className="mb-6">
+							<label className="block text-sm font-medium text-gray-700 mb-2">
+								Raison supplémentaire (optionnelle) :
+							</label>
+							<textarea
+								value={customReason}
+								onChange={(e) =>
+									setCustomReason(e.target.value)
+								}
+								placeholder="Ajoutez une raison personnalisée si nécessaire..."
+								className="w-full h-24 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#18bc7a] focus:border-transparent resize-none"
+								disabled={updateKyc.isLoading}
+							/>
+						</div>
 
 						{/* Boutons d'action */}
 						<div className="flex gap-3">
 							<button
 								onClick={() => {
 									setShowRejectModal(false);
-									setRejectReasons([""]);
+									setSelectedReasons([]);
+									setCustomReason("");
+									setDropdownOpen(false);
 								}}
 								disabled={updateKyc.isLoading}
 								className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition disabled:opacity-50"
@@ -759,29 +951,41 @@ const ManageKyc = () => {
 							</button>
 							<button
 								onClick={() => {
-									// Filtrer les raisons vides avant de soumettre
-									const validReasons = rejectReasons
-										.map((r) => r.trim())
-										.filter((r) => r !== "");
-
-									if (validReasons.length === 0) {
+									if (
+										selectedReasons.length === 0 &&
+										customReason.trim() === ""
+									) {
 										toast.error(
-											"Veuillez ajouter au moins une raison"
+											"Veuillez sélectionner au moins une raison"
 										);
 										return;
+									}
+
+									// Préparer les raisons pour l'API
+									const reasons = selectedReasons.map(
+										(key) =>
+											`${key}: ${kycRejectReasonsEN[key]}`
+									);
+
+									// Ajouter la raison personnalisée si remplie
+									if (customReason.trim() !== "") {
+										reasons.push(
+											`CUSTOM: ${customReason.trim()}`
+										);
 									}
 
 									updateKyc.mutate({
 										kycId: kycData.id,
 										data: {
 											status: "REJECTED",
-											raisonsRejectCodes: validReasons,
+											raisonsRejectCodes: reasons,
 										},
 									});
 								}}
 								disabled={
 									updateKyc.isLoading ||
-									!rejectReasons.some((r) => r.trim() !== "")
+									(selectedReasons.length === 0 &&
+										customReason.trim() === "")
 								}
 								className="flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition disabled:opacity-50 flex items-center justify-center gap-2"
 							>

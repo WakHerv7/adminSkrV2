@@ -19,14 +19,11 @@ type Props = {
 };
 
 const handleGetKycs = async (
-	context: QueryFunctionContext<[string, string | string[]]>
+	context: QueryFunctionContext<[string, string[]]>
 ) => {
 	const [_key, status] = context.queryKey;
 
-	// Convertir en string unique si c'est un tableau
-	const statusQuery = Array.isArray(status) ? status.join(",") : status;
-
-	const response = await KYCServiceV3.getkycs({ status: statusQuery });
+	const response = await KYCServiceV3.getkycs({ status });
 	const data = await response.json();
 
 	if (!response.ok) {
@@ -45,34 +42,26 @@ const KycPendingV3 = ({ isLoading, search, setSearch }: Props) => {
 		onError: (err: any) => toast.error(err.message),
 	});
 
-	// --------------------------------
-	//  Remplissage tableau
-	// --------------------------------
 	const rearrangedTableData = pendingKycQuery.data?.data?.map(
 		(item: any, index: number) => {
 			return {
 				serial: index + 1,
-
-				// Suppression de la logique d'édition
 				name: item.user.fullName,
-
 				email: item.user.email,
-
 				phone: item.user.phoneNumber,
-
 				status:
 					item.status === "Approved" ? (
 						<LabelWithBadge label="Approuvé" badgeColor="#18BC7A" />
 					) : item.status === "Declined" ? (
 						<LabelWithBadge label="Refusé" badgeColor="#F85D4B" />
-					) : item.status === "PENDDING" ? (
+					) : item.status === "PENDING" ? (
 						<LabelWithBadge label="En Attente" badgeColor="#999" />
+					) : item.status === "IN_PROGRESS" ? (
+						<LabelWithBadge label="En Cours" badgeColor="#FFA500" />
 					) : (
 						<LabelWithBadge label="Aucun" badgeColor="#000" />
 					),
-
 				created: getFormattedDateTime(item.createdAt),
-
 				actions: (
 					<div className="flex gap-2 items-center">
 						<CButton
@@ -92,7 +81,6 @@ const KycPendingV3 = ({ isLoading, search, setSearch }: Props) => {
 			<CustomTable
 				headerData={headerKYCDataV3}
 				tableData={rearrangedTableData}
-				// filter
 				threeButtons
 				isLoading={pendingKycQuery.isLoading && !kycPending}
 				search={search}

@@ -29,7 +29,7 @@ import {
 	TrendingUp,
 	Wallet,
 	X,
-	XCircle
+	XCircle,
 } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useState } from "react";
@@ -74,7 +74,7 @@ interface Transaction {
 	feeAmount: number;
 	reference: string;
 	formattedAmount: string;
-	createdAt: string;
+	createdAt: Date;
 	metadata?: Record<string, any>;
 }
 
@@ -99,9 +99,9 @@ const Transactions = () => {
 		limit: 10,
 	});
 	const [showFilters, setShowFilters] = useState(false);
-	const [selectedTransaction, setSelectedTransaction] = useState<string | null>(
-		null
-	);
+	const [selectedTransaction, setSelectedTransaction] = useState<
+		string | null
+	>(null);
 	const [expandedWallet, setExpandedWallet] = useState<string | null>(null);
 	const [showAllWallets, setShowAllWallets] = useState(false);
 
@@ -112,7 +112,9 @@ const Transactions = () => {
 		reason: "",
 		internalReference: "",
 	});
-	const [adjustBalanceError, setAdjustBalanceError] = useState<string | null>(null);
+	const [adjustBalanceError, setAdjustBalanceError] = useState<string | null>(
+		null
+	);
 
 	// Fetch default wallet
 	const walletQuery = useQuery({
@@ -152,7 +154,11 @@ const Transactions = () => {
 			queryClient.invalidateQueries(["user-transactions", userId]);
 			// Close modal and reset form
 			setShowAdjustBalanceModal(false);
-			setAdjustBalanceForm({ newBalance: "", reason: "", internalReference: "" });
+			setAdjustBalanceForm({
+				newBalance: "",
+				reason: "",
+				internalReference: "",
+			});
 			setAdjustBalanceError(null);
 		},
 		onError: (error: Error) => {
@@ -228,7 +234,8 @@ const Transactions = () => {
 
 	// Unwrap transaction details
 	const transactionDetailsResponse = transactionDetailsQuery.data;
-	const transactionDetails: Transaction | null = transactionDetailsResponse?.data || null;
+	const transactionDetails: Transaction | null =
+		transactionDetailsResponse?.data || null;
 
 	// Handlers
 	const handleFilterChange = (key: keyof TransactionFilters, value: any) => {
@@ -496,7 +503,9 @@ const Transactions = () => {
 								</p>
 							</div>
 							<div className="text-center">
-								<p className="text-sm text-gray-600">Retraits</p>
+								<p className="text-sm text-gray-600">
+									Retraits
+								</p>
 								<p className="text-lg font-bold text-red-600">
 									{formatCurrency(
 										stats.totalWithdrawals,
@@ -701,11 +710,11 @@ const Transactions = () => {
 																		"TRANSFER_IN"
 																		? "text-green-600"
 																		: tx.type ===
-																			  "WITHDRAWAL" ||
-																			  tx.type ===
-																					"TRANSFER"
-																			? "text-red-600"
-																			: "text-gray-900"
+																				"WITHDRAWAL" ||
+																		  tx.type ===
+																				"TRANSFER"
+																		? "text-red-600"
+																		: "text-gray-900"
 																}`}
 															>
 																{tx.type ===
@@ -714,11 +723,11 @@ const Transactions = () => {
 																	"TRANSFER_IN"
 																	? "+"
 																	: tx.type ===
-																			  "WITHDRAWAL" ||
-																		  tx.type ===
-																				"TRANSFER"
-																		? "-"
-																		: ""}
+																			"WITHDRAWAL" ||
+																	  tx.type ===
+																			"TRANSFER"
+																	? "-"
+																	: ""}
 																{formatCurrency(
 																	tx.amount,
 																	tx.currency
@@ -733,7 +742,9 @@ const Transactions = () => {
 																		tx.netAmount,
 																		tx.currency
 																	)}{" "}
-																	{tx.currency}
+																	{
+																		tx.currency
+																	}
 																</span>
 															)}
 														</div>
@@ -794,8 +805,7 @@ const Transactions = () => {
 								<div className="flex items-center justify-between px-4 py-3 border-t border-gray-200">
 									<div className="text-sm text-gray-600">
 										Page {filters.page} sur {totalPages} (
-										{totalTransactions}{" "}
-										transactions)
+										{totalTransactions} transactions)
 									</div>
 									<div className="flex items-center gap-2">
 										<button
@@ -851,21 +861,21 @@ const Transactions = () => {
 								</div>
 							</div>
 							<div className="flex items-center gap-2">
-							{wallet?.isDefault && (
-								<span className="px-2 py-1 bg-white/20 rounded-full text-xs">
-									Par défaut
-								</span>
-							)}
-							{wallet && (
-								<button
-									onClick={openAdjustBalanceModal}
-									className="p-2 bg-white/20 hover:bg-white/30 rounded-lg transition"
-									title="Modifier le solde"
-								>
-									<Edit3 className="w-4 h-4 text-white" />
-								</button>
-							)}
-						</div>
+								{wallet?.isDefault && (
+									<span className="px-2 py-1 bg-white/20 rounded-full text-xs">
+										Par défaut
+									</span>
+								)}
+								{wallet && (
+									<button
+										onClick={openAdjustBalanceModal}
+										className="p-2 bg-white/20 hover:bg-white/30 rounded-lg transition"
+										title="Modifier le solde"
+									>
+										<Edit3 className="w-4 h-4 text-white" />
+									</button>
+								)}
+							</div>
 						</div>
 
 						{walletQuery.isLoading ? (
@@ -1001,9 +1011,7 @@ const Transactions = () => {
 									Détails transaction
 								</h3>
 								<button
-									onClick={() =>
-										setSelectedTransaction(null)
-									}
+									onClick={() => setSelectedTransaction(null)}
 									className="text-gray-400 hover:text-gray-600"
 								>
 									<XCircle className="w-5 h-5" />
@@ -1081,7 +1089,9 @@ const Transactions = () => {
 											Statut
 										</p>
 										<div className="mt-1">
-											{getStatusBadge(transactionDetails.status)}
+											{getStatusBadge(
+												transactionDetails.status
+											)}
 										</div>
 									</div>
 									<div>
@@ -1089,31 +1099,45 @@ const Transactions = () => {
 											Date
 										</p>
 										<p className="text-sm">
-											{getFormattedDateTime(transactionDetails.createdAt)}
+											{getFormattedDateTime(
+												transactionDetails.createdAt
+											)}
 										</p>
 									</div>
 
 									{/* Failure Reason - Show for FAILED/CANCELLED transactions */}
-									{(transactionDetails.status === "FAILED" || transactionDetails.status === "CANCELLED") && transactionDetails.metadata?.failureReason && (
-										<div className="bg-red-50 border border-red-200 rounded-lg p-3">
-											<p className="text-xs text-red-600 font-medium mb-1">
-												Raison de l&apos;échec
-											</p>
-											<p className="text-sm text-red-700">
-												{transactionDetails.metadata.failureReason}
-											</p>
-										</div>
-									)}
+									{(transactionDetails.status === "FAILED" ||
+										transactionDetails.status ===
+											"CANCELLED") &&
+										transactionDetails.metadata
+											?.failureReason && (
+											<div className="bg-red-50 border border-red-200 rounded-lg p-3">
+												<p className="text-xs text-red-600 font-medium mb-1">
+													Raison de l&apos;échec
+												</p>
+												<p className="text-sm text-red-700">
+													{
+														transactionDetails
+															.metadata
+															.failureReason
+													}
+												</p>
+											</div>
+										)}
 
 									{/* Ledger Entries */}
-									{(transactionDetails as any).ledgerEntries &&
-										(transactionDetails as any).ledgerEntries.length > 0 && (
+									{(transactionDetails as any)
+										.ledgerEntries &&
+										(transactionDetails as any)
+											.ledgerEntries.length > 0 && (
 											<div className="mt-4 pt-4 border-t border-gray-200">
 												<p className="text-xs text-gray-500 mb-2">
 													Écritures comptables
 												</p>
 												<div className="space-y-2">
-													{(transactionDetails as any).ledgerEntries.map(
+													{(
+														transactionDetails as any
+													).ledgerEntries.map(
 														(
 															entry: any,
 															idx: number
@@ -1172,13 +1196,23 @@ const Transactions = () => {
 							</button>
 						</div>
 
-						<form onSubmit={handleAdjustBalanceSubmit} className="p-6 space-y-4">
+						<form
+							onSubmit={handleAdjustBalanceSubmit}
+							className="p-6 space-y-4"
+						>
 							{/* Current Balance Info */}
 							<div className="bg-gray-50 rounded-lg p-4">
-								<p className="text-sm text-gray-600 mb-1">Solde actuel</p>
+								<p className="text-sm text-gray-600 mb-1">
+									Solde actuel
+								</p>
 								<p className="text-2xl font-bold text-gray-900">
-									{formatCurrency(wallet?.availableBalance || 0, wallet?.currency || "XAF")}{" "}
-									<span className="text-sm text-gray-500">{wallet?.currency || "XAF"}</span>
+									{formatCurrency(
+										wallet?.availableBalance || 0,
+										wallet?.currency || "XAF"
+									)}{" "}
+									<span className="text-sm text-gray-500">
+										{wallet?.currency || "XAF"}
+									</span>
 								</p>
 							</div>
 
@@ -1250,26 +1284,45 @@ const Transactions = () => {
 									</p>
 									<div className="flex items-center justify-between">
 										<span className="text-sm text-blue-700">
-											{parseFloat(adjustBalanceForm.newBalance) > (wallet?.availableBalance || 0)
+											{parseFloat(
+												adjustBalanceForm.newBalance
+											) > (wallet?.availableBalance || 0)
 												? "CREDIT"
-												: parseFloat(adjustBalanceForm.newBalance) < (wallet?.availableBalance || 0)
+												: parseFloat(
+														adjustBalanceForm.newBalance
+												  ) <
+												  (wallet?.availableBalance ||
+														0)
 												? "DEBIT"
 												: "Aucun changement"}
 										</span>
 										<span
 											className={`text-sm font-bold ${
-												parseFloat(adjustBalanceForm.newBalance) > (wallet?.availableBalance || 0)
+												parseFloat(
+													adjustBalanceForm.newBalance
+												) >
+												(wallet?.availableBalance || 0)
 													? "text-green-600"
-													: parseFloat(adjustBalanceForm.newBalance) < (wallet?.availableBalance || 0)
+													: parseFloat(
+															adjustBalanceForm.newBalance
+													  ) <
+													  (wallet?.availableBalance ||
+															0)
 													? "text-red-600"
 													: "text-gray-600"
 											}`}
 										>
-											{parseFloat(adjustBalanceForm.newBalance) > (wallet?.availableBalance || 0)
+											{parseFloat(
+												adjustBalanceForm.newBalance
+											) > (wallet?.availableBalance || 0)
 												? "+"
 												: ""}
 											{formatCurrency(
-												parseFloat(adjustBalanceForm.newBalance) - (wallet?.availableBalance || 0),
+												parseFloat(
+													adjustBalanceForm.newBalance
+												) -
+													(wallet?.availableBalance ||
+														0),
 												wallet?.currency || "XAF"
 											)}{" "}
 											{wallet?.currency || "XAF"}
@@ -1281,7 +1334,9 @@ const Transactions = () => {
 							{/* Error Message */}
 							{adjustBalanceError && (
 								<div className="bg-red-50 border border-red-200 rounded-lg p-3">
-									<p className="text-sm text-red-600">{adjustBalanceError}</p>
+									<p className="text-sm text-red-600">
+										{adjustBalanceError}
+									</p>
 								</div>
 							)}
 
@@ -1289,7 +1344,9 @@ const Transactions = () => {
 							<div className="flex gap-3 pt-2">
 								<button
 									type="button"
-									onClick={() => setShowAdjustBalanceModal(false)}
+									onClick={() =>
+										setShowAdjustBalanceModal(false)
+									}
 									className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition"
 								>
 									Annuler

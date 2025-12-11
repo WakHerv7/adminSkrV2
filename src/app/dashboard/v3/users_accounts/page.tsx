@@ -18,7 +18,7 @@ import { useRouter } from "next/navigation";
 import { setUserV3 } from "@/redux/slices_v3/userV3";
 import CustomTable from "@/components/shared/CustomTable";
 
-const page = () => {
+const Page = () => {
 	const [filterContent, setFilterContent] = useState<any>();
 	const [search, setSearch] = useState();
 	const dispatch = useDispatch();
@@ -145,4 +145,4 @@ const page = () => {
 	);
 };
 
-export default page;
+export default Page;

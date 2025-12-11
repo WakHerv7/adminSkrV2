@@ -33,8 +33,12 @@ const InProgressKYC = () => {
 		},
 	});
 
-	const rearrangedTableData = inProgressKycQuery.data?.data?.map(
-		(item: any, index: number) => {
+	// Handle both paginated response (data.data.data) and direct array (data.data)
+	const kycData = Array.isArray(inProgressKycQuery.data?.data)
+		? inProgressKycQuery.data?.data
+		: inProgressKycQuery.data?.data?.data || [];
+
+	const rearrangedTableData = kycData?.map((item: any, index: number) => {
 			return {
 				serial: index + 1,
 

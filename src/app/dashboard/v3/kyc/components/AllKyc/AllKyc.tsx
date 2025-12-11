@@ -37,8 +37,12 @@ const AllKyc = () => {
 	// --------------------------------
 	//  Remplissage tableau
 	// --------------------------------
-	const rearrangedTableData = allKycQuery.data?.data?.map(
-		(item: any, index: number) => {
+	// Handle both paginated response (data.data.data) and direct array (data.data)
+	const kycData = Array.isArray(allKycQuery.data?.data)
+		? allKycQuery.data?.data
+		: allKycQuery.data?.data?.data || [];
+
+	const rearrangedTableData = kycData?.map((item: any, index: number) => {
 			return {
 				serial: index + 1,
 

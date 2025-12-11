@@ -115,3 +115,20 @@ export const handleCreateDebt = async (data: {
 
 	return responseJson;
 };
+
+export const handleWalletTransfer = async (data: {
+	sourceWalletId: string;
+	destinationWalletId: string;
+	amount: number;
+	reason: string;
+	internalReference?: string;
+}) => {
+	const response = await TransactionsServiceV3.walletTransfer(data);
+	const responseJson = await response.json();
+
+	if (!response.ok) {
+		throw new Error(responseJson.message || "Failed to transfer between wallets");
+	}
+
+	return responseJson;
+};

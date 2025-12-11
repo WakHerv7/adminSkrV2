@@ -132,4 +132,22 @@ export class TransactionsServiceV3 {
 			true
 		);
 	};
+
+	/**
+	 * Transfer between user wallets (admin - no fees)
+	 * Transfers funds between wallets applying only exchange rate (no fees)
+	 */
+	static walletTransfer = (data: {
+		sourceWalletId: string;
+		destinationWalletId: string;
+		amount: number;
+		reason: string;
+		internalReference?: string;
+	}) => {
+		return BaseMethods.postRequest(
+			transactionsUrlV3.WALLET_TRANSFER,
+			data,
+			true
+		);
+	};
 }

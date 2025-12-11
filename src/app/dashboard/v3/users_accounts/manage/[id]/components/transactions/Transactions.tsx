@@ -7,6 +7,7 @@ import {
 	handleGetUserDefaultWallet,
 	handleGetUserTransactions,
 	handleGetUserWallets,
+	handleWalletTransfer,
 } from "@/api/handlers/transactions.handler";
 import LabelWithBadge from "@/components/shared/LabelWithBadge";
 import { getFormattedDateTime } from "@/utils/DateFormat";
@@ -130,6 +131,17 @@ const Transactions = () => {
 	});
 	const [createDebtError, setCreateDebtError] = useState<string | null>(null);
 
+	// Wallet transfer modal state
+	const [showWalletTransferModal, setShowWalletTransferModal] = useState(false);
+	const [walletTransferForm, setWalletTransferForm] = useState({
+		sourceWalletId: "",
+		destinationWalletId: "",
+		amount: "",
+		reason: "",
+		internalReference: "",
+	});
+	const [walletTransferError, setWalletTransferError] = useState<string | null>(null);
+
 	// Fetch default wallet
 	const walletQuery = useQuery({
 		queryKey: ["user-default-wallet", userId],
@@ -201,6 +213,30 @@ const Transactions = () => {
 		},
 		onError: (error: Error) => {
 			setCreateDebtError(error.message);
+		},
+	});
+
+	// Wallet transfer mutation
+	const walletTransferMutation = useMutation({
+		mutationFn: handleWalletTransfer,
+		onSuccess: () => {
+			// Invalidate queries to refresh wallet and transaction data
+			queryClient.invalidateQueries(["user-default-wallet", userId]);
+			queryClient.invalidateQueries(["user-wallets", userId]);
+			queryClient.invalidateQueries(["user-transactions", userId]);
+			// Close modal and reset form
+			setShowWalletTransferModal(false);
+			setWalletTransferForm({
+				sourceWalletId: "",
+				destinationWalletId: "",
+				amount: "",
+				reason: "",
+				internalReference: "",
+			});
+			setWalletTransferError(null);
+		},
+		onError: (error: Error) => {
+			setWalletTransferError(error.message);
 		},
 	});
 
@@ -281,6 +317,59 @@ const Transactions = () => {
 		});
 		setCreateDebtError(null);
 		setShowCreateDebtModal(true);
+	};
+
+	// Handle wallet transfer form submission
+	const handleWalletTransferSubmit = (e: React.FormEvent) => {
+		e.preventDefault();
+		setWalletTransferError(null);
+
+		const amount = parseFloat(walletTransferForm.amount);
+		if (isNaN(amount) || amount <= 0) {
+			setWalletTransferError("Veuillez entrer un montant valide superieur a 0");
+			return;
+		}
+
+		if (!walletTransferForm.sourceWalletId) {
+			setWalletTransferError("Veuillez selectionner un wallet source");
+			return;
+		}
+
+		if (!walletTransferForm.destinationWalletId) {
+			setWalletTransferError("Veuillez selectionner un wallet destination");
+			return;
+		}
+
+		if (walletTransferForm.sourceWalletId === walletTransferForm.destinationWalletId) {
+			setWalletTransferError("Le wallet source et destination doivent etre differents");
+			return;
+		}
+
+		if (!walletTransferForm.reason.trim()) {
+			setWalletTransferError("La raison est obligatoire");
+			return;
+		}
+
+		walletTransferMutation.mutate({
+			sourceWalletId: walletTransferForm.sourceWalletId,
+			destinationWalletId: walletTransferForm.destinationWalletId,
+			amount: amount,
+			reason: walletTransferForm.reason,
+			internalReference: walletTransferForm.internalReference || undefined,
+		});
+	};
+
+	// Open wallet transfer modal
+	const openWalletTransferModal = () => {
+		setWalletTransferForm({
+			sourceWalletId: wallet?.id || "",
+			destinationWalletId: "",
+			amount: "",
+			reason: "",
+			internalReference: "",
+		});
+		setWalletTransferError(null);
+		setShowWalletTransferModal(true);
 	};
 
 	// Unwrap gateway response: {status, data, message, statusCode}
@@ -978,6 +1067,15 @@ const Transactions = () => {
 							)}
 							{wallet && (
 								<>
+									{wallets.length > 1 && (
+										<button
+											onClick={openWalletTransferModal}
+											className="p-2 bg-blue-500/80 hover:bg-blue-500 rounded-lg transition"
+											title="Transferer entre wallets"
+										>
+											<ArrowRightLeft className="w-4 h-4 text-white" />
+										</button>
+									)}
 									<button
 										onClick={openCreateDebtModal}
 										className="p-2 bg-red-500/80 hover:bg-red-500 rounded-lg transition"
@@ -1726,6 +1824,203 @@ const Transactions = () => {
 										</>
 									) : (
 										"Creer la dette"
+									)}
+								</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			)}
+
+			{/* Wallet Transfer Modal */}
+			{showWalletTransferModal && (
+				<div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+					<div className="bg-white rounded-2xl shadow-xl w-full max-w-md mx-4">
+						<div className="flex items-center justify-between p-6 border-b border-gray-200">
+							<div className="flex items-center gap-3">
+								<div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+									<ArrowRightLeft className="w-5 h-5 text-blue-600" />
+								</div>
+								<h3 className="text-lg font-semibold text-gray-900">
+									Transfert entre wallets
+								</h3>
+							</div>
+							<button
+								onClick={() => setShowWalletTransferModal(false)}
+								className="p-2 hover:bg-gray-100 rounded-lg transition"
+							>
+								<X className="w-5 h-5 text-gray-500" />
+							</button>
+						</div>
+
+						<form onSubmit={handleWalletTransferSubmit} className="p-6 space-y-4">
+							{/* Source Wallet Select */}
+							<div>
+								<label className="block text-sm font-medium text-gray-700 mb-1">
+									Wallet source *
+								</label>
+								<select
+									value={walletTransferForm.sourceWalletId}
+									onChange={(e) =>
+										setWalletTransferForm((prev) => ({
+											...prev,
+											sourceWalletId: e.target.value,
+										}))
+									}
+									className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+									required
+								>
+									<option value="">Selectionnez le wallet source</option>
+									{wallets.map((w) => (
+										<option key={w.id} value={w.id}>
+											{w.currency} - Solde: {formatCurrency(w.availableBalance, w.currency)}
+											{w.isDefault ? " (defaut)" : ""}
+										</option>
+									))}
+								</select>
+							</div>
+
+							{/* Destination Wallet Select */}
+							<div>
+								<label className="block text-sm font-medium text-gray-700 mb-1">
+									Wallet destination *
+								</label>
+								<select
+									value={walletTransferForm.destinationWalletId}
+									onChange={(e) =>
+										setWalletTransferForm((prev) => ({
+											...prev,
+											destinationWalletId: e.target.value,
+										}))
+									}
+									className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+									required
+								>
+									<option value="">Selectionnez le wallet destination</option>
+									{wallets
+										.filter((w) => w.id !== walletTransferForm.sourceWalletId)
+										.map((w) => (
+											<option key={w.id} value={w.id}>
+												{w.currency} - Solde: {formatCurrency(w.availableBalance, w.currency)}
+												{w.isDefault ? " (defaut)" : ""}
+											</option>
+										))}
+								</select>
+							</div>
+
+							{/* Amount Input */}
+							<div>
+								<label className="block text-sm font-medium text-gray-700 mb-1">
+									Montant a transferer *
+									{walletTransferForm.sourceWalletId && (
+										<span className="text-gray-500 font-normal">
+											{" "}({wallets.find(w => w.id === walletTransferForm.sourceWalletId)?.currency})
+										</span>
+									)}
+								</label>
+								<input
+									type="number"
+									step="1"
+									min="1"
+									value={walletTransferForm.amount}
+									onChange={(e) =>
+										setWalletTransferForm((prev) => ({
+											...prev,
+											amount: e.target.value,
+										}))
+									}
+									className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+									placeholder="Entrez le montant"
+									required
+								/>
+								{walletTransferForm.sourceWalletId && (
+									<p className="text-xs text-gray-500 mt-1">
+										Solde disponible: {formatCurrency(
+											wallets.find(w => w.id === walletTransferForm.sourceWalletId)?.availableBalance || 0,
+											wallets.find(w => w.id === walletTransferForm.sourceWalletId)?.currency || ""
+										)} {wallets.find(w => w.id === walletTransferForm.sourceWalletId)?.currency}
+									</p>
+								)}
+							</div>
+
+							{/* Reason Input */}
+							<div>
+								<label className="block text-sm font-medium text-gray-700 mb-1">
+									Raison du transfert *
+								</label>
+								<textarea
+									value={walletTransferForm.reason}
+									onChange={(e) =>
+										setWalletTransferForm((prev) => ({
+											...prev,
+											reason: e.target.value,
+										}))
+									}
+									className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+									placeholder="Ex: Conversion de devise, equilibrage de compte..."
+									rows={2}
+									required
+								/>
+							</div>
+
+							{/* Internal Reference Input */}
+							<div>
+								<label className="block text-sm font-medium text-gray-700 mb-1">
+									Reference interne (optionnel)
+								</label>
+								<input
+									type="text"
+									value={walletTransferForm.internalReference}
+									onChange={(e) =>
+										setWalletTransferForm((prev) => ({
+											...prev,
+											internalReference: e.target.value,
+										}))
+									}
+									className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+									placeholder="Ex: TICKET-12345"
+								/>
+							</div>
+
+							{/* Info Box */}
+							<div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+								<div className="flex items-start gap-2">
+									<ArrowRightLeft className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" />
+									<div className="text-xs text-blue-700">
+										<p className="font-medium mb-1">Information</p>
+										<p>Ce transfert entre wallets sera effectue <strong>sans frais</strong>. Seul le taux de change sera applique si les devises sont differentes.</p>
+									</div>
+								</div>
+							</div>
+
+							{/* Error Message */}
+							{walletTransferError && (
+								<div className="bg-red-50 border border-red-200 rounded-lg p-3">
+									<p className="text-sm text-red-600">{walletTransferError}</p>
+								</div>
+							)}
+
+							{/* Action Buttons */}
+							<div className="flex gap-3 pt-2">
+								<button
+									type="button"
+									onClick={() => setShowWalletTransferModal(false)}
+									className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition"
+								>
+									Annuler
+								</button>
+								<button
+									type="submit"
+									disabled={walletTransferMutation.isLoading}
+									className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+								>
+									{walletTransferMutation.isLoading ? (
+										<>
+											<div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+											Traitement...
+										</>
+									) : (
+										"Transferer"
 									)}
 								</button>
 							</div>

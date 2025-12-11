@@ -85,4 +85,6 @@ export const transactionsUrlV3 = {
 	CREATE_DEBT: `${TRANSACTIONS_BASE_URL_V3}/debts/create`,
 	// Wallet transfer (admin - no fees)
 	WALLET_TRANSFER: `${TRANSACTIONS_BASE_URL_V3}/wallets/transfer`,
+	// Wallet creation (admin)
+	CREATE_WALLET: `${TRANSACTIONS_BASE_URL_V3}/wallets/create`,
 };

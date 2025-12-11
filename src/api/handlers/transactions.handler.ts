@@ -132,3 +132,19 @@ export const handleWalletTransfer = async (data: {
 
 	return responseJson;
 };
+
+export const handleCreateWallet = async (data: {
+	userId: string;
+	currency: string;
+	isDefault?: boolean;
+	reason?: string;
+}) => {
+	const response = await TransactionsServiceV3.createWallet(data);
+	const responseJson = await response.json();
+
+	if (!response.ok) {
+		throw new Error(responseJson.message || "Failed to create wallet");
+	}
+
+	return responseJson;
+};

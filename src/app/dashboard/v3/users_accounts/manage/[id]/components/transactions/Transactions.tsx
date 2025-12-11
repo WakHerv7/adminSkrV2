@@ -3,6 +3,7 @@
 import {
 	handleAdjustWalletBalance,
 	handleCreateDebt,
+	handleCreateWallet,
 	handleGetTransactionDetails,
 	handleGetUserDefaultWallet,
 	handleGetUserTransactions,
@@ -142,6 +143,15 @@ const Transactions = () => {
 	});
 	const [walletTransferError, setWalletTransferError] = useState<string | null>(null);
 
+	// Wallet creation modal state
+	const [showCreateWalletModal, setShowCreateWalletModal] = useState(false);
+	const [createWalletForm, setCreateWalletForm] = useState({
+		currency: "",
+		isDefault: false,
+		reason: "",
+	});
+	const [createWalletError, setCreateWalletError] = useState<string | null>(null);
+
 	// Fetch default wallet
 	const walletQuery = useQuery({
 		queryKey: ["user-default-wallet", userId],
@@ -237,6 +247,27 @@ const Transactions = () => {
 		},
 		onError: (error: Error) => {
 			setWalletTransferError(error.message);
+		},
+	});
+
+	// Create wallet mutation
+	const createWalletMutation = useMutation({
+		mutationFn: handleCreateWallet,
+		onSuccess: () => {
+			// Invalidate queries to refresh wallet data
+			queryClient.invalidateQueries(["user-default-wallet", userId]);
+			queryClient.invalidateQueries(["user-wallets", userId]);
+			// Close modal and reset form
+			setShowCreateWalletModal(false);
+			setCreateWalletForm({
+				currency: "",
+				isDefault: false,
+				reason: "",
+			});
+			setCreateWalletError(null);
+		},
+		onError: (error: Error) => {
+			setCreateWalletError(error.message);
 		},
 	});
 
@@ -370,6 +401,44 @@ const Transactions = () => {
 		});
 		setWalletTransferError(null);
 		setShowWalletTransferModal(true);
+	};
+
+	// Handle wallet creation form submission
+	const handleCreateWalletSubmit = (e: React.FormEvent) => {
+		e.preventDefault();
+		setCreateWalletError(null);
+
+		if (!createWalletForm.currency.trim()) {
+			setCreateWalletError("Veuillez selectionner une devise");
+			return;
+		}
+
+		// Check if user already has a wallet in this currency
+		const existingWallet = wallets.find(
+			(w) => w.currency.toUpperCase() === createWalletForm.currency.toUpperCase()
+		);
+		if (existingWallet) {
+			setCreateWalletError(`L'utilisateur possede deja un wallet en ${createWalletForm.currency}`);
+			return;
+		}
+
+		createWalletMutation.mutate({
+			userId: userId,
+			currency: createWalletForm.currency.toUpperCase(),
+			isDefault: createWalletForm.isDefault,
+			reason: createWalletForm.reason || undefined,
+		});
+	};
+
+	// Open create wallet modal
+	const openCreateWalletModal = () => {
+		setCreateWalletForm({
+			currency: "",
+			isDefault: false,
+			reason: "",
+		});
+		setCreateWalletError(null);
+		setShowCreateWalletModal(true);
 	};
 
 	// Unwrap gateway response: {status, data, message, statusCode}
@@ -1165,22 +1234,38 @@ const Transactions = () => {
 					</div>
 
 					{/* All Wallets List */}
-					{wallets.length > 1 && (
-						<div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-							<div className="flex items-center justify-between mb-3">
-								<h3 className="text-sm font-semibold text-gray-900">
-									Tous les wallets ({wallets.length})
-								</h3>
+					<div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+						<div className="flex items-center justify-between mb-3">
+							<h3 className="text-sm font-semibold text-gray-900">
+								Tous les wallets ({wallets.length})
+							</h3>
+							<div className="flex items-center gap-2">
+								{wallets.length > 1 && (
+									<button
+										onClick={() => {
+											setSelectedWalletId(null);
+											handleFilterChange("currency", undefined);
+										}}
+										className="text-xs text-[#18bc7a] hover:underline"
+									>
+										Réinitialiser
+									</button>
+								)}
 								<button
-									onClick={() => {
-										setSelectedWalletId(null);
-										handleFilterChange("currency", undefined);
-									}}
-									className="text-xs text-[#18bc7a] hover:underline"
+									onClick={openCreateWalletModal}
+									className="flex items-center gap-1 px-2 py-1 bg-[#18bc7a] text-white text-xs rounded-lg hover:bg-emerald-600 transition"
 								>
-									Réinitialiser
+									<Plus className="w-3 h-3" />
+									Ajouter
 								</button>
 							</div>
+						</div>
+						{wallets.length === 0 ? (
+							<div className="text-center py-4">
+								<Wallet className="w-8 h-8 text-gray-300 mx-auto mb-2" />
+								<p className="text-sm text-gray-500">Aucun wallet</p>
+							</div>
+						) : (
 							<div className="space-y-2">
 								{wallets.map((w) => (
 									<button
@@ -1232,8 +1317,8 @@ const Transactions = () => {
 									</button>
 								))}
 							</div>
-						</div>
-					)}
+						)}
+					</div>
 
 					{/* Quick Stats Card */}
 					<div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
@@ -2021,6 +2106,151 @@ const Transactions = () => {
 										</>
 									) : (
 										"Transferer"
+									)}
+								</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			)}
+
+			{/* Create Wallet Modal */}
+			{showCreateWalletModal && (
+				<div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+					<div className="bg-white rounded-2xl shadow-xl w-full max-w-md mx-4">
+						<div className="flex items-center justify-between p-6 border-b border-gray-200">
+							<div className="flex items-center gap-3">
+								<div className="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center">
+									<Wallet className="w-5 h-5 text-emerald-600" />
+								</div>
+								<h3 className="text-lg font-semibold text-gray-900">
+									Creer un wallet
+								</h3>
+							</div>
+							<button
+								onClick={() => setShowCreateWalletModal(false)}
+								className="p-2 hover:bg-gray-100 rounded-lg transition"
+							>
+								<X className="w-5 h-5 text-gray-500" />
+							</button>
+						</div>
+
+						<form onSubmit={handleCreateWalletSubmit} className="p-6 space-y-4">
+							{/* Currency Select */}
+							<div>
+								<label className="block text-sm font-medium text-gray-700 mb-1">
+									Devise *
+								</label>
+								<select
+									value={createWalletForm.currency}
+									onChange={(e) =>
+										setCreateWalletForm((prev) => ({
+											...prev,
+											currency: e.target.value,
+										}))
+									}
+									className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#18bc7a] focus:border-transparent"
+									required
+								>
+									<option value="">Selectionnez une devise</option>
+									<option value="XAF">XAF - Franc CFA BEAC</option>
+									<option value="XOF">XOF - Franc CFA BCEAO</option>
+									<option value="EUR">EUR - Euro</option>
+									<option value="USD">USD - Dollar US</option>
+									<option value="GBP">GBP - Livre Sterling</option>
+									<option value="CAD">CAD - Dollar Canadien</option>
+									<option value="CHF">CHF - Franc Suisse</option>
+									<option value="NGN">NGN - Naira</option>
+									<option value="GHS">GHS - Cedi Ghanaen</option>
+									<option value="KES">KES - Shilling Kenyan</option>
+									<option value="ZAR">ZAR - Rand Sud-Africain</option>
+									<option value="MAD">MAD - Dirham Marocain</option>
+								</select>
+								{/* Show existing wallets currencies */}
+								{wallets.length > 0 && (
+									<p className="text-xs text-gray-500 mt-1">
+										Wallets existants: {wallets.map(w => w.currency).join(", ")}
+									</p>
+								)}
+							</div>
+
+							{/* Is Default Checkbox */}
+							<div className="flex items-center gap-3">
+								<input
+									type="checkbox"
+									id="isDefaultWallet"
+									checked={createWalletForm.isDefault}
+									onChange={(e) =>
+										setCreateWalletForm((prev) => ({
+											...prev,
+											isDefault: e.target.checked,
+										}))
+									}
+									className="w-4 h-4 text-[#18bc7a] border-gray-300 rounded focus:ring-[#18bc7a]"
+								/>
+								<label htmlFor="isDefaultWallet" className="text-sm text-gray-700">
+									Definir comme wallet par defaut
+								</label>
+							</div>
+
+							{/* Reason Input */}
+							<div>
+								<label className="block text-sm font-medium text-gray-700 mb-1">
+									Raison (optionnel)
+								</label>
+								<textarea
+									value={createWalletForm.reason}
+									onChange={(e) =>
+										setCreateWalletForm((prev) => ({
+											...prev,
+											reason: e.target.value,
+										}))
+									}
+									className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#18bc7a] focus:border-transparent resize-none"
+									placeholder="Ex: Demande client pour transactions internationales..."
+									rows={2}
+								/>
+							</div>
+
+							{/* Info Box */}
+							<div className="bg-emerald-50 border border-emerald-200 rounded-lg p-3">
+								<div className="flex items-start gap-2">
+									<Wallet className="w-4 h-4 text-emerald-600 mt-0.5 flex-shrink-0" />
+									<div className="text-xs text-emerald-700">
+										<p className="font-medium mb-1">Information</p>
+										<p>Le wallet sera cree avec un solde initial de 0. Un utilisateur ne peut avoir qu&apos;un seul wallet par devise.</p>
+									</div>
+								</div>
+							</div>
+
+							{/* Error Message */}
+							{createWalletError && (
+								<div className="bg-red-50 border border-red-200 rounded-lg p-3">
+									<p className="text-sm text-red-600">{createWalletError}</p>
+								</div>
+							)}
+
+							{/* Action Buttons */}
+							<div className="flex gap-3 pt-2">
+								<button
+									type="button"
+									onClick={() => setShowCreateWalletModal(false)}
+									className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition"
+								>
+									Annuler
+								</button>
+								<button
+									type="submit"
+									disabled={createWalletMutation.isLoading}
+									className="flex-1 px-4 py-2 bg-[#18bc7a] text-white rounded-lg hover:bg-emerald-600 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+								>
+									{createWalletMutation.isLoading ? (
+										<>
+											<div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+											Creation...
+										</>
+									) : (
+										"Creer le wallet"
 									)}
 								</button>
 							</div>

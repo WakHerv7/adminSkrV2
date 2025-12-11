@@ -150,4 +150,21 @@ export class TransactionsServiceV3 {
 			true
 		);
 	};
+
+	/**
+	 * Create a new wallet for a user (admin)
+	 * Creates a wallet in a specific currency for an existing user
+	 */
+	static createWallet = (data: {
+		userId: string;
+		currency: string;
+		isDefault?: boolean;
+		reason?: string;
+	}) => {
+		return BaseMethods.postRequest(
+			transactionsUrlV3.CREATE_WALLET,
+			data,
+			true
+		);
+	};
 }

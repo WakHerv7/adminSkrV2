@@ -13,7 +13,6 @@ import { KYCServiceV3 } from "@/api/services/v3/kyc";
 import DeclinedKYC from "./components/declinedKYC/DeclinedKYC";
 import ApprovedKyc from "./components/approvedKyc/ApprovedKyc";
 import AllKyc from "./components/AllKyc/AllKyc";
-import InProgressKYC from "./components/inProgress/InProgressKYC";
 
 const Kyc = () => {
 	return (
@@ -40,12 +39,6 @@ const Kyc = () => {
 							>
 								KYC Rejetés
 							</TabsTrigger>
-							<TabsTrigger
-								className="TabsTrigger border-b-1 md:border-b-0"
-								value="inProgress"
-							>
-								En progression
-							</TabsTrigger>
 
 							<TabsTrigger
 								className="TabsTrigger border-b-1 md:border-b-0"
@@ -64,9 +57,6 @@ const Kyc = () => {
 						</TabsContent>
 						<TabsContent value="declined">
 							<DeclinedKYC />
-						</TabsContent>
-						<TabsContent value="inProgress">
-							<InProgressKYC />
 						</TabsContent>
 
 						<TabsContent value="all">

@@ -1,9 +1,13 @@
 "use client";
 
 import { KYCServiceV3 } from "@/api/services/v3/kyc";
+import {
+	UserManagementServiceV3,
+	UpdateUserProfileData,
+} from "@/api/services/v3/userManagement";
 import Layout from "@/components/shared/Layout";
 import { useParams } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { useMutation, useQuery } from "react-query";
 import {
@@ -19,8 +23,14 @@ import {
 	ChevronRight,
 	Plus,
 	Trash2,
+	Check,
+	X,
+	ChevronDown,
+	Edit3,
 } from "lucide-react";
 import { KYCRaisonRejectServiceV3 } from "@/api/services/v3/kycRaisonReject";
+import { kycRejectReasonsEN } from "@/constants/v3/kycRejectReasons";
+import { Search } from "lucide-react";
 
 const handleGetKyc = async ({ queryKey }: any) => {
 	const [_key, userId] = queryKey;
@@ -69,6 +79,81 @@ const ManageKyc = () => {
 	const [showApproveModal, setShowApproveModal] = useState(false);
 	const [rejectReasons, setRejectReasons] = useState<string[]>([""]);
 	const [isSubmitting, setIsSubmitting] = useState(false);
+	const [selectedPredefinedReasons, setSelectedPredefinedReasons] = useState<
+		string[]
+	>([]);
+	const [customRejectReasons, setCustomRejectReasons] = useState<string[]>([
+		"",
+	]);
+
+	const [additionalReason, setAdditionalReason] = useState("");
+	const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+	const [selectedRejectReasons, setSelectedRejectReasons] = useState<
+		string[]
+	>([]);
+	const [dropdownOpen, setDropdownOpen] = useState(false);
+	const [selectedReasons, setSelectedReasons] = useState<string[]>([]);
+	const [customReason, setCustomReason] = useState("");
+
+	// State pour l'édition des informations utilisateur dans le modal d'approbation
+	const [userProfileForm, setUserProfileForm] = useState<UpdateUserProfileData>(
+		{
+			firstName: "",
+			lastName: "",
+			email: "",
+			state: "",
+			address: "",
+			gender: "",
+			dateOfBirth: "",
+			city: "",
+		}
+	);
+	const [searchQuery, setSearchQuery] = useState("");
+
+	// Fonctions pour gérer les raisons personnalisées
+	const addCustomRejectReason = () => {
+		setCustomRejectReasons([...customRejectReasons, ""]);
+	};
+
+	const dropdownRef = useRef<HTMLDivElement>(null);
+
+	useEffect(() => {
+		const handleClickOutside = (event: MouseEvent) => {
+			if (
+				dropdownRef.current &&
+				!dropdownRef.current.contains(event.target as Node)
+			) {
+				setDropdownOpen(false);
+			}
+		};
+
+		if (dropdownOpen) {
+			document.addEventListener("mousedown", handleClickOutside);
+		}
+
+		return () => {
+			document.removeEventListener("mousedown", handleClickOutside);
+		};
+	}, [dropdownOpen]);
+
+	// Ajoutez la ref au container
+	<div className="relative" ref={dropdownRef}>
+		{/* Votre dropdown */}
+	</div>;
+
+	const removeCustomRejectReason = (index: number) => {
+		if (customRejectReasons.length > 1) {
+			const newReasons = [...customRejectReasons];
+			newReasons.splice(index, 1);
+			setCustomRejectReasons(newReasons);
+		}
+	};
+
+	const updateCustomRejectReason = (index: number, value: string) => {
+		const newReasons = [...customRejectReasons];
+		newReasons[index] = value;
+		setCustomRejectReasons(newReasons);
+	};
 
 	const kycQuery = useQuery({
 		queryKey: ["kyc-details", userId],
@@ -112,7 +197,56 @@ const ManageKyc = () => {
 		},
 	});
 
+	// Mutation pour mettre à jour le profil utilisateur
+	const updateUserProfile = useMutation({
+		mutationFn: async ({
+			userId,
+			data,
+		}: {
+			userId: string;
+			data: UpdateUserProfileData;
+		}) => {
+			const response = await UserManagementServiceV3.updateUserProfile(
+				userId,
+				data
+			);
+			const responseJson = await response.json();
+			if (!response.ok) {
+				throw new Error(
+					responseJson.message ||
+						"Erreur lors de la mise à jour du profil"
+				);
+			}
+			return responseJson;
+		},
+	});
+
 	const { data: kycData, isLoading, isError, refetch } = kycQuery;
+
+	// Initialiser le formulaire avec les données utilisateur quand elles sont chargées
+	useEffect(() => {
+		if (kycData?.user) {
+			const user = kycData.user;
+			// Extraire firstName et lastName du fullName si nécessaire
+			const nameParts = (user.fullName || "").split(" ");
+			const firstName = user.firstName || nameParts[0] || "";
+			const lastName =
+				user.lastName || nameParts.slice(1).join(" ") || "";
+
+			setUserProfileForm({
+				firstName,
+				lastName,
+				email: user.email || "",
+				state: user.state || "",
+				address: user.address || "",
+				gender: user.gender || "",
+				dateOfBirth: user.dateOfBirth
+					? new Date(user.dateOfBirth).toISOString().split("T")[0]
+					: "",
+				city: user.city || "",
+			});
+		}
+	}, [kycData]);
 
 	// Fonctions pour gérer les raisons de rejet
 	const addRejectReason = () => {
@@ -637,47 +771,262 @@ const ManageKyc = () => {
 				</div>
 			)}
 
-			{/* Modal de confirmation d'approbation */}
+			{/* Modal d'approbation avec édition des informations utilisateur */}
 			{showApproveModal && (
 				<div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000] p-4">
-					<div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
+					<div className="bg-white rounded-lg shadow-xl max-w-2xl w-full p-6 max-h-[90vh] overflow-y-auto">
 						<div className="flex items-center gap-3 mb-4">
 							<div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
-								<CheckCircle className="w-6 h-6 text-[#18bc7a]" />
+								<Edit3 className="w-6 h-6 text-[#18bc7a]" />
 							</div>
-							<h3 className="text-xl font-bold text-gray-900">
-								Approuver le KYC
-							</h3>
+							<div>
+								<h3 className="text-xl font-bold text-gray-900">
+									Approuver le KYC
+								</h3>
+								<p className="text-sm text-gray-500">
+									Vérifiez et modifiez les informations avant
+									approbation
+								</p>
+							</div>
 						</div>
-						<p className="text-gray-600 mb-6">
-							Êtes-vous sûr de vouloir approuver le KYC de cet
-							utilisateur ? Cette action validera son identité.
-						</p>
+
+						<div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mb-6">
+							<p className="text-sm text-yellow-800">
+								<strong>Note:</strong> Vous pouvez modifier les
+								informations de l&apos;utilisateur ci-dessous
+								avant d&apos;approuver le KYC. Les modifications
+								seront enregistrées automatiquement.
+							</p>
+						</div>
+
+						{/* Formulaire d'édition du profil utilisateur */}
+						<div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+							<div>
+								<label className="block text-sm font-medium text-gray-700 mb-1">
+									Prénom
+								</label>
+								<input
+									type="text"
+									value={userProfileForm.firstName || ""}
+									onChange={(e) =>
+										setUserProfileForm((prev) => ({
+											...prev,
+											firstName: e.target.value,
+										}))
+									}
+									className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#18bc7a] focus:border-transparent"
+									placeholder="Prénom"
+								/>
+							</div>
+							<div>
+								<label className="block text-sm font-medium text-gray-700 mb-1">
+									Nom
+								</label>
+								<input
+									type="text"
+									value={userProfileForm.lastName || ""}
+									onChange={(e) =>
+										setUserProfileForm((prev) => ({
+											...prev,
+											lastName: e.target.value,
+										}))
+									}
+									className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#18bc7a] focus:border-transparent"
+									placeholder="Nom"
+								/>
+							</div>
+							<div>
+								<label className="block text-sm font-medium text-gray-700 mb-1">
+									Email
+								</label>
+								<input
+									type="email"
+									value={userProfileForm.email || ""}
+									onChange={(e) =>
+										setUserProfileForm((prev) => ({
+											...prev,
+											email: e.target.value,
+										}))
+									}
+									className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#18bc7a] focus:border-transparent"
+									placeholder="Email"
+								/>
+							</div>
+							<div>
+								<label className="block text-sm font-medium text-gray-700 mb-1">
+									Genre
+								</label>
+								<select
+									value={userProfileForm.gender || ""}
+									onChange={(e) =>
+										setUserProfileForm((prev) => ({
+											...prev,
+											gender: e.target.value,
+										}))
+									}
+									className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#18bc7a] focus:border-transparent"
+								>
+									<option value="">Sélectionnez</option>
+									<option value="male">Homme</option>
+									<option value="female">Femme</option>
+									<option value="other">Autre</option>
+								</select>
+							</div>
+							<div>
+								<label className="block text-sm font-medium text-gray-700 mb-1">
+									Date de naissance
+								</label>
+								<input
+									type="date"
+									value={userProfileForm.dateOfBirth || ""}
+									onChange={(e) =>
+										setUserProfileForm((prev) => ({
+											...prev,
+											dateOfBirth: e.target.value,
+										}))
+									}
+									className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#18bc7a] focus:border-transparent"
+								/>
+							</div>
+							<div>
+								<label className="block text-sm font-medium text-gray-700 mb-1">
+									Ville
+								</label>
+								<input
+									type="text"
+									value={userProfileForm.city || ""}
+									onChange={(e) =>
+										setUserProfileForm((prev) => ({
+											...prev,
+											city: e.target.value,
+										}))
+									}
+									className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#18bc7a] focus:border-transparent"
+									placeholder="Ville"
+								/>
+							</div>
+							<div>
+								<label className="block text-sm font-medium text-gray-700 mb-1">
+									État/Région
+								</label>
+								<input
+									type="text"
+									value={userProfileForm.state || ""}
+									onChange={(e) =>
+										setUserProfileForm((prev) => ({
+											...prev,
+											state: e.target.value,
+										}))
+									}
+									className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#18bc7a] focus:border-transparent"
+									placeholder="État/Région"
+								/>
+							</div>
+							<div className="md:col-span-2">
+								<label className="block text-sm font-medium text-gray-700 mb-1">
+									Adresse
+								</label>
+								<input
+									type="text"
+									value={userProfileForm.address || ""}
+									onChange={(e) =>
+										setUserProfileForm((prev) => ({
+											...prev,
+											address: e.target.value,
+										}))
+									}
+									className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#18bc7a] focus:border-transparent"
+									placeholder="Adresse complète"
+								/>
+							</div>
+						</div>
+
 						<div className="flex gap-3">
 							<button
 								onClick={() => setShowApproveModal(false)}
-								disabled={updateKyc.isLoading}
+								disabled={
+									updateKyc.isLoading ||
+									updateUserProfile.isLoading
+								}
 								className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition disabled:opacity-50"
 							>
 								Annuler
 							</button>
 							<button
-								onClick={() =>
-									updateKyc.mutate({
-										kycId: kycData.id,
-										data: { status: "COMPLETED" },
-									})
+								onClick={async () => {
+									try {
+										// Filtrer les champs vides pour ne pas écraser avec des valeurs vides
+										const profileData: UpdateUserProfileData =
+											{};
+										if (userProfileForm.firstName?.trim())
+											profileData.firstName =
+												userProfileForm.firstName.trim();
+										if (userProfileForm.lastName?.trim())
+											profileData.lastName =
+												userProfileForm.lastName.trim();
+										if (userProfileForm.email?.trim())
+											profileData.email =
+												userProfileForm.email.trim();
+										if (userProfileForm.gender)
+											profileData.gender =
+												userProfileForm.gender;
+										if (userProfileForm.dateOfBirth)
+											profileData.dateOfBirth =
+												userProfileForm.dateOfBirth;
+										if (userProfileForm.city?.trim())
+											profileData.city =
+												userProfileForm.city.trim();
+										if (userProfileForm.state?.trim())
+											profileData.state =
+												userProfileForm.state.trim();
+										if (userProfileForm.address?.trim())
+											profileData.address =
+												userProfileForm.address.trim();
+
+										// 1. Mettre à jour le profil utilisateur s'il y a des modifications
+										if (
+											Object.keys(profileData).length > 0
+										) {
+											await updateUserProfile.mutateAsync(
+												{
+													userId: kycData.user.userId,
+													data: profileData,
+												}
+											);
+											toast.success(
+												"Profil utilisateur mis à jour"
+											);
+										}
+
+										// 2. Approuver le KYC
+										updateKyc.mutate({
+											kycId: kycData.id,
+											data: { status: "COMPLETED" },
+										});
+									} catch (error: any) {
+										toast.error(
+											error.message ||
+												"Erreur lors de la mise à jour"
+										);
+									}
+								}}
+								disabled={
+									updateKyc.isLoading ||
+									updateUserProfile.isLoading
 								}
-								disabled={updateKyc.isLoading}
 								className="flex-1 px-4 py-2 bg-[#18bc7a] hover:bg-[#15a669] text-white rounded-lg transition disabled:opacity-50 flex items-center justify-center gap-2"
 							>
-								{updateKyc.isLoading ? (
+								{updateKyc.isLoading ||
+								updateUserProfile.isLoading ? (
 									<>
 										<div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
 										Traitement...
 									</>
 								) : (
-									"Confirmer"
+									<>
+										<CheckCircle className="w-4 h-4" />
+										Approuver le KYC
+									</>
 								)}
 							</button>
 						</div>
@@ -687,8 +1036,8 @@ const ManageKyc = () => {
 
 			{/* Modal de rejet avec plusieurs raisons */}
 			{showRejectModal && (
-				<div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000] p-4">
-					<div className="bg-white rounded-lg shadow-xl max-w-2xl w-full p-6 max-h-[90vh] overflow-y-auto">
+				<div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000] p-4 ">
+					<div className="bg-white   rounded-lg shadow-xl max-w-2xl w-full p-6 min-h-[80vh] overflow-y-auto">
 						<div className="flex items-center gap-3 mb-4">
 							<div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
 								<XCircle className="w-6 h-6 text-red-600" />
@@ -697,60 +1046,485 @@ const ManageKyc = () => {
 								Rejeter le KYC
 							</h3>
 						</div>
-						<p className="text-gray-600 mb-4">
-							Veuillez indiquer les raisons du rejet de ce KYC :
+						<p className="text-gray-600 mb-6">
+							Veuillez sélectionner les raisons du rejet de ce KYC
+							:
 						</p>
 
-						{/* Liste des champs de raisons */}
-						<div className="space-y-3 mb-4">
-							{rejectReasons.map((reason, index) => (
-								<div key={index} className="flex gap-2">
-									<textarea
-										value={reason}
-										onChange={(e) =>
-											updateRejectReason(
-												index,
-												e.target.value
-											)
-										}
-										placeholder={`Raison ${
-											index + 1
-										}: Ex: Document illisible, informations incohérentes...`}
-										className="flex-1 h-24 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#18bc7a] focus:border-transparent resize-none"
-										disabled={updateKyc.isLoading}
+						{/* VRAIE LISTE DÉROULANTE PERSONNALISÉE AVEC RECHERCHE */}
+						<div className="mb-6">
+							<label className="block text-sm font-medium text-gray-700 mb-2">
+								Sélectionnez les raisons :
+							</label>
+
+							{/* Bouton qui ouvre la liste déroulante */}
+							<div className="relative">
+								<button
+									type="button"
+									onClick={() =>
+										setDropdownOpen(!dropdownOpen)
+									}
+									className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-white text-left flex justify-between items-center hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-[#18bc7a] focus:border-transparent"
+									disabled={updateKyc.isLoading}
+								>
+									<span className="truncate">
+										{selectedReasons.length === 0
+											? "Cliquez pour sélectionner les raisons"
+											: `${selectedReasons.length} raison(s) sélectionnée(s)`}
+									</span>
+									<ChevronDown
+										className={`w-5 h-5 text-gray-500 transition-transform ${
+											dropdownOpen
+												? "transform rotate-180"
+												: ""
+										}`}
 									/>
-									{rejectReasons.length > 1 && (
+								</button>
+
+								{/* Liste déroulante qui s'ouvre au clic */}
+								{dropdownOpen && (
+									<div className="absolute z-50 mt-1 w-full bg-white border border-gray-300 rounded-lg shadow-lg overflow-hidden">
+										{/* Container avec hauteur fixe et scroll */}
+										<div className="max-h-80 overflow-y-auto">
+											<div className="p-2">
+												{/* Barre de recherche */}
+												<div className="sticky top-0 bg-white z-20 pb-2">
+													<div className="relative">
+														<Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+														<input
+															type="text"
+															value={searchQuery}
+															onChange={(e) =>
+																setSearchQuery(
+																	e.target
+																		.value
+																)
+															}
+															placeholder="Rechercher une raison..."
+															className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#18bc7a] focus:border-transparent text-sm"
+															onClick={(e) =>
+																e.stopPropagation()
+															}
+														/>
+														{searchQuery && (
+															<button
+																type="button"
+																onClick={() =>
+																	setSearchQuery(
+																		""
+																	)
+																}
+																className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+															>
+																<X className="w-4 h-4" />
+															</button>
+														)}
+													</div>
+
+													{/* Option pour tout sélectionner */}
+													<div
+														className="flex items-center gap-3 p-3 hover:bg-gray-50 rounded cursor-pointer border-b border-gray-200 mt-2"
+														onClick={() => {
+															const filteredKeys =
+																Object.entries(
+																	kycRejectReasonsEN
+																)
+																	.filter(
+																		([
+																			key,
+																			value,
+																		]) =>
+																			value
+																				.toLowerCase()
+																				.includes(
+																					searchQuery.toLowerCase()
+																				) ||
+																			key
+																				.toLowerCase()
+																				.includes(
+																					searchQuery.toLowerCase()
+																				)
+																	)
+																	.map(
+																		([
+																			key,
+																		]) =>
+																			key
+																	);
+
+															if (
+																filteredKeys.length ===
+																0
+															)
+																return;
+
+															// Vérifier si tous les éléments filtrés sont déjà sélectionnés
+															const allFilteredSelected =
+																filteredKeys.every(
+																	(key) =>
+																		selectedReasons.includes(
+																			key
+																		)
+																);
+
+															if (
+																allFilteredSelected
+															) {
+																// Désélectionner les éléments filtrés
+																setSelectedReasons(
+																	(prev) =>
+																		prev.filter(
+																			(
+																				item
+																			) =>
+																				!filteredKeys.includes(
+																					item
+																				)
+																		)
+																);
+															} else {
+																// Sélectionner les éléments filtrés qui ne le sont pas déjà
+																setSelectedReasons(
+																	(prev) => {
+																		const newSelection =
+																			[
+																				...prev,
+																			];
+																		filteredKeys.forEach(
+																			(
+																				key
+																			) => {
+																				if (
+																					!newSelection.includes(
+																						key
+																					)
+																				) {
+																					newSelection.push(
+																						key
+																					);
+																				}
+																			}
+																		);
+																		return newSelection;
+																	}
+																);
+															}
+														}}
+													>
+														<div className="w-5 h-5 border-2 rounded flex items-center justify-center">
+															{(() => {
+																const filteredKeys =
+																	Object.entries(
+																		kycRejectReasonsEN
+																	)
+																		.filter(
+																			([
+																				key,
+																				value,
+																			]) =>
+																				value
+																					.toLowerCase()
+																					.includes(
+																						searchQuery.toLowerCase()
+																					) ||
+																				key
+																					.toLowerCase()
+																					.includes(
+																						searchQuery.toLowerCase()
+																					)
+																		)
+																		.map(
+																			([
+																				key,
+																			]) =>
+																				key
+																		);
+
+																if (
+																	filteredKeys.length ===
+																	0
+																)
+																	return null;
+
+																const allFilteredSelected =
+																	filteredKeys.every(
+																		(key) =>
+																			selectedReasons.includes(
+																				key
+																			)
+																	);
+
+																if (
+																	allFilteredSelected
+																) {
+																	return (
+																		<Check className="w-3 h-3 text-[#18bc7a]" />
+																	);
+																} else if (
+																	filteredKeys.some(
+																		(key) =>
+																			selectedReasons.includes(
+																				key
+																			)
+																	)
+																) {
+																	return (
+																		<div className="w-3 h-3 bg-[#18bc7a] rounded-sm" />
+																	);
+																}
+																return null;
+															})()}
+														</div>
+														<span className="font-medium text-gray-700">
+															{(() => {
+																const filteredKeys =
+																	Object.entries(
+																		kycRejectReasonsEN
+																	)
+																		.filter(
+																			([
+																				key,
+																				value,
+																			]) =>
+																				value
+																					.toLowerCase()
+																					.includes(
+																						searchQuery.toLowerCase()
+																					) ||
+																				key
+																					.toLowerCase()
+																					.includes(
+																						searchQuery.toLowerCase()
+																					)
+																		)
+																		.map(
+																			([
+																				key,
+																			]) =>
+																				key
+																		);
+
+																if (
+																	filteredKeys.length ===
+																	0
+																)
+																	return "Aucun résultat";
+
+																const selectedFilteredCount =
+																	filteredKeys.filter(
+																		(key) =>
+																			selectedReasons.includes(
+																				key
+																			)
+																	).length;
+
+																if (
+																	selectedFilteredCount ===
+																	0
+																)
+																	return "Tout sélectionner (filtré)";
+																if (
+																	selectedFilteredCount ===
+																	filteredKeys.length
+																)
+																	return "Tout désélectionner (filtré)";
+																return `Sélectionner tout (${selectedFilteredCount}/${filteredKeys.length})`;
+															})()}
+														</span>
+													</div>
+												</div>
+
+												{/* Liste des raisons filtrées */}
+												<div className="mt-2">
+													{(() => {
+														const filteredReasons =
+															Object.entries(
+																kycRejectReasonsEN
+															).filter(
+																([
+																	key,
+																	value,
+																]) =>
+																	value
+																		.toLowerCase()
+																		.includes(
+																			searchQuery.toLowerCase()
+																		) ||
+																	key
+																		.toLowerCase()
+																		.includes(
+																			searchQuery.toLowerCase()
+																		)
+															);
+
+														if (
+															filteredReasons.length ===
+															0
+														) {
+															return (
+																<div className="text-center py-8 text-gray-500">
+																	<Search className="w-8 h-8 mx-auto mb-2 text-gray-300" />
+																	<p>
+																		Aucune
+																		raison
+																		trouvée
+																	</p>
+																	<p className="text-sm mt-1">
+																		{`Essayez
+																		d'autres
+																		mots-clés`}
+																	</p>
+																</div>
+															);
+														}
+
+														return filteredReasons.map(
+															([key, value]) => (
+																<div
+																	key={key}
+																	className="flex items-center gap-3 p-3 hover:bg-gray-50 rounded cursor-pointer"
+																	onClick={() => {
+																		if (
+																			selectedReasons.includes(
+																				key
+																			)
+																		) {
+																			setSelectedReasons(
+																				(
+																					prev
+																				) =>
+																					prev.filter(
+																						(
+																							item
+																						) =>
+																							item !==
+																							key
+																					)
+																			);
+																		} else {
+																			setSelectedReasons(
+																				(
+																					prev
+																				) => [
+																					...prev,
+																					key,
+																				]
+																			);
+																		}
+																	}}
+																>
+																	<div
+																		className={`w-5 h-5 border-2 rounded flex items-center justify-center ${
+																			selectedReasons.includes(
+																				key
+																			)
+																				? "bg-[#18bc7a] border-[#18bc7a]"
+																				: "border-gray-300"
+																		}`}
+																	>
+																		{selectedReasons.includes(
+																			key
+																		) && (
+																			<Check className="w-3 h-3 text-white" />
+																		)}
+																	</div>
+																	<div className="flex-1">
+																		<span className="text-gray-700 block">
+																			{
+																				value
+																			}
+																		</span>
+																		<span className="text-xs text-gray-500 mt-0.5">
+																			{
+																				key
+																			}
+																		</span>
+																	</div>
+																</div>
+															)
+														);
+													})()}
+												</div>
+											</div>
+										</div>
+									</div>
+								)}
+							</div>
+
+							{/* Affichage des raisons sélectionnées */}
+							{selectedReasons.length > 0 && (
+								<div className="mt-3">
+									<div className="flex items-center justify-between mb-2">
+										<p className="text-sm font-medium text-gray-700">
+											Raisons sélectionnées :
+										</p>
 										<button
+											type="button"
 											onClick={() =>
-												removeRejectReason(index)
+												setSelectedReasons([])
 											}
-											disabled={updateKyc.isLoading}
-											className="px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg transition disabled:opacity-50"
-											title="Supprimer cette raison"
+											className="text-sm text-red-600 hover:text-red-800"
 										>
-											<Trash2 className="w-5 h-5" />
+											Tout effacer
 										</button>
-									)}
+									</div>
+									<div className="flex flex-wrap gap-2 max-h-48 overflow-y-auto p-2 bg-gray-50 rounded-lg">
+										{selectedReasons.map((key) => (
+											<div
+												key={key}
+												className="inline-flex items-center gap-2 bg-white border border-gray-300 text-gray-700 px-3 py-2 rounded-lg shadow-sm"
+											>
+												<span className="text-sm">
+													{kycRejectReasonsEN[key]}
+												</span>
+												<button
+													type="button"
+													onClick={() =>
+														setSelectedReasons(
+															(prev) =>
+																prev.filter(
+																	(item) =>
+																		item !==
+																		key
+																)
+														)
+													}
+													className="text-gray-400 hover:text-red-600"
+												>
+													<X className="w-4 h-4" />
+												</button>
+											</div>
+										))}
+									</div>
 								</div>
-							))}
+							)}
 						</div>
 
-						{/* Bouton pour ajouter une nouvelle raison */}
-						<button
-							onClick={addRejectReason}
-							disabled={updateKyc.isLoading}
-							className="w-full px-4 py-2 mb-4 border-2 border-dashed border-gray-300 text-gray-600 rounded-lg hover:border-[#18bc7a] hover:text-[#18bc7a] transition disabled:opacity-50 flex items-center justify-center gap-2"
-						>
-							<Plus className="w-5 h-5" />
-							Ajouter une raison supplémentaire
-						</button>
+						{/* Champ pour raison personnalisée supplémentaire */}
+						<div className="mb-6">
+							<label className="block text-sm font-medium text-gray-700 mb-2">
+								Raison supplémentaire (optionnelle) :
+							</label>
+							<textarea
+								value={customReason}
+								onChange={(e) =>
+									setCustomReason(e.target.value)
+								}
+								placeholder="Ajoutez une raison personnalisée si nécessaire..."
+								className="w-full h-24 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#18bc7a] focus:border-transparent resize-none"
+								disabled={updateKyc.isLoading}
+							/>
+						</div>
 
 						{/* Boutons d'action */}
 						<div className="flex gap-3">
 							<button
 								onClick={() => {
 									setShowRejectModal(false);
-									setRejectReasons([""]);
+									setSelectedReasons([]);
+									setCustomReason("");
+									setDropdownOpen(false);
+									setSearchQuery("");
 								}}
 								disabled={updateKyc.isLoading}
 								className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition disabled:opacity-50"
@@ -759,29 +1533,41 @@ const ManageKyc = () => {
 							</button>
 							<button
 								onClick={() => {
-									// Filtrer les raisons vides avant de soumettre
-									const validReasons = rejectReasons
-										.map((r) => r.trim())
-										.filter((r) => r !== "");
-
-									if (validReasons.length === 0) {
+									if (
+										selectedReasons.length === 0 &&
+										customReason.trim() === ""
+									) {
 										toast.error(
-											"Veuillez ajouter au moins une raison"
+											"Veuillez sélectionner au moins une raison"
 										);
 										return;
+									}
+
+									// Préparer les raisons pour l'API
+									const reasons = selectedReasons.map(
+										(key) =>
+											`${key}: ${kycRejectReasonsEN[key]}`
+									);
+
+									// Ajouter la raison personnalisée si remplie
+									if (customReason.trim() !== "") {
+										reasons.push(
+											`CUSTOM: ${customReason.trim()}`
+										);
 									}
 
 									updateKyc.mutate({
 										kycId: kycData.id,
 										data: {
 											status: "REJECTED",
-											raisonsRejectCodes: validReasons,
+											raisonsRejectCodes: reasons,
 										},
 									});
 								}}
 								disabled={
 									updateKyc.isLoading ||
-									!rejectReasons.some((r) => r.trim() !== "")
+									(selectedReasons.length === 0 &&
+										customReason.trim() === "")
 								}
 								className="flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition disabled:opacity-50 flex items-center justify-center gap-2"
 							>

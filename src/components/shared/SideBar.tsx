@@ -38,6 +38,8 @@ import { AiFillBank } from "react-icons/ai";
 import { BsBank2 } from "react-icons/bs";
 import URLV3Config from "@/config/urls_v2";
 import URLConfigV3 from "@/config/urls_v3";
+import { title } from "process";
+import path from "path";
 
 interface ISideBarLinks {
 	title: string;
@@ -55,8 +57,10 @@ const SideBar = (props: Props) => {
 	const { isExpanded, setIsExpanded, user } = props;
 	const pathname = usePathname();
 	console.log("user dans sidebar :: ", user);
+	console.log("user dans sidebar :: ", user);
 
 	const currentVersion = useSelector(selectCurrentVersion);
+	console.log("currentVersion :: ", currentVersion);
 	console.log("currentVersion :: ", currentVersion);
 
 	const [isOpen, setIsOpen] = useState(false);
@@ -264,6 +268,11 @@ const SideBar = (props: Props) => {
 			title: "Settings",
 			path: URLConfigV3.settings.root,
 			icon: <Parameters />,
+		},
+		{
+			title: "Users",
+			path: URLConfigV3.usersAccounts.root,
+			icon: <UsersV2 />,
 		},
 	];
 

@@ -14,10 +14,14 @@ export const usermanagementUrlsV3 = {
 	GET_ALL_USERS: `${BASE_URL_USERMANAGEMENT}`,
 	GET_USERS_DETAILS: (userId: string) =>
 		`${BASE_URL_USERMANAGEMENT}/${userId}`,
+	UPDATE_USER_PROFILE: (userId: string) =>
+		`${BASE_URL_USERMANAGEMENT}/${userId}/profile`,
 	DEACTIVATE_USER: (userId: string) =>
 		`${BASE_URL_USERMANAGEMENT}/${userId}/deactivate`,
 	ACTIVATE_USER: (userId: string) =>
 		`${BASE_URL_USERMANAGEMENT}/${userId}/activate`,
+	UPDATE_USER: (userId: string) =>
+		`${BASE_URL_USERMANAGEMENT}/${userId}/profile`,
 };
 
 const Base_URL_KYC = `${BASE_URL_V3}/kyc-management/kyc`;
@@ -42,3 +46,51 @@ export const PAYMENT_PROVIDER_URL_V3 = `${BASE_URL_V3}/payment/payment-providers
 export const CSP_URL_V3 = `${BASE_URL_V3}/payment/country-service-provided`;
 
 export const SERVICE_URL_V3 = `${BASE_URL_V3}/payment/services`;
+
+export const CARDS_BASE_URLS_V3 = `${BASE_URL_V3}/cms-cards/api/admin`;
+export const cardsUrlV3 = {
+	GET_CARDS: (userId: string) =>
+		`${CARDS_BASE_URLS_V3}/users/${userId}/cards`,
+	GET_CARDS_DETAILS: (cardsId: string) =>
+		`${CARDS_BASE_URLS_V3}/cards/${cardsId}/details`,
+	FREEZE_CARD: (cardId: string) =>
+		`${CARDS_BASE_URLS_V3}/cards/${cardId}/freeze`,
+	UNFREEZE_CARD: (cardId: string) =>
+		`${CARDS_BASE_URLS_V3}/cards/${cardId}/unfreeze`,
+	TERMINATE_CARD: (cardId: string) =>
+		`${CARDS_BASE_URLS_V3}/cards/${cardId}/terminate`,
+	ALL_CARDS_TRANSACTION: (userId: string) =>
+		`${CARDS_BASE_URLS_V3}/users/${userId}/card-transactions`,
+	CARD_TRANSACTION: (cardId: string) =>
+		`${CARDS_BASE_URLS_V3}/cards/${cardId}/transactions`,
+};
+
+// Transactions Management Service
+const TRANSACTIONS_BASE_URL_V3 = `${BASE_URL_V3}/tms/api/admin`;
+export const transactionsUrlV3 = {
+	// User wallets
+	GET_USER_WALLETS: (userId: string) =>
+		`${TRANSACTIONS_BASE_URL_V3}/users/${userId}/wallets`,
+	GET_USER_DEFAULT_WALLET: (userId: string) =>
+		`${TRANSACTIONS_BASE_URL_V3}/users/${userId}/default-wallet`,
+	GET_USER_BALANCE: (userId: string) =>
+		`${TRANSACTIONS_BASE_URL_V3}/users/${userId}/balance`,
+	// User transactions
+	GET_USER_TRANSACTIONS: (userId: string) =>
+		`${TRANSACTIONS_BASE_URL_V3}/users/${userId}/transactions`,
+	// Transaction details
+	GET_TRANSACTION_DETAILS: (transactionId: string) =>
+		`${TRANSACTIONS_BASE_URL_V3}/transactions/${transactionId}`,
+	// All transactions (admin)
+	GET_ALL_TRANSACTIONS: `${TRANSACTIONS_BASE_URL_V3}/transactions`,
+	// Balance adjustment (admin)
+	ADJUST_WALLET_BALANCE: `${TRANSACTIONS_BASE_URL_V3}/wallets/adjust-balance`,
+	// Debt creation (admin)
+	CREATE_DEBT: `${TRANSACTIONS_BASE_URL_V3}/debts/create`,
+	// Debt cancellation (admin)
+	CANCEL_DEBT: `${TRANSACTIONS_BASE_URL_V3}/debts/cancel`,
+	// Wallet transfer (admin - no fees)
+	WALLET_TRANSFER: `${TRANSACTIONS_BASE_URL_V3}/wallets/transfer`,
+	// Wallet creation (admin)
+	CREATE_WALLET: `${TRANSACTIONS_BASE_URL_V3}/wallets/create`,
+};

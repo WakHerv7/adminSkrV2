@@ -2,6 +2,7 @@
 
 import {
 	handleAdjustWalletBalance,
+	handleCreateDebt,
 	handleGetTransactionDetails,
 	handleGetUserDefaultWallet,
 	handleGetUserTransactions,
@@ -10,6 +11,7 @@ import {
 import LabelWithBadge from "@/components/shared/LabelWithBadge";
 import { getFormattedDateTime } from "@/utils/DateFormat";
 import {
+	AlertTriangle,
 	ArrowDownLeft,
 	ArrowRightLeft,
 	ArrowUpRight,
@@ -23,6 +25,7 @@ import {
 	Edit3,
 	Eye,
 	Filter,
+	Plus,
 	RefreshCw,
 	Star,
 	TrendingDown,
@@ -84,6 +87,7 @@ interface TransactionFilters {
 	type?: string;
 	status?: string;
 	category?: string;
+	currency?: string;
 	startDate?: string;
 	endDate?: string;
 }
@@ -104,6 +108,7 @@ const Transactions = () => {
 	>(null);
 	const [expandedWallet, setExpandedWallet] = useState<string | null>(null);
 	const [showAllWallets, setShowAllWallets] = useState(false);
+	const [selectedWalletId, setSelectedWalletId] = useState<string | null>(null);
 
 	// Balance adjustment modal state
 	const [showAdjustBalanceModal, setShowAdjustBalanceModal] = useState(false);
@@ -112,9 +117,18 @@ const Transactions = () => {
 		reason: "",
 		internalReference: "",
 	});
-	const [adjustBalanceError, setAdjustBalanceError] = useState<string | null>(
-		null
-	);
+	const [adjustBalanceError, setAdjustBalanceError] = useState<string | null>(null);
+
+	// Debt creation modal state
+	const [showCreateDebtModal, setShowCreateDebtModal] = useState(false);
+	const [createDebtForm, setCreateDebtForm] = useState({
+		amount: "",
+		currency: "",
+		reason: "",
+		internalReference: "",
+		attemptImmediatePayment: true,
+	});
+	const [createDebtError, setCreateDebtError] = useState<string | null>(null);
 
 	// Fetch default wallet
 	const walletQuery = useQuery({
@@ -166,6 +180,30 @@ const Transactions = () => {
 		},
 	});
 
+	// Create debt mutation
+	const createDebtMutation = useMutation({
+		mutationFn: handleCreateDebt,
+		onSuccess: () => {
+			// Invalidate queries to refresh wallet and transaction data
+			queryClient.invalidateQueries(["user-default-wallet", userId]);
+			queryClient.invalidateQueries(["user-wallets", userId]);
+			queryClient.invalidateQueries(["user-transactions", userId]);
+			// Close modal and reset form
+			setShowCreateDebtModal(false);
+			setCreateDebtForm({
+				amount: "",
+				currency: "",
+				reason: "",
+				internalReference: "",
+				attemptImmediatePayment: true,
+			});
+			setCreateDebtError(null);
+		},
+		onError: (error: Error) => {
+			setCreateDebtError(error.message);
+		},
+	});
+
 	// Handle balance adjustment form submission
 	const handleAdjustBalanceSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
@@ -206,12 +244,63 @@ const Transactions = () => {
 		setShowAdjustBalanceModal(true);
 	};
 
+	// Handle debt creation form submission
+	const handleCreateDebtSubmit = (e: React.FormEvent) => {
+		e.preventDefault();
+		setCreateDebtError(null);
+
+		const amount = parseFloat(createDebtForm.amount);
+		if (isNaN(amount) || amount <= 0) {
+			setCreateDebtError("Veuillez entrer un montant valide superieur a 0");
+			return;
+		}
+
+		if (!createDebtForm.reason.trim()) {
+			setCreateDebtError("La raison est obligatoire");
+			return;
+		}
+
+		createDebtMutation.mutate({
+			userId: userId,
+			amount: amount,
+			currency: createDebtForm.currency || undefined,
+			reason: createDebtForm.reason,
+			internalReference: createDebtForm.internalReference || undefined,
+			attemptImmediatePayment: createDebtForm.attemptImmediatePayment,
+		});
+	};
+
+	// Open create debt modal
+	const openCreateDebtModal = () => {
+		setCreateDebtForm({
+			amount: "",
+			currency: wallet?.currency || "",
+			reason: "",
+			internalReference: "",
+			attemptImmediatePayment: true,
+		});
+		setCreateDebtError(null);
+		setShowCreateDebtModal(true);
+	};
+
 	// Unwrap gateway response: {status, data, message, statusCode}
 	const walletResponse = walletQuery.data;
-	const wallet: WalletData | null = walletResponse?.data || null;
+	const defaultWallet: WalletData | null = walletResponse?.data || null;
 
 	const walletsResponse = walletsQuery.data;
 	const wallets: WalletData[] = walletsResponse?.data || [];
+
+	// Selected wallet: either manually selected or default wallet
+	const wallet: WalletData | null = selectedWalletId
+		? wallets.find(w => w.id === selectedWalletId) || defaultWallet
+		: defaultWallet;
+
+	// Handle wallet selection
+	const handleWalletSelect = (walletId: string) => {
+		setSelectedWalletId(walletId);
+		// Also filter transactions by the selected wallet's currency
+		handleFilterChange("currency", wallets.find(w => w.id === walletId)?.currency || undefined);
+	};
 
 	const transactionsResponse = transactionsQuery.data;
 	// transactionsResponse.data contains: {data: [], total, page, limit, totalPages, stats}
@@ -554,6 +643,7 @@ const Transactions = () => {
 								{(filters.type ||
 									filters.status ||
 									filters.category ||
+									filters.currency ||
 									filters.startDate ||
 									filters.endDate) && (
 									<button
@@ -567,7 +657,7 @@ const Transactions = () => {
 						</div>
 
 						{showFilters && (
-							<div className="mt-4 pt-4 border-t border-gray-200 grid grid-cols-2 md:grid-cols-5 gap-4">
+							<div className="mt-4 pt-4 border-t border-gray-200 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
 								<select
 									value={filters.type || ""}
 									onChange={(e) =>
@@ -615,6 +705,25 @@ const Transactions = () => {
 									<option value="">Toutes catégories</option>
 									<option value="WALLET">Wallet</option>
 									<option value="CARD">Carte</option>
+								</select>
+
+								<select
+									value={filters.currency || ""}
+									onChange={(e) =>
+										handleFilterChange(
+											"currency",
+											e.target.value || undefined
+										)
+									}
+									className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#18bc7a]"
+								>
+									<option value="">Tous les wallets</option>
+									{wallets.map((w) => (
+										<option key={w.id} value={w.currency}>
+											{w.currency} - {formatCurrency(w.availableBalance, w.currency)}
+											{w.isDefault ? " (défaut)" : ""}
+										</option>
+									))}
 								</select>
 
 								<input
@@ -853,20 +962,29 @@ const Transactions = () => {
 								</div>
 								<div>
 									<p className="text-sm text-white/80">
-										Wallet par défaut
+										{wallet?.isDefault ? "Wallet par défaut" : "Wallet"} - {wallet?.currency || "XAF"}
 									</p>
 									<p className="text-xs text-white/60">
-										{wallet?.accountType || "USER"}
+										{wallet?.accountType || "USER"} • {wallet?.status || "ACTIVE"}
 									</p>
 								</div>
 							</div>
 							<div className="flex items-center gap-2">
-								{wallet?.isDefault && (
-									<span className="px-2 py-1 bg-white/20 rounded-full text-xs">
-										Par défaut
-									</span>
-								)}
-								{wallet && (
+							{wallet?.isDefault && (
+								<span className="px-2 py-1 bg-white/20 rounded-full text-xs">
+									<Star className="w-3 h-3 inline mr-1" />
+									Défaut
+								</span>
+							)}
+							{wallet && (
+								<>
+									<button
+										onClick={openCreateDebtModal}
+										className="p-2 bg-red-500/80 hover:bg-red-500 rounded-lg transition"
+										title="Creer une dette"
+									>
+										<AlertTriangle className="w-4 h-4 text-white" />
+									</button>
 									<button
 										onClick={openAdjustBalanceModal}
 										className="p-2 bg-white/20 hover:bg-white/30 rounded-lg transition"
@@ -874,8 +992,9 @@ const Transactions = () => {
 									>
 										<Edit3 className="w-4 h-4 text-white" />
 									</button>
-								)}
-							</div>
+								</>
+							)}
+						</div>
 						</div>
 
 						{walletQuery.isLoading ? (
@@ -946,6 +1065,77 @@ const Transactions = () => {
 							</div>
 						)}
 					</div>
+
+					{/* All Wallets List */}
+					{wallets.length > 1 && (
+						<div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+							<div className="flex items-center justify-between mb-3">
+								<h3 className="text-sm font-semibold text-gray-900">
+									Tous les wallets ({wallets.length})
+								</h3>
+								<button
+									onClick={() => {
+										setSelectedWalletId(null);
+										handleFilterChange("currency", undefined);
+									}}
+									className="text-xs text-[#18bc7a] hover:underline"
+								>
+									Réinitialiser
+								</button>
+							</div>
+							<div className="space-y-2">
+								{wallets.map((w) => (
+									<button
+										key={w.id}
+										onClick={() => handleWalletSelect(w.id)}
+										className={`w-full flex items-center justify-between p-3 rounded-lg border transition ${
+											wallet?.id === w.id
+												? "bg-[#18bc7a]/10 border-[#18bc7a] ring-1 ring-[#18bc7a]"
+												: "bg-gray-50 border-gray-200 hover:bg-gray-100"
+										}`}
+									>
+										<div className="flex items-center gap-3">
+											<div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
+												wallet?.id === w.id
+													? "bg-[#18bc7a] text-white"
+													: "bg-gray-200 text-gray-600"
+											}`}>
+												<Wallet className="w-4 h-4" />
+											</div>
+											<div className="text-left">
+												<div className="flex items-center gap-2">
+													<span className={`text-sm font-medium ${
+														wallet?.id === w.id ? "text-[#18bc7a]" : "text-gray-900"
+													}`}>
+														{w.currency}
+													</span>
+													{w.isDefault && (
+														<Star className="w-3 h-3 text-amber-500 fill-amber-500" />
+													)}
+													{getWalletStatusBadge(w.status)}
+												</div>
+												<p className="text-xs text-gray-500">
+													{w.accountType}
+												</p>
+											</div>
+										</div>
+										<div className="text-right">
+											<p className={`text-sm font-bold ${
+												wallet?.id === w.id ? "text-[#18bc7a]" : "text-gray-900"
+											}`}>
+												{formatCurrency(w.availableBalance, w.currency)}
+											</p>
+											{w.totalHolds > 0 && (
+												<p className="text-xs text-gray-500">
+													En attente: {formatCurrency(w.totalHolds, w.currency)}
+												</p>
+											)}
+										</div>
+									</button>
+								))}
+							</div>
+						</div>
+					)}
 
 					{/* Quick Stats Card */}
 					<div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
@@ -1363,6 +1553,179 @@ const Transactions = () => {
 										</>
 									) : (
 										"Confirmer"
+									)}
+								</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			)}
+
+			{/* Create Debt Modal */}
+			{showCreateDebtModal && (
+				<div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+					<div className="bg-white rounded-2xl shadow-xl w-full max-w-md mx-4">
+						<div className="flex items-center justify-between p-6 border-b border-gray-200">
+							<div className="flex items-center gap-3">
+								<div className="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
+									<AlertTriangle className="w-5 h-5 text-red-600" />
+								</div>
+								<h3 className="text-lg font-semibold text-gray-900">
+									Creer une dette
+								</h3>
+							</div>
+							<button
+								onClick={() => setShowCreateDebtModal(false)}
+								className="p-2 hover:bg-gray-100 rounded-lg transition"
+							>
+								<X className="w-5 h-5 text-gray-500" />
+							</button>
+						</div>
+
+						<form onSubmit={handleCreateDebtSubmit} className="p-6 space-y-4">
+							{/* Amount Input */}
+							<div>
+								<label className="block text-sm font-medium text-gray-700 mb-1">
+									Montant de la dette *
+								</label>
+								<input
+									type="number"
+									step="1"
+									min="1"
+									value={createDebtForm.amount}
+									onChange={(e) =>
+										setCreateDebtForm((prev) => ({
+											...prev,
+											amount: e.target.value,
+										}))
+									}
+									className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
+									placeholder="Entrez le montant"
+									required
+								/>
+							</div>
+
+							{/* Currency Select */}
+							<div>
+								<label className="block text-sm font-medium text-gray-700 mb-1">
+									Devise
+								</label>
+								<select
+									value={createDebtForm.currency}
+									onChange={(e) =>
+										setCreateDebtForm((prev) => ({
+											...prev,
+											currency: e.target.value,
+										}))
+									}
+									className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
+								>
+									<option value="">Devise par defaut du wallet</option>
+									{wallets.map((w) => (
+										<option key={w.id} value={w.currency}>
+											{w.currency} - Solde: {formatCurrency(w.availableBalance, w.currency)}
+										</option>
+									))}
+								</select>
+							</div>
+
+							{/* Reason Input */}
+							<div>
+								<label className="block text-sm font-medium text-gray-700 mb-1">
+									Raison de la dette *
+								</label>
+								<textarea
+									value={createDebtForm.reason}
+									onChange={(e) =>
+										setCreateDebtForm((prev) => ({
+											...prev,
+											reason: e.target.value,
+										}))
+									}
+									className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent resize-none"
+									placeholder="Ex: Echec paiement carte virtuelle, dette suite a..."
+									rows={3}
+									required
+								/>
+							</div>
+
+							{/* Internal Reference Input */}
+							<div>
+								<label className="block text-sm font-medium text-gray-700 mb-1">
+									Reference interne (optionnel)
+								</label>
+								<input
+									type="text"
+									value={createDebtForm.internalReference}
+									onChange={(e) =>
+										setCreateDebtForm((prev) => ({
+											...prev,
+											internalReference: e.target.value,
+										}))
+									}
+									className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
+									placeholder="Ex: TICKET-12345"
+								/>
+							</div>
+
+							{/* Immediate Payment Option */}
+							<div className="flex items-center gap-3">
+								<input
+									type="checkbox"
+									id="attemptImmediatePayment"
+									checked={createDebtForm.attemptImmediatePayment}
+									onChange={(e) =>
+										setCreateDebtForm((prev) => ({
+											...prev,
+											attemptImmediatePayment: e.target.checked,
+										}))
+									}
+									className="w-4 h-4 text-red-600 border-gray-300 rounded focus:ring-red-500"
+								/>
+								<label htmlFor="attemptImmediatePayment" className="text-sm text-gray-700">
+									Tenter le prelevement immediat si solde suffisant
+								</label>
+							</div>
+
+							{/* Warning Info */}
+							<div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
+								<div className="flex items-start gap-2">
+									<AlertTriangle className="w-4 h-4 text-amber-600 mt-0.5 flex-shrink-0" />
+									<div className="text-xs text-amber-700">
+										<p className="font-medium mb-1">Important</p>
+										<p>Cette action va creer une transaction de dette pour cet utilisateur. Si le solde est insuffisant, la dette restera en attente et sera automatiquement prelevee lors du prochain depot.</p>
+									</div>
+								</div>
+							</div>
+
+							{/* Error Message */}
+							{createDebtError && (
+								<div className="bg-red-50 border border-red-200 rounded-lg p-3">
+									<p className="text-sm text-red-600">{createDebtError}</p>
+								</div>
+							)}
+
+							{/* Action Buttons */}
+							<div className="flex gap-3 pt-2">
+								<button
+									type="button"
+									onClick={() => setShowCreateDebtModal(false)}
+									className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition"
+								>
+									Annuler
+								</button>
+								<button
+									type="submit"
+									disabled={createDebtMutation.isLoading}
+									className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+								>
+									{createDebtMutation.isLoading ? (
+										<>
+											<div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+											Traitement...
+										</>
+									) : (
+										"Creer la dette"
 									)}
 								</button>
 							</div>

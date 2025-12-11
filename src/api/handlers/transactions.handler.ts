@@ -97,3 +97,21 @@ export const handleAdjustWalletBalance = async (data: {
 
 	return responseJson;
 };
+
+export const handleCreateDebt = async (data: {
+	userId: string;
+	amount: number;
+	currency?: string;
+	reason: string;
+	internalReference?: string;
+	attemptImmediatePayment?: boolean;
+}) => {
+	const response = await TransactionsServiceV3.createDebt(data);
+	const responseJson = await response.json();
+
+	if (!response.ok) {
+		throw new Error(responseJson.message || "Failed to create debt");
+	}
+
+	return responseJson;
+};

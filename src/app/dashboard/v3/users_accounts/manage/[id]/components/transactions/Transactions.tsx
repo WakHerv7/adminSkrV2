@@ -1,36 +1,37 @@
 "use client";
 
-import React, { useState } from "react";
-import { useParams } from "next/navigation";
-import { useQuery } from "react-query";
 import {
+	handleGetTransactionDetails,
 	handleGetUserDefaultWallet,
 	handleGetUserTransactions,
-	handleGetTransactionDetails,
+	handleGetUserWallets,
 } from "@/api/handlers/transactions.handler";
-import {
-	Wallet,
-	TrendingUp,
-	TrendingDown,
-	ArrowUpRight,
-	ArrowDownLeft,
-	RefreshCw,
-	CheckCircle,
-	XCircle,
-	Clock,
-	Eye,
-	ChevronLeft,
-	ChevronRight,
-	Filter,
-	Calendar,
-	CreditCard,
-	Banknote,
-	ArrowRightLeft,
-} from "lucide-react";
 import LabelWithBadge from "@/components/shared/LabelWithBadge";
 import { getFormattedDateTime } from "@/utils/DateFormat";
-import CButton from "@/components/shared/CButton";
-import { FourDots } from "@/components/shared/icons";
+import {
+	ArrowDownLeft,
+	ArrowRightLeft,
+	ArrowUpRight,
+	Banknote,
+	CheckCircle,
+	ChevronDown,
+	ChevronLeft,
+	ChevronRight,
+	ChevronUp,
+	Clock,
+	Eye,
+	Filter,
+	RefreshCw,
+	Star,
+	TrendingDown,
+	TrendingUp,
+	Wallet,
+	XCircle
+} from "lucide-react";
+import { useParams } from "next/navigation";
+import { useState } from "react";
+import { useQuery } from "react-query";
+import { HashLoader } from "react-spinners";
 
 // Types
 interface WalletData {
@@ -97,11 +98,20 @@ const Transactions = () => {
 	const [selectedTransaction, setSelectedTransaction] = useState<string | null>(
 		null
 	);
+	const [expandedWallet, setExpandedWallet] = useState<string | null>(null);
+	const [showAllWallets, setShowAllWallets] = useState(false);
 
 	// Fetch default wallet
 	const walletQuery = useQuery({
 		queryKey: ["user-default-wallet", userId],
 		queryFn: handleGetUserDefaultWallet,
+		enabled: !!userId,
+	});
+
+	// Fetch all wallets
+	const walletsQuery = useQuery({
+		queryKey: ["user-wallets", userId],
+		queryFn: handleGetUserWallets,
 		enabled: !!userId,
 	});
 
@@ -119,9 +129,18 @@ const Transactions = () => {
 		enabled: !!selectedTransaction,
 	});
 
-	const wallet: WalletData | null = walletQuery.data;
-	const transactionsData = transactionsQuery.data;
+	// Unwrap gateway response: {status, data, message, statusCode}
+	const walletResponse = walletQuery.data;
+	const wallet: WalletData | null = walletResponse?.data || null;
+
+	const walletsResponse = walletsQuery.data;
+	const wallets: WalletData[] = walletsResponse?.data || [];
+
+	const transactionsResponse = transactionsQuery.data;
+	// transactionsResponse.data contains: {data: [], total, page, limit, totalPages, stats}
+	const transactionsData = transactionsResponse?.data;
 	const transactions: Transaction[] = transactionsData?.data || [];
+
 	const stats: TransactionStats = transactionsData?.stats || {
 		totalCount: 0,
 		totalSuccessCount: 0,
@@ -134,6 +153,11 @@ const Transactions = () => {
 		totalTransfersReceived: 0,
 	};
 	const totalPages = transactionsData?.totalPages || 1;
+	const totalTransactions = transactionsData?.total || 0;
+
+	// Unwrap transaction details
+	const transactionDetailsResponse = transactionDetailsQuery.data;
+	const transactionDetails: Transaction | null = transactionDetailsResponse?.data || null;
 
 	// Handlers
 	const handleFilterChange = (key: keyof TransactionFilters, value: any) => {
@@ -152,6 +176,36 @@ const Transactions = () => {
 
 	const clearFilters = () => {
 		setFilters({ page: 1, limit: 10 });
+	};
+
+	// Wallet status badge
+	const getWalletStatusBadge = (status: string) => {
+		switch (status) {
+			case "ACTIVE":
+				return (
+					<span className="px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">
+						Actif
+					</span>
+				);
+			case "FROZEN":
+				return (
+					<span className="px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">
+						Gelé
+					</span>
+				);
+			case "CLOSED":
+				return (
+					<span className="px-2 py-1 bg-red-100 text-red-700 rounded-full text-xs font-medium">
+						Fermé
+					</span>
+				);
+			default:
+				return (
+					<span className="px-2 py-1 bg-gray-100 text-gray-700 rounded-full text-xs font-medium">
+						{status}
+					</span>
+				);
+		}
 	};
 
 	// Status badge renderer
@@ -669,7 +723,7 @@ const Transactions = () => {
 								<div className="flex items-center justify-between px-4 py-3 border-t border-gray-200">
 									<div className="text-sm text-gray-600">
 										Page {filters.page} sur {totalPages} (
-										{transactionsData?.total || 0}{" "}
+										{totalTransactions}{" "}
 										transactions)
 									</div>
 									<div className="flex items-center gap-2">
@@ -858,7 +912,7 @@ const Transactions = () => {
 					</div>
 
 					{/* Transaction Details Modal */}
-					{selectedTransaction && transactionDetailsQuery.data && (
+					{selectedTransaction && transactionDetails && (
 						<div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
 							<div className="flex items-center justify-between mb-4 pb-2 border-b border-gray-200">
 								<h3 className="text-lg font-semibold text-gray-900">
@@ -885,10 +939,7 @@ const Transactions = () => {
 											ID
 										</p>
 										<p className="text-sm font-mono">
-											{
-												transactionDetailsQuery.data
-													.id
-											}
+											{transactionDetails.id}
 										</p>
 									</div>
 									<div>
@@ -896,10 +947,7 @@ const Transactions = () => {
 											Référence
 										</p>
 										<p className="text-sm font-mono break-all">
-											{
-												transactionDetailsQuery.data
-													.reference
-											}
+											{transactionDetails.reference}
 										</p>
 									</div>
 									<div className="grid grid-cols-2 gap-4">
@@ -908,10 +956,7 @@ const Transactions = () => {
 												Type
 											</p>
 											<p className="text-sm font-medium">
-												{
-													transactionDetailsQuery
-														.data.type
-												}
+												{transactionDetails.type}
 											</p>
 										</div>
 										<div>
@@ -919,10 +964,7 @@ const Transactions = () => {
 												Catégorie
 											</p>
 											<p className="text-sm font-medium">
-												{
-													transactionDetailsQuery
-														.data.category
-												}
+												{transactionDetails.category}
 											</p>
 										</div>
 									</div>
@@ -933,15 +975,10 @@ const Transactions = () => {
 											</p>
 											<p className="text-sm font-semibold">
 												{formatCurrency(
-													transactionDetailsQuery
-														.data.amount,
-													transactionDetailsQuery
-														.data.currency
+													transactionDetails.amount,
+													transactionDetails.currency
 												)}{" "}
-												{
-													transactionDetailsQuery
-														.data.currency
-												}
+												{transactionDetails.currency}
 											</p>
 										</div>
 										<div>
@@ -950,15 +987,10 @@ const Transactions = () => {
 											</p>
 											<p className="text-sm font-medium text-gray-600">
 												{formatCurrency(
-													transactionDetailsQuery
-														.data.feeAmount,
-													transactionDetailsQuery
-														.data.currency
+													transactionDetails.feeAmount,
+													transactionDetails.currency
 												)}{" "}
-												{
-													transactionDetailsQuery
-														.data.currency
-												}
+												{transactionDetails.currency}
 											</p>
 										</div>
 									</div>
@@ -967,10 +999,7 @@ const Transactions = () => {
 											Statut
 										</p>
 										<div className="mt-1">
-											{getStatusBadge(
-												transactionDetailsQuery.data
-													.status
-											)}
+											{getStatusBadge(transactionDetails.status)}
 										</div>
 									</div>
 									<div>
@@ -978,24 +1007,31 @@ const Transactions = () => {
 											Date
 										</p>
 										<p className="text-sm">
-											{getFormattedDateTime(
-												transactionDetailsQuery.data
-													.createdAt
-											)}
+											{getFormattedDateTime(transactionDetails.createdAt)}
 										</p>
 									</div>
 
+									{/* Failure Reason - Show for FAILED/CANCELLED transactions */}
+									{(transactionDetails.status === "FAILED" || transactionDetails.status === "CANCELLED") && transactionDetails.metadata?.failureReason && (
+										<div className="bg-red-50 border border-red-200 rounded-lg p-3">
+											<p className="text-xs text-red-600 font-medium mb-1">
+												Raison de l&apos;échec
+											</p>
+											<p className="text-sm text-red-700">
+												{transactionDetails.metadata.failureReason}
+											</p>
+										</div>
+									)}
+
 									{/* Ledger Entries */}
-									{transactionDetailsQuery.data
-										.ledgerEntries &&
-										transactionDetailsQuery.data
-											.ledgerEntries.length > 0 && (
+									{(transactionDetails as any).ledgerEntries &&
+										(transactionDetails as any).ledgerEntries.length > 0 && (
 											<div className="mt-4 pt-4 border-t border-gray-200">
 												<p className="text-xs text-gray-500 mb-2">
 													Écritures comptables
 												</p>
 												<div className="space-y-2">
-													{transactionDetailsQuery.data.ledgerEntries.map(
+													{(transactionDetails as any).ledgerEntries.map(
 														(
 															entry: any,
 															idx: number

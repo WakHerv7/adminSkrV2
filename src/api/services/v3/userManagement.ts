@@ -26,4 +26,28 @@ export class UserManagementServiceV3 {
 			true
 		);
 	};
+
+	static updateuser = (userId: string, data: any) => {
+		return BaseMethods.patchRequest(
+			usermanagementUrlsV3.UPDATE_USER(userId),
+			data,
+			true
+		);
+	};
+
+	static deactivateUser = (userId: string) => {
+		return BaseMethods.patchRequest(
+			usermanagementUrlsV3.DEACTIVATE_USER(userId),
+			{},
+			true
+		);
+	};
+
+	static reactivateUser = (userId: string) => {
+		return BaseMethods.patchRequest(
+			usermanagementUrlsV3.ACTIVATE_USER(userId),
+			{},
+			true
+		);
+	};
 }

@@ -3,7 +3,7 @@
 import { KYCServiceV3 } from "@/api/services/v3/kyc";
 import Layout from "@/components/shared/Layout";
 import { useParams } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { useMutation, useQuery } from "react-query";
 import {
@@ -25,6 +25,7 @@ import {
 } from "lucide-react";
 import { KYCRaisonRejectServiceV3 } from "@/api/services/v3/kycRaisonReject";
 import { kycRejectReasonsEN } from "@/constants/v3/kycRejectReasons";
+import { Search } from "lucide-react";
 
 const handleGetKyc = async ({ queryKey }: any) => {
 	const [_key, userId] = queryKey;
@@ -88,11 +89,38 @@ const ManageKyc = () => {
 	const [dropdownOpen, setDropdownOpen] = useState(false);
 	const [selectedReasons, setSelectedReasons] = useState<string[]>([]);
 	const [customReason, setCustomReason] = useState("");
+	const [searchQuery, setSearchQuery] = useState("");
 
 	// Fonctions pour gérer les raisons personnalisées
 	const addCustomRejectReason = () => {
 		setCustomRejectReasons([...customRejectReasons, ""]);
 	};
+
+	const dropdownRef = useRef<HTMLDivElement>(null);
+
+	useEffect(() => {
+		const handleClickOutside = (event: MouseEvent) => {
+			if (
+				dropdownRef.current &&
+				!dropdownRef.current.contains(event.target as Node)
+			) {
+				setDropdownOpen(false);
+			}
+		};
+
+		if (dropdownOpen) {
+			document.addEventListener("mousedown", handleClickOutside);
+		}
+
+		return () => {
+			document.removeEventListener("mousedown", handleClickOutside);
+		};
+	}, [dropdownOpen]);
+
+	// Ajoutez la ref au container
+	<div className="relative" ref={dropdownRef}>
+		{/* Votre dropdown */}
+	</div>;
 
 	const removeCustomRejectReason = (index: number) => {
 		if (customRejectReasons.length > 1) {
@@ -725,8 +753,8 @@ const ManageKyc = () => {
 
 			{/* Modal de rejet avec plusieurs raisons */}
 			{showRejectModal && (
-				<div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000] p-4">
-					<div className="bg-white rounded-lg shadow-xl max-w-2xl w-full p-6 max-h-[90vh] overflow-y-auto">
+				<div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000] p-4 ">
+					<div className="bg-white   rounded-lg shadow-xl max-w-2xl w-full p-6 min-h-[80vh] overflow-y-auto">
 						<div className="flex items-center gap-3 mb-4">
 							<div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
 								<XCircle className="w-6 h-6 text-red-600" />
@@ -735,12 +763,12 @@ const ManageKyc = () => {
 								Rejeter le KYC
 							</h3>
 						</div>
-						<p className="text-gray-600 mb-4">
+						<p className="text-gray-600 mb-6">
 							Veuillez sélectionner les raisons du rejet de ce KYC
 							:
 						</p>
 
-						{/* VRAIE LISTE DÉROULANTE PERSONNALISÉE */}
+						{/* VRAIE LISTE DÉROULANTE PERSONNALISÉE AVEC RECHERCHE */}
 						<div className="mb-6">
 							<label className="block text-sm font-medium text-gray-700 mb-2">
 								Sélectionnez les raisons :
@@ -772,99 +800,369 @@ const ManageKyc = () => {
 
 								{/* Liste déroulante qui s'ouvre au clic */}
 								{dropdownOpen && (
-									<div className="absolute z-50 mt-1 w-full bg-white border border-gray-300 rounded-lg shadow-lg max-h-96 overflow-y-auto">
-										<div className="p-2">
-											{/* Option pour tout sélectionner */}
-											<div
-												className="flex items-center gap-3 p-3 hover:bg-gray-50 rounded cursor-pointer border-b border-gray-200 mb-1"
-												onClick={() => {
-													if (
-														selectedReasons.length ===
-														Object.keys(
-															kycRejectReasonsEN
-														).length
-													) {
-														setSelectedReasons([]);
-													} else {
-														setSelectedReasons(
-															Object.keys(
-																kycRejectReasonsEN
-															)
-														);
-													}
-												}}
-											>
-												<div className="w-5 h-5 border-2 rounded flex items-center justify-center">
-													{selectedReasons.length ===
-													Object.keys(
-														kycRejectReasonsEN
-													).length ? (
-														<Check className="w-3 h-3 text-[#18bc7a]" />
-													) : null}
-												</div>
-												<span className="font-medium text-gray-700">
-													{selectedReasons.length ===
-													Object.keys(
-														kycRejectReasonsEN
-													).length
-														? "Tout désélectionner"
-														: "Tout sélectionner"}
-												</span>
-											</div>
-
-											{/* Liste des raisons */}
-											{Object.entries(
-												kycRejectReasonsEN
-											).map(([key, value]) => (
-												<div
-													key={key}
-													className="flex items-center gap-3 p-3 hover:bg-gray-50 rounded cursor-pointer"
-													onClick={() => {
-														if (
-															selectedReasons.includes(
-																key
-															)
-														) {
-															setSelectedReasons(
-																(prev) =>
-																	prev.filter(
-																		(
-																			item
-																		) =>
-																			item !==
-																			key
+									<div className="absolute z-50 mt-1 w-full bg-white border border-gray-300 rounded-lg shadow-lg overflow-hidden">
+										{/* Container avec hauteur fixe et scroll */}
+										<div className="max-h-80 overflow-y-auto">
+											<div className="p-2">
+												{/* Barre de recherche */}
+												<div className="sticky top-0 bg-white z-20 pb-2">
+													<div className="relative">
+														<Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+														<input
+															type="text"
+															value={searchQuery}
+															onChange={(e) =>
+																setSearchQuery(
+																	e.target
+																		.value
+																)
+															}
+															placeholder="Rechercher une raison..."
+															className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#18bc7a] focus:border-transparent text-sm"
+															onClick={(e) =>
+																e.stopPropagation()
+															}
+														/>
+														{searchQuery && (
+															<button
+																type="button"
+																onClick={() =>
+																	setSearchQuery(
+																		""
 																	)
-															);
-														} else {
-															setSelectedReasons(
-																(prev) => [
-																	...prev,
-																	key,
-																]
-															);
-														}
-													}}
-												>
-													<div
-														className={`w-5 h-5 border-2 rounded flex items-center justify-center ${
-															selectedReasons.includes(
-																key
-															)
-																? "bg-[#18bc7a] border-[#18bc7a]"
-																: "border-gray-300"
-														}`}
-													>
-														{selectedReasons.includes(
-															key
-														) && (
-															<Check className="w-3 h-3 text-white" />
+																}
+																className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+															>
+																<X className="w-4 h-4" />
+															</button>
 														)}
 													</div>
-													<span className="text-gray-700">
-														{value}
-													</span>
+
+													{/* Option pour tout sélectionner */}
+													<div
+														className="flex items-center gap-3 p-3 hover:bg-gray-50 rounded cursor-pointer border-b border-gray-200 mt-2"
+														onClick={() => {
+															const filteredKeys =
+																Object.entries(
+																	kycRejectReasonsEN
+																)
+																	.filter(
+																		([
+																			key,
+																			value,
+																		]) =>
+																			value
+																				.toLowerCase()
+																				.includes(
+																					searchQuery.toLowerCase()
+																				) ||
+																			key
+																				.toLowerCase()
+																				.includes(
+																					searchQuery.toLowerCase()
+																				)
+																	)
+																	.map(
+																		([
+																			key,
+																		]) =>
+																			key
+																	);
+
+															if (
+																filteredKeys.length ===
+																0
+															)
+																return;
+
+															// Vérifier si tous les éléments filtrés sont déjà sélectionnés
+															const allFilteredSelected =
+																filteredKeys.every(
+																	(key) =>
+																		selectedReasons.includes(
+																			key
+																		)
+																);
+
+															if (
+																allFilteredSelected
+															) {
+																// Désélectionner les éléments filtrés
+																setSelectedReasons(
+																	(prev) =>
+																		prev.filter(
+																			(
+																				item
+																			) =>
+																				!filteredKeys.includes(
+																					item
+																				)
+																		)
+																);
+															} else {
+																// Sélectionner les éléments filtrés qui ne le sont pas déjà
+																setSelectedReasons(
+																	(prev) => {
+																		const newSelection =
+																			[
+																				...prev,
+																			];
+																		filteredKeys.forEach(
+																			(
+																				key
+																			) => {
+																				if (
+																					!newSelection.includes(
+																						key
+																					)
+																				) {
+																					newSelection.push(
+																						key
+																					);
+																				}
+																			}
+																		);
+																		return newSelection;
+																	}
+																);
+															}
+														}}
+													>
+														<div className="w-5 h-5 border-2 rounded flex items-center justify-center">
+															{(() => {
+																const filteredKeys =
+																	Object.entries(
+																		kycRejectReasonsEN
+																	)
+																		.filter(
+																			([
+																				key,
+																				value,
+																			]) =>
+																				value
+																					.toLowerCase()
+																					.includes(
+																						searchQuery.toLowerCase()
+																					) ||
+																				key
+																					.toLowerCase()
+																					.includes(
+																						searchQuery.toLowerCase()
+																					)
+																		)
+																		.map(
+																			([
+																				key,
+																			]) =>
+																				key
+																		);
+
+																if (
+																	filteredKeys.length ===
+																	0
+																)
+																	return null;
+
+																const allFilteredSelected =
+																	filteredKeys.every(
+																		(key) =>
+																			selectedReasons.includes(
+																				key
+																			)
+																	);
+
+																if (
+																	allFilteredSelected
+																) {
+																	return (
+																		<Check className="w-3 h-3 text-[#18bc7a]" />
+																	);
+																} else if (
+																	filteredKeys.some(
+																		(key) =>
+																			selectedReasons.includes(
+																				key
+																			)
+																	)
+																) {
+																	return (
+																		<div className="w-3 h-3 bg-[#18bc7a] rounded-sm" />
+																	);
+																}
+																return null;
+															})()}
+														</div>
+														<span className="font-medium text-gray-700">
+															{(() => {
+																const filteredKeys =
+																	Object.entries(
+																		kycRejectReasonsEN
+																	)
+																		.filter(
+																			([
+																				key,
+																				value,
+																			]) =>
+																				value
+																					.toLowerCase()
+																					.includes(
+																						searchQuery.toLowerCase()
+																					) ||
+																				key
+																					.toLowerCase()
+																					.includes(
+																						searchQuery.toLowerCase()
+																					)
+																		)
+																		.map(
+																			([
+																				key,
+																			]) =>
+																				key
+																		);
+
+																if (
+																	filteredKeys.length ===
+																	0
+																)
+																	return "Aucun résultat";
+
+																const selectedFilteredCount =
+																	filteredKeys.filter(
+																		(key) =>
+																			selectedReasons.includes(
+																				key
+																			)
+																	).length;
+
+																if (
+																	selectedFilteredCount ===
+																	0
+																)
+																	return "Tout sélectionner (filtré)";
+																if (
+																	selectedFilteredCount ===
+																	filteredKeys.length
+																)
+																	return "Tout désélectionner (filtré)";
+																return `Sélectionner tout (${selectedFilteredCount}/${filteredKeys.length})`;
+															})()}
+														</span>
+													</div>
 												</div>
-											))}
+
+												{/* Liste des raisons filtrées */}
+												<div className="mt-2">
+													{(() => {
+														const filteredReasons =
+															Object.entries(
+																kycRejectReasonsEN
+															).filter(
+																([
+																	key,
+																	value,
+																]) =>
+																	value
+																		.toLowerCase()
+																		.includes(
+																			searchQuery.toLowerCase()
+																		) ||
+																	key
+																		.toLowerCase()
+																		.includes(
+																			searchQuery.toLowerCase()
+																		)
+															);
+
+														if (
+															filteredReasons.length ===
+															0
+														) {
+															return (
+																<div className="text-center py-8 text-gray-500">
+																	<Search className="w-8 h-8 mx-auto mb-2 text-gray-300" />
+																	<p>
+																		Aucune
+																		raison
+																		trouvée
+																	</p>
+																	<p className="text-sm mt-1">
+																		{`Essayez
+																		d'autres
+																		mots-clés`}
+																	</p>
+																</div>
+															);
+														}
+
+														return filteredReasons.map(
+															([key, value]) => (
+																<div
+																	key={key}
+																	className="flex items-center gap-3 p-3 hover:bg-gray-50 rounded cursor-pointer"
+																	onClick={() => {
+																		if (
+																			selectedReasons.includes(
+																				key
+																			)
+																		) {
+																			setSelectedReasons(
+																				(
+																					prev
+																				) =>
+																					prev.filter(
+																						(
+																							item
+																						) =>
+																							item !==
+																							key
+																					)
+																			);
+																		} else {
+																			setSelectedReasons(
+																				(
+																					prev
+																				) => [
+																					...prev,
+																					key,
+																				]
+																			);
+																		}
+																	}}
+																>
+																	<div
+																		className={`w-5 h-5 border-2 rounded flex items-center justify-center ${
+																			selectedReasons.includes(
+																				key
+																			)
+																				? "bg-[#18bc7a] border-[#18bc7a]"
+																				: "border-gray-300"
+																		}`}
+																	>
+																		{selectedReasons.includes(
+																			key
+																		) && (
+																			<Check className="w-3 h-3 text-white" />
+																		)}
+																	</div>
+																	<div className="flex-1">
+																		<span className="text-gray-700 block">
+																			{
+																				value
+																			}
+																		</span>
+																		<span className="text-xs text-gray-500 mt-0.5">
+																			{
+																				key
+																			}
+																		</span>
+																	</div>
+																</div>
+															)
+														);
+													})()}
+												</div>
+											</div>
 										</div>
 									</div>
 								)}
@@ -943,6 +1241,7 @@ const ManageKyc = () => {
 									setSelectedReasons([]);
 									setCustomReason("");
 									setDropdownOpen(false);
+									setSearchQuery("");
 								}}
 								disabled={updateKyc.isLoading}
 								className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition disabled:opacity-50"

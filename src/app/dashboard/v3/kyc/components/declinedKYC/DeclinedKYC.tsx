@@ -38,7 +38,7 @@ const DeclinedKYC = () => {
 	// --------------------------------
 	//  Remplissage tableau
 	// --------------------------------
-	const rearrangedTableData = declinedKycQuery.data?.data?.map(
+	const rearrangedTableData = declinedKycQuery.data?.data?.data?.map(
 		(item: any, index: number) => {
 			return {
 				serial: index + 1,

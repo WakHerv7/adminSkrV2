@@ -1,5 +1,6 @@
 import { string } from "zod";
 import { UserManagementServiceV3 } from "../services/v3/userManagement";
+import { usermanagementUrlsV3 } from "../urlsV3";
 
 export const handleGetUsers = async ({ queryKey }: any) => {
 	const [_key, filters] = queryKey;
@@ -29,41 +30,46 @@ export const handleGetUsersDetails = async ({ queryKey }: any) => {
 	return responseJson;
 };
 
-// export const handleChangeRole = async ({
-// 	id,
-// 	data,
-// }: {
-// 	id: string;
-// 	data: any;
-// }) => {
-// 	const response = await UserManagementServiceV3.changeRole(id, data);
+export const handleUpdateUser = async ({
+	id,
+	data,
+}: {
+	id: string;
+	data: any;
+}) => {
+	console.log("data dans le handler", data);
+	const response = await UserManagementServiceV3.updateuser(id, data);
 
-// 	const responseJson = await response.json();
-// 	if (!response.ok) {
-// 		throw new Error(responseJson.message || "Failed to change user role");
-// 	}
+	const responseJson = await response.json();
 
-// 	return responseJson;
-// };
+	if (!response.ok) {
+		throw new Error(
+			responseJson.message || "Failed to update user profile"
+		);
+	}
 
-// export const handleDeactivateUser = async ({ id }: { id: string }) => {
-// 	const response = await UserManagementServiceV3.deactivateUser(id);
+	return responseJson;
+};
 
-// 	const responseJson = await response.json();
-// 	if (!response.ok) {
-// 		throw new Error(responseJson.message || "Failed to deactivate user ");
-// 	}
+export const hanldeDeactivateUser = async (userId: string) => {
+	const response = await UserManagementServiceV3.deactivateUser(userId);
 
-// 	return responseJson;
-// };
+	const responseJson = await response.json();
 
-// export const handleActivateUser = async ({ id }: { id: string }) => {
-// 	const response = await UserManagementServiceV3.activateUser(id);
+	if (!response.ok) {
+		throw new Error(responseJson.message || "Failed to deactivate user");
+	}
 
-// 	const responseJson = await response.json();
-// 	if (!response.ok) {
-// 		throw new Error(responseJson.message || "Failed to activate user ");
-// 	}
+	return responseJson;
+};
 
-// 	return responseJson;
-// };
+export const handleActivateUser = async (userId: string) => {
+	const response = await UserManagementServiceV3.reactivateUser(userId);
+	const responseJson = await response.json();
+
+	if (!response.ok) {
+		throw new Error(responseJson.message || "Failed to reactivate user");
+	}
+
+	return responseJson;
+};

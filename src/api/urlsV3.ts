@@ -18,6 +18,8 @@ export const usermanagementUrlsV3 = {
 		`${BASE_URL_USERMANAGEMENT}/${userId}/deactivate`,
 	ACTIVATE_USER: (userId: string) =>
 		`${BASE_URL_USERMANAGEMENT}/${userId}/activate`,
+	UPDATE_USER: (userId: string) =>
+		`${BASE_URL_USERMANAGEMENT}/${userId}/profile`,
 };
 
 const Base_URL_KYC = `${BASE_URL_V3}/kyc-management/kyc`;

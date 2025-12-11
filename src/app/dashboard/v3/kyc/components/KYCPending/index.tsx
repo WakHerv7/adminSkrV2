@@ -37,12 +37,12 @@ const KycPendingV3 = ({ isLoading, search, setSearch }: Props) => {
 	const kycPending = useSelector(selectKYCPending);
 
 	const pendingKycQuery = useQuery({
-		queryKey: ["pending-kyc", ["PENDING", "IN_PROGRESS"]],
+		queryKey: ["pending-kyc", ["PENDING", "IN_PROGRESS", "RESEND_INFO"]],
 		queryFn: handleGetKycs,
 		onError: (err: any) => toast.error(err.message),
 	});
 
-	const rearrangedTableData = pendingKycQuery.data?.data?.map(
+	const rearrangedTableData = pendingKycQuery.data?.data?.data?.map(
 		(item: any, index: number) => {
 			return {
 				serial: index + 1,
@@ -57,7 +57,15 @@ const KycPendingV3 = ({ isLoading, search, setSearch }: Props) => {
 					) : item.status === "PENDING" ? (
 						<LabelWithBadge label="En Attente" badgeColor="#999" />
 					) : item.status === "IN_PROGRESS" ? (
-						<LabelWithBadge label="En Cours" badgeColor="#FFA500" />
+						<LabelWithBadge
+							label="En Progression"
+							badgeColor="#FFA500"
+						/>
+					) : item.status === "RESEND_INFO" ? (
+						<LabelWithBadge
+							label="Renvoi d'informations"
+							badgeColor="#1E90FF"
+						/>
 					) : (
 						<LabelWithBadge label="Aucun" badgeColor="#000" />
 					),

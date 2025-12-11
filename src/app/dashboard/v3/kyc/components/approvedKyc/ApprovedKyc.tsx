@@ -36,7 +36,7 @@ const ApprovedKyc = () => {
 	// --------------------------------
 	//  Remplissage tableau
 	// --------------------------------
-	const rearrangedTableData = approvedKycQuery.data?.data?.map(
+	const rearrangedTableData = approvedKycQuery.data?.data?.data?.map(
 		(item: any, index: number) => {
 			return {
 				serial: index + 1,
@@ -50,8 +50,11 @@ const ApprovedKyc = () => {
 
 				status:
 					item.status === "COMPLETED" ? (
-						<LabelWithBadge label="Completed" badgeColor="#18BC7A" />
-					) : item.status === "Declined" ? (
+						<LabelWithBadge
+							label="Completed"
+							badgeColor="#18BC7A"
+						/>
+					) : item.status === "REJECTED" ? (
 						<LabelWithBadge label="Refusé" badgeColor="#F85D4B" />
 					) : item.status === "PENDDING" ? (
 						<LabelWithBadge label="En Attente" badgeColor="#999" />

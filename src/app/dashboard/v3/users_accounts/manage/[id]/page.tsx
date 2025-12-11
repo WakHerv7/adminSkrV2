@@ -1,37 +1,21 @@
 "use client";
 
-import { handleGetUsersDetails } from "@/api/handlers/user.handler";
+import {
+	handleGetUsersDetails,
+	handleUpdateUser,
+} from "@/api/handlers/user.handler";
 import Layout from "@/components/shared/Layout";
 import { useParams } from "next/navigation";
 import React, { useState } from "react";
-import { useQuery } from "react-query";
-import {
-	Phone,
-	Mail,
-	Calendar,
-	MapPin,
-	Flag,
-	Building,
-	Home,
-	Tag,
-	CheckCircle,
-	XCircle,
-	Clock,
-	Hash,
-	Target,
-	User as UserIcon,
-	Save,
-	Edit,
-	X,
-} from "lucide-react";
-import { Input } from "@/components/ui/input";
+import { useMutation, useQuery } from "react-query";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Details from "./components/details/Details";
 import Cards from "./components/cards/Cards";
 import Transactions from "./components/transactions/Transactions";
 import { useSelector } from "react-redux";
-import { selectCurrentUser } from "@/redux/slices/auth";
 import { selectUserV3 } from "@/redux/slices_v3/userV3";
+import toast from "react-hot-toast";
+import { UserIcon } from "lucide-react";
 
 const Page = () => {
 	const params = useParams();

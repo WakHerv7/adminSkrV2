@@ -104,38 +104,6 @@ const Details = () => {
 
 	const { data: userData, isLoading, isError } = getUserDetails;
 
-	// Mutation pour activer/désactiver le compte
-	const toggleAccountStatus = useMutation({
-		mutationFn: async () => {
-			if (formData.isActive) {
-				const response = await UserManagementServiceV3.deactivateUser(id);
-				const responseJson = await response.json();
-				if (!response.ok) {
-					throw new Error(responseJson.message || "Erreur lors de la désactivation");
-				}
-				return responseJson;
-			} else {
-				const response = await UserManagementServiceV3.activateUser(id);
-				const responseJson = await response.json();
-				if (!response.ok) {
-					throw new Error(responseJson.message || "Erreur lors de l'activation");
-				}
-				return responseJson;
-			}
-		},
-		onSuccess: () => {
-			toast.success(
-				formData.isActive
-					? "Compte désactivé avec succès"
-					: "Compte activé avec succès"
-			);
-			queryClient.invalidateQueries(["user-details", id]);
-		},
-		onError: (error: any) => {
-			toast.error(error.message || "Une erreur est survenue");
-		},
-	});
-
 	// Mutation pour activer/désactiver les transactions
 	const toggleTransactionStatus = useMutation({
 		mutationFn: async () => {
@@ -196,6 +164,8 @@ const Details = () => {
 			lastName: formData.lastName,
 			email: formData.email,
 			city: formData.city,
+			gender: formData.gender,
+			dateOfBirth: formData.dateOfBirth,
 		};
 		console.log("donnees soumise", dataToSend);
 
@@ -705,25 +675,9 @@ const Details = () => {
 									<Flag className="w-4 h-4 text-[#18bc7a]" />
 									{`Pays`}
 								</label>
-								{isEditing ? (
-									<Input
-										value={formData.countryName || ""}
-										onChange={(e) =>
-											handleInputChange(
-												"countryName",
-												e.target.value
-											)
-										}
-										className="w-full"
-										placeholder="Entrez le pays"
-										disabled={updateMutation.isLoading}
-									/>
-								) : (
-									<div className="text-base font-medium text-gray-900 bg-gray-50 p-3 rounded border border-gray-200">
-										{formData.countryName ||
-											"Non renseigné"}
-									</div>
-								)}
+								<div className="text-base font-medium text-gray-900 bg-gray-50 p-3 rounded border border-gray-200">
+									{formData.countryName || "Non renseigné"}
+								</div>
 							</div>
 							<div>
 								<label className="text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
@@ -946,37 +900,12 @@ const Details = () => {
 						</div>
 					</div>
 
-					{/* Actions rapides */}
-					{/* <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+						{/* Actions rapides */}
+					<div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
 						<h2 className="text-lg font-semibold text-gray-900 mb-4 pb-2 border-b border-gray-200">
 							{`Actions rapides`}
 						</h2>
 						<div className="space-y-3">
-							{/* Bouton Activer/Désactiver le compte */}
-							<button
-								onClick={() => toggleAccountStatus.mutate()}
-								disabled={toggleAccountStatus.isLoading}
-								className={`w-full flex items-center justify-center gap-2 px-4 py-3 rounded-lg transition disabled:opacity-50 ${
-									formData.isActive
-										? "border border-red-300 text-red-700 hover:bg-red-50"
-										: "border border-green-300 text-green-700 hover:bg-green-50"
-								}`}
-							>
-								{toggleAccountStatus.isLoading ? (
-									<Loader2 className="w-4 h-4 animate-spin" />
-								) : formData.isActive ? (
-									<>
-										<EyeOff className="w-4 h-4" />
-										{`Désactiver le compte`}
-									</>
-								) : (
-									<>
-										<Eye className="w-4 h-4" />
-										{`Activer le compte`}
-									</>
-								)}
-							</button>
-
 							{/* Bouton Activer/Désactiver les transactions */}
 							<button
 								onClick={() => toggleTransactionStatus.mutate()}
@@ -1015,14 +944,14 @@ const Details = () => {
 									</button>
 								)}
 
-							{/* Lien direct vers KYC si kycId existe */}
+							{/* Afficher le KYC ID si disponible */}
 							{formData.kycId && (
 								<div className="text-xs text-gray-500 text-center mt-2">
 									KYC ID: {formData.kycId.substring(0, 8)}...
 								</div>
 							)}
 						</div>
-					</div> */}
+					</div>
 				</div>
 			</div>
 		</div>

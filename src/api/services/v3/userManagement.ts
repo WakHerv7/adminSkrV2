@@ -40,7 +40,7 @@ export class UserManagementServiceV3 {
 		);
 	};
 
-	static updateuser = (userId: string, data: any) => {
+	static updateUserProfile = (userId: string, data: UpdateUserProfileData) => {
 		return BaseMethods.patchRequest(
 			usermanagementUrlsV3.UPDATE_USER(userId),
 			data,

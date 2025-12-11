@@ -18,6 +18,7 @@ import { setSearchTerm, selectSearchTerm } from "@/redux/slices/search";
 import CustomersFilterForm from "./CustomTableFilters/CustomersFilterForm";
 import RegularisationFilterForm from "./CustomTableFilters/RegularisationFilterForm";
 import PaymentProviderFilterForm from "./CustomTableFilters/V3/PaymentProviderFilterForm";
+import UserFilterForm from "./CustomTableFilters/V3/UserFilterForm";
 
 interface CustomTableProps {
 	btn?: React.ReactNode;
@@ -196,6 +197,11 @@ const CustomTable: React.FC<CustomTableProps> = ({
 						/>
 					) : filterType === "payment-provider-v3" ? (
 						<PaymentProviderFilterForm
+							filterContent={filterContent}
+							setFilterContent={setFilterContent}
+						/>
+					) : filterType === "usersV3" ? (
+						<UserFilterForm
 							filterContent={filterContent}
 							setFilterContent={setFilterContent}
 						/>

@@ -57,8 +57,10 @@ const SideBar = (props: Props) => {
 	const { isExpanded, setIsExpanded, user } = props;
 	const pathname = usePathname();
 	console.log("user dans sidebar :: ", user);
+	console.log("user dans sidebar :: ", user);
 
 	const currentVersion = useSelector(selectCurrentVersion);
+	console.log("currentVersion :: ", currentVersion);
 	console.log("currentVersion :: ", currentVersion);
 
 	const [isOpen, setIsOpen] = useState(false);

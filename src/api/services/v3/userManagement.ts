@@ -26,6 +26,4 @@ export class UserManagementServiceV3 {
 			true
 		);
 	};
-
-	// static
 }

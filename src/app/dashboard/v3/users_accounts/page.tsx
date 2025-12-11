@@ -1,7 +1,7 @@
 "use client";
 
 import { handleGetUsers } from "@/api/handlers/user.handler";
-import CustomTable from "@/components/shared/CustomTable";
+
 import Layout from "@/components/shared/Layout";
 import { userHeaderDataV3 } from "@/constants/v3/userDataV3";
 import React, { useState } from "react";
@@ -16,6 +16,7 @@ import { FlagIcon } from "@/components/shared/FlagIcon";
 import { useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
 import { setUserV3 } from "@/redux/slices_v3/userV3";
+import CustomTable from "@/components/shared/CustomTable";
 
 const page = () => {
 	const [filterContent, setFilterContent] = useState<any>();

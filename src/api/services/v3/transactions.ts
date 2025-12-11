@@ -113,4 +113,23 @@ export class TransactionsServiceV3 {
 			true
 		);
 	};
+
+	/**
+	 * Create debt for a user (admin)
+	 * Creates a DEBT transaction that can be immediately collected if balance is sufficient
+	 */
+	static createDebt = (data: {
+		userId: string;
+		amount: number;
+		currency?: string;
+		reason: string;
+		internalReference?: string;
+		attemptImmediatePayment?: boolean;
+	}) => {
+		return BaseMethods.postRequest(
+			transactionsUrlV3.CREATE_DEBT,
+			data,
+			true
+		);
+	};
 }

@@ -1,6 +1,10 @@
 "use client";
 
 import { KYCServiceV3 } from "@/api/services/v3/kyc";
+import {
+	UserManagementServiceV3,
+	UpdateUserProfileData,
+} from "@/api/services/v3/userManagement";
 import Layout from "@/components/shared/Layout";
 import { useParams } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
@@ -22,6 +26,7 @@ import {
 	Check,
 	X,
 	ChevronDown,
+	Edit3,
 } from "lucide-react";
 import { KYCRaisonRejectServiceV3 } from "@/api/services/v3/kycRaisonReject";
 import { kycRejectReasonsEN } from "@/constants/v3/kycRejectReasons";
@@ -89,6 +94,20 @@ const ManageKyc = () => {
 	const [dropdownOpen, setDropdownOpen] = useState(false);
 	const [selectedReasons, setSelectedReasons] = useState<string[]>([]);
 	const [customReason, setCustomReason] = useState("");
+
+	// State pour l'édition des informations utilisateur dans le modal d'approbation
+	const [userProfileForm, setUserProfileForm] = useState<UpdateUserProfileData>(
+		{
+			firstName: "",
+			lastName: "",
+			email: "",
+			state: "",
+			address: "",
+			gender: "",
+			dateOfBirth: "",
+			city: "",
+		}
+	);
 	const [searchQuery, setSearchQuery] = useState("");
 
 	// Fonctions pour gérer les raisons personnalisées
@@ -178,7 +197,56 @@ const ManageKyc = () => {
 		},
 	});
 
+	// Mutation pour mettre à jour le profil utilisateur
+	const updateUserProfile = useMutation({
+		mutationFn: async ({
+			userId,
+			data,
+		}: {
+			userId: string;
+			data: UpdateUserProfileData;
+		}) => {
+			const response = await UserManagementServiceV3.updateUserProfile(
+				userId,
+				data
+			);
+			const responseJson = await response.json();
+			if (!response.ok) {
+				throw new Error(
+					responseJson.message ||
+						"Erreur lors de la mise à jour du profil"
+				);
+			}
+			return responseJson;
+		},
+	});
+
 	const { data: kycData, isLoading, isError, refetch } = kycQuery;
+
+	// Initialiser le formulaire avec les données utilisateur quand elles sont chargées
+	useEffect(() => {
+		if (kycData?.user) {
+			const user = kycData.user;
+			// Extraire firstName et lastName du fullName si nécessaire
+			const nameParts = (user.fullName || "").split(" ");
+			const firstName = user.firstName || nameParts[0] || "";
+			const lastName =
+				user.lastName || nameParts.slice(1).join(" ") || "";
+
+			setUserProfileForm({
+				firstName,
+				lastName,
+				email: user.email || "",
+				state: user.state || "",
+				address: user.address || "",
+				gender: user.gender || "",
+				dateOfBirth: user.dateOfBirth
+					? new Date(user.dateOfBirth).toISOString().split("T")[0]
+					: "",
+				city: user.city || "",
+			});
+		}
+	}, [kycData]);
 
 	// Fonctions pour gérer les raisons de rejet
 	const addRejectReason = () => {
@@ -703,47 +771,262 @@ const ManageKyc = () => {
 				</div>
 			)}
 
-			{/* Modal de confirmation d'approbation */}
+			{/* Modal d'approbation avec édition des informations utilisateur */}
 			{showApproveModal && (
 				<div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000] p-4">
-					<div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
+					<div className="bg-white rounded-lg shadow-xl max-w-2xl w-full p-6 max-h-[90vh] overflow-y-auto">
 						<div className="flex items-center gap-3 mb-4">
 							<div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
-								<CheckCircle className="w-6 h-6 text-[#18bc7a]" />
+								<Edit3 className="w-6 h-6 text-[#18bc7a]" />
 							</div>
-							<h3 className="text-xl font-bold text-gray-900">
-								Approuver le KYC
-							</h3>
+							<div>
+								<h3 className="text-xl font-bold text-gray-900">
+									Approuver le KYC
+								</h3>
+								<p className="text-sm text-gray-500">
+									Vérifiez et modifiez les informations avant
+									approbation
+								</p>
+							</div>
 						</div>
-						<p className="text-gray-600 mb-6">
-							Êtes-vous sûr de vouloir approuver le KYC de cet
-							utilisateur ? Cette action validera son identité.
-						</p>
+
+						<div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mb-6">
+							<p className="text-sm text-yellow-800">
+								<strong>Note:</strong> Vous pouvez modifier les
+								informations de l&apos;utilisateur ci-dessous
+								avant d&apos;approuver le KYC. Les modifications
+								seront enregistrées automatiquement.
+							</p>
+						</div>
+
+						{/* Formulaire d'édition du profil utilisateur */}
+						<div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+							<div>
+								<label className="block text-sm font-medium text-gray-700 mb-1">
+									Prénom
+								</label>
+								<input
+									type="text"
+									value={userProfileForm.firstName || ""}
+									onChange={(e) =>
+										setUserProfileForm((prev) => ({
+											...prev,
+											firstName: e.target.value,
+										}))
+									}
+									className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#18bc7a] focus:border-transparent"
+									placeholder="Prénom"
+								/>
+							</div>
+							<div>
+								<label className="block text-sm font-medium text-gray-700 mb-1">
+									Nom
+								</label>
+								<input
+									type="text"
+									value={userProfileForm.lastName || ""}
+									onChange={(e) =>
+										setUserProfileForm((prev) => ({
+											...prev,
+											lastName: e.target.value,
+										}))
+									}
+									className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#18bc7a] focus:border-transparent"
+									placeholder="Nom"
+								/>
+							</div>
+							<div>
+								<label className="block text-sm font-medium text-gray-700 mb-1">
+									Email
+								</label>
+								<input
+									type="email"
+									value={userProfileForm.email || ""}
+									onChange={(e) =>
+										setUserProfileForm((prev) => ({
+											...prev,
+											email: e.target.value,
+										}))
+									}
+									className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#18bc7a] focus:border-transparent"
+									placeholder="Email"
+								/>
+							</div>
+							<div>
+								<label className="block text-sm font-medium text-gray-700 mb-1">
+									Genre
+								</label>
+								<select
+									value={userProfileForm.gender || ""}
+									onChange={(e) =>
+										setUserProfileForm((prev) => ({
+											...prev,
+											gender: e.target.value,
+										}))
+									}
+									className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#18bc7a] focus:border-transparent"
+								>
+									<option value="">Sélectionnez</option>
+									<option value="male">Homme</option>
+									<option value="female">Femme</option>
+									<option value="other">Autre</option>
+								</select>
+							</div>
+							<div>
+								<label className="block text-sm font-medium text-gray-700 mb-1">
+									Date de naissance
+								</label>
+								<input
+									type="date"
+									value={userProfileForm.dateOfBirth || ""}
+									onChange={(e) =>
+										setUserProfileForm((prev) => ({
+											...prev,
+											dateOfBirth: e.target.value,
+										}))
+									}
+									className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#18bc7a] focus:border-transparent"
+								/>
+							</div>
+							<div>
+								<label className="block text-sm font-medium text-gray-700 mb-1">
+									Ville
+								</label>
+								<input
+									type="text"
+									value={userProfileForm.city || ""}
+									onChange={(e) =>
+										setUserProfileForm((prev) => ({
+											...prev,
+											city: e.target.value,
+										}))
+									}
+									className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#18bc7a] focus:border-transparent"
+									placeholder="Ville"
+								/>
+							</div>
+							<div>
+								<label className="block text-sm font-medium text-gray-700 mb-1">
+									État/Région
+								</label>
+								<input
+									type="text"
+									value={userProfileForm.state || ""}
+									onChange={(e) =>
+										setUserProfileForm((prev) => ({
+											...prev,
+											state: e.target.value,
+										}))
+									}
+									className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#18bc7a] focus:border-transparent"
+									placeholder="État/Région"
+								/>
+							</div>
+							<div className="md:col-span-2">
+								<label className="block text-sm font-medium text-gray-700 mb-1">
+									Adresse
+								</label>
+								<input
+									type="text"
+									value={userProfileForm.address || ""}
+									onChange={(e) =>
+										setUserProfileForm((prev) => ({
+											...prev,
+											address: e.target.value,
+										}))
+									}
+									className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#18bc7a] focus:border-transparent"
+									placeholder="Adresse complète"
+								/>
+							</div>
+						</div>
+
 						<div className="flex gap-3">
 							<button
 								onClick={() => setShowApproveModal(false)}
-								disabled={updateKyc.isLoading}
+								disabled={
+									updateKyc.isLoading ||
+									updateUserProfile.isLoading
+								}
 								className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition disabled:opacity-50"
 							>
 								Annuler
 							</button>
 							<button
-								onClick={() =>
-									updateKyc.mutate({
-										kycId: kycData.id,
-										data: { status: "COMPLETED" },
-									})
+								onClick={async () => {
+									try {
+										// Filtrer les champs vides pour ne pas écraser avec des valeurs vides
+										const profileData: UpdateUserProfileData =
+											{};
+										if (userProfileForm.firstName?.trim())
+											profileData.firstName =
+												userProfileForm.firstName.trim();
+										if (userProfileForm.lastName?.trim())
+											profileData.lastName =
+												userProfileForm.lastName.trim();
+										if (userProfileForm.email?.trim())
+											profileData.email =
+												userProfileForm.email.trim();
+										if (userProfileForm.gender)
+											profileData.gender =
+												userProfileForm.gender;
+										if (userProfileForm.dateOfBirth)
+											profileData.dateOfBirth =
+												userProfileForm.dateOfBirth;
+										if (userProfileForm.city?.trim())
+											profileData.city =
+												userProfileForm.city.trim();
+										if (userProfileForm.state?.trim())
+											profileData.state =
+												userProfileForm.state.trim();
+										if (userProfileForm.address?.trim())
+											profileData.address =
+												userProfileForm.address.trim();
+
+										// 1. Mettre à jour le profil utilisateur s'il y a des modifications
+										if (
+											Object.keys(profileData).length > 0
+										) {
+											await updateUserProfile.mutateAsync(
+												{
+													userId: kycData.user.userId,
+													data: profileData,
+												}
+											);
+											toast.success(
+												"Profil utilisateur mis à jour"
+											);
+										}
+
+										// 2. Approuver le KYC
+										updateKyc.mutate({
+											kycId: kycData.id,
+											data: { status: "COMPLETED" },
+										});
+									} catch (error: any) {
+										toast.error(
+											error.message ||
+												"Erreur lors de la mise à jour"
+										);
+									}
+								}}
+								disabled={
+									updateKyc.isLoading ||
+									updateUserProfile.isLoading
 								}
-								disabled={updateKyc.isLoading}
 								className="flex-1 px-4 py-2 bg-[#18bc7a] hover:bg-[#15a669] text-white rounded-lg transition disabled:opacity-50 flex items-center justify-center gap-2"
 							>
-								{updateKyc.isLoading ? (
+								{updateKyc.isLoading ||
+								updateUserProfile.isLoading ? (
 									<>
 										<div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
 										Traitement...
 									</>
 								) : (
-									"Confirmer"
+									<>
+										<CheckCircle className="w-4 h-4" />
+										Approuver le KYC
+									</>
 								)}
 							</button>
 						</div>

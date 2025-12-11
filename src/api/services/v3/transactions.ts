@@ -113,4 +113,74 @@ export class TransactionsServiceV3 {
 			true
 		);
 	};
+
+	/**
+	 * Create debt for a user (admin)
+	 * Creates a DEBT transaction that can be immediately collected if balance is sufficient
+	 */
+	static createDebt = (data: {
+		userId: string;
+		amount: number;
+		currency?: string;
+		reason: string;
+		internalReference?: string;
+		attemptImmediatePayment?: boolean;
+	}) => {
+		return BaseMethods.postRequest(
+			transactionsUrlV3.CREATE_DEBT,
+			data,
+			true
+		);
+	};
+
+	/**
+	 * Transfer between user wallets (admin - no fees)
+	 * Transfers funds between wallets applying only exchange rate (no fees)
+	 */
+	static walletTransfer = (data: {
+		sourceWalletId: string;
+		destinationWalletId: string;
+		amount: number;
+		reason: string;
+		internalReference?: string;
+	}) => {
+		return BaseMethods.postRequest(
+			transactionsUrlV3.WALLET_TRANSFER,
+			data,
+			true
+		);
+	};
+
+	/**
+	 * Create a new wallet for a user (admin)
+	 * Creates a wallet in a specific currency for an existing user
+	 */
+	static createWallet = (data: {
+		userId: string;
+		currency: string;
+		isDefault?: boolean;
+		reason?: string;
+	}) => {
+		return BaseMethods.postRequest(
+			transactionsUrlV3.CREATE_WALLET,
+			data,
+			true
+		);
+	};
+
+	/**
+	 * Cancel a debt (admin)
+	 * Cancels a DEBT transaction. If the debt was already PAID, refunds the user.
+	 */
+	static cancelDebt = (data: {
+		transactionId: string;
+		reason: string;
+		internalReference?: string;
+	}) => {
+		return BaseMethods.postRequest(
+			transactionsUrlV3.CANCEL_DEBT,
+			data,
+			true
+		);
+	};
 }

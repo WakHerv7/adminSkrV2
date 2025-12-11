@@ -97,3 +97,69 @@ export const handleAdjustWalletBalance = async (data: {
 
 	return responseJson;
 };
+
+export const handleCreateDebt = async (data: {
+	userId: string;
+	amount: number;
+	currency?: string;
+	reason: string;
+	internalReference?: string;
+	attemptImmediatePayment?: boolean;
+}) => {
+	const response = await TransactionsServiceV3.createDebt(data);
+	const responseJson = await response.json();
+
+	if (!response.ok) {
+		throw new Error(responseJson.message || "Failed to create debt");
+	}
+
+	return responseJson;
+};
+
+export const handleWalletTransfer = async (data: {
+	sourceWalletId: string;
+	destinationWalletId: string;
+	amount: number;
+	reason: string;
+	internalReference?: string;
+}) => {
+	const response = await TransactionsServiceV3.walletTransfer(data);
+	const responseJson = await response.json();
+
+	if (!response.ok) {
+		throw new Error(responseJson.message || "Failed to transfer between wallets");
+	}
+
+	return responseJson;
+};
+
+export const handleCreateWallet = async (data: {
+	userId: string;
+	currency: string;
+	isDefault?: boolean;
+	reason?: string;
+}) => {
+	const response = await TransactionsServiceV3.createWallet(data);
+	const responseJson = await response.json();
+
+	if (!response.ok) {
+		throw new Error(responseJson.message || "Failed to create wallet");
+	}
+
+	return responseJson;
+};
+
+export const handleCancelDebt = async (data: {
+	transactionId: string;
+	reason: string;
+	internalReference?: string;
+}) => {
+	const response = await TransactionsServiceV3.cancelDebt(data);
+	const responseJson = await response.json();
+
+	if (!response.ok) {
+		throw new Error(responseJson.message || "Failed to cancel debt");
+	}
+
+	return responseJson;
+};

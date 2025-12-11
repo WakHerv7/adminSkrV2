@@ -14,6 +14,8 @@ export const usermanagementUrlsV3 = {
 	GET_ALL_USERS: `${BASE_URL_USERMANAGEMENT}`,
 	GET_USERS_DETAILS: (userId: string) =>
 		`${BASE_URL_USERMANAGEMENT}/${userId}`,
+	UPDATE_USER_PROFILE: (userId: string) =>
+		`${BASE_URL_USERMANAGEMENT}/${userId}/profile`,
 	DEACTIVATE_USER: (userId: string) =>
 		`${BASE_URL_USERMANAGEMENT}/${userId}/deactivate`,
 	ACTIVATE_USER: (userId: string) =>
@@ -83,4 +85,12 @@ export const transactionsUrlV3 = {
 	GET_ALL_TRANSACTIONS: `${TRANSACTIONS_BASE_URL_V3}/transactions`,
 	// Balance adjustment (admin)
 	ADJUST_WALLET_BALANCE: `${TRANSACTIONS_BASE_URL_V3}/wallets/adjust-balance`,
+	// Debt creation (admin)
+	CREATE_DEBT: `${TRANSACTIONS_BASE_URL_V3}/debts/create`,
+	// Debt cancellation (admin)
+	CANCEL_DEBT: `${TRANSACTIONS_BASE_URL_V3}/debts/cancel`,
+	// Wallet transfer (admin - no fees)
+	WALLET_TRANSFER: `${TRANSACTIONS_BASE_URL_V3}/wallets/transfer`,
+	// Wallet creation (admin)
+	CREATE_WALLET: `${TRANSACTIONS_BASE_URL_V3}/wallets/create`,
 };

@@ -167,4 +167,20 @@ export class TransactionsServiceV3 {
 			true
 		);
 	};
+
+	/**
+	 * Cancel a debt (admin)
+	 * Cancels a DEBT transaction. If the debt was already PAID, refunds the user.
+	 */
+	static cancelDebt = (data: {
+		transactionId: string;
+		reason: string;
+		internalReference?: string;
+	}) => {
+		return BaseMethods.postRequest(
+			transactionsUrlV3.CANCEL_DEBT,
+			data,
+			true
+		);
+	};
 }

@@ -148,3 +148,18 @@ export const handleCreateWallet = async (data: {
 
 	return responseJson;
 };
+
+export const handleCancelDebt = async (data: {
+	transactionId: string;
+	reason: string;
+	internalReference?: string;
+}) => {
+	const response = await TransactionsServiceV3.cancelDebt(data);
+	const responseJson = await response.json();
+
+	if (!response.ok) {
+		throw new Error(responseJson.message || "Failed to cancel debt");
+	}
+
+	return responseJson;
+};

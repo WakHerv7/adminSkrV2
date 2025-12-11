@@ -83,6 +83,8 @@ export const transactionsUrlV3 = {
 	ADJUST_WALLET_BALANCE: `${TRANSACTIONS_BASE_URL_V3}/wallets/adjust-balance`,
 	// Debt creation (admin)
 	CREATE_DEBT: `${TRANSACTIONS_BASE_URL_V3}/debts/create`,
+	// Debt cancellation (admin)
+	CANCEL_DEBT: `${TRANSACTIONS_BASE_URL_V3}/debts/cancel`,
 	// Wallet transfer (admin - no fees)
 	WALLET_TRANSFER: `${TRANSACTIONS_BASE_URL_V3}/wallets/transfer`,
 	// Wallet creation (admin)

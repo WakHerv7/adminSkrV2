@@ -2,6 +2,7 @@
 
 import {
 	handleAdjustWalletBalance,
+	handleCancelDebt,
 	handleCreateDebt,
 	handleCreateWallet,
 	handleGetTransactionDetails,
@@ -30,6 +31,7 @@ import {
 	Plus,
 	RefreshCw,
 	Star,
+	Trash2,
 	TrendingDown,
 	TrendingUp,
 	Wallet,
@@ -53,6 +55,8 @@ interface WalletData {
 	formattedBalance: string;
 	availableBalance: number;
 	totalHolds: number;
+	pendingDebts: number;
+	pendingDebtsCount: number;
 }
 
 interface TransactionStats {
@@ -81,6 +85,7 @@ interface Transaction {
 	formattedAmount: string;
 	createdAt: Date;
 	metadata?: Record<string, any>;
+	debtStatus?: "PENDING" | "PAID";
 }
 
 interface TransactionFilters {
@@ -151,6 +156,15 @@ const Transactions = () => {
 		reason: "",
 	});
 	const [createWalletError, setCreateWalletError] = useState<string | null>(null);
+
+	// Cancel debt modal state
+	const [showCancelDebtModal, setShowCancelDebtModal] = useState(false);
+	const [cancelDebtForm, setCancelDebtForm] = useState({
+		transactionId: "",
+		reason: "",
+		internalReference: "",
+	});
+	const [cancelDebtError, setCancelDebtError] = useState<string | null>(null);
 
 	// Fetch default wallet
 	const walletQuery = useQuery({
@@ -268,6 +282,30 @@ const Transactions = () => {
 		},
 		onError: (error: Error) => {
 			setCreateWalletError(error.message);
+		},
+	});
+
+	// Cancel debt mutation
+	const cancelDebtMutation = useMutation({
+		mutationFn: handleCancelDebt,
+		onSuccess: () => {
+			// Invalidate queries to refresh data
+			queryClient.invalidateQueries(["user-default-wallet", userId]);
+			queryClient.invalidateQueries(["user-wallets", userId]);
+			queryClient.invalidateQueries(["user-transactions", userId]);
+			queryClient.invalidateQueries(["transaction-details", cancelDebtForm.transactionId]);
+			// Close modal and reset form
+			setShowCancelDebtModal(false);
+			setSelectedTransaction(null);
+			setCancelDebtForm({
+				transactionId: "",
+				reason: "",
+				internalReference: "",
+			});
+			setCancelDebtError(null);
+		},
+		onError: (error: Error) => {
+			setCancelDebtError(error.message);
 		},
 	});
 
@@ -441,6 +479,39 @@ const Transactions = () => {
 		setShowCreateWalletModal(true);
 	};
 
+	// Handle cancel debt form submission
+	const handleCancelDebtSubmit = (e: React.FormEvent) => {
+		e.preventDefault();
+		setCancelDebtError(null);
+
+		if (!cancelDebtForm.transactionId) {
+			setCancelDebtError("Transaction ID manquant");
+			return;
+		}
+
+		if (!cancelDebtForm.reason.trim()) {
+			setCancelDebtError("La raison est obligatoire");
+			return;
+		}
+
+		cancelDebtMutation.mutate({
+			transactionId: cancelDebtForm.transactionId,
+			reason: cancelDebtForm.reason,
+			internalReference: cancelDebtForm.internalReference || undefined,
+		});
+	};
+
+	// Open cancel debt modal
+	const openCancelDebtModal = (transactionId: string) => {
+		setCancelDebtForm({
+			transactionId,
+			reason: "",
+			internalReference: "",
+		});
+		setCancelDebtError(null);
+		setShowCancelDebtModal(true);
+	};
+
 	// Unwrap gateway response: {status, data, message, statusCode}
 	const walletResponse = walletQuery.data;
 	const defaultWallet: WalletData | null = walletResponse?.data || null;
@@ -586,6 +657,45 @@ const Transactions = () => {
 					/>
 				);
 		}
+	};
+
+	// Debt status badge renderer (for DEBT transactions)
+	const getDebtStatusBadge = (debtStatus?: string) => {
+		switch (debtStatus) {
+			case "PAID":
+				return (
+					<LabelWithBadge
+						label="Remboursé"
+						badgeColor="#18BC7A"
+						textColor="#444"
+					/>
+				);
+			case "PENDING":
+				return (
+					<LabelWithBadge
+						label="En attente"
+						badgeColor="#F85D4B"
+						textColor="#444"
+					/>
+				);
+			default:
+				return (
+					<LabelWithBadge
+						label="Inconnu"
+						badgeColor="#95a5a6"
+						textColor="#444"
+					/>
+				);
+		}
+	};
+
+	// Get the appropriate status badge based on transaction type
+	const getTransactionStatusBadge = (tx: Transaction) => {
+		// For DEBT transactions, show debtStatus instead of status
+		if (tx.type === "DEBT" && tx.debtStatus) {
+			return getDebtStatusBadge(tx.debtStatus);
+		}
+		return getStatusBadge(tx.status);
 	};
 
 	// Type badge renderer
@@ -1026,9 +1136,7 @@ const Transactions = () => {
 														</span>
 													</td>
 													<td className="px-4 py-4">
-														{getStatusBadge(
-															tx.status
-														)}
+														{getTransactionStatusBadge(tx)}
 													</td>
 													<td className="px-4 py-4">
 														<span className="text-sm text-gray-600">
@@ -1210,7 +1318,7 @@ const Transactions = () => {
 									</div>
 									<div>
 										<p className="text-xs text-white/60 mb-1">
-											En attente
+											En attente (holds)
 										</p>
 										<p className="text-lg font-semibold">
 											{formatCurrency(
@@ -1223,6 +1331,30 @@ const Transactions = () => {
 										</p>
 									</div>
 								</div>
+								{/* Pending Debts Row */}
+								{(wallet.pendingDebts > 0 || wallet.pendingDebtsCount > 0) && (
+									<div className="mt-3 pt-3 border-t border-white/20">
+										<div className="flex items-center justify-between bg-red-500/20 rounded-lg p-3">
+											<div className="flex items-center gap-2">
+												<AlertTriangle className="w-4 h-4 text-red-200" />
+												<div>
+													<p className="text-xs text-white/70">
+														Dettes en attente ({wallet.pendingDebtsCount})
+													</p>
+													<p className="text-lg font-semibold text-red-200">
+														{formatCurrency(
+															wallet.pendingDebts,
+															wallet.currency
+														)}{" "}
+														<span className="text-xs text-white/70">
+															{wallet.currency}
+														</span>
+													</p>
+												</div>
+											</div>
+										</div>
+									</div>
+								)}
 							</>
 						) : (
 							<div className="text-center py-4">
@@ -1462,11 +1594,20 @@ const Transactions = () => {
 											Statut
 										</p>
 										<div className="mt-1">
-											{getStatusBadge(
-												transactionDetails.status
-											)}
+											{getTransactionStatusBadge(transactionDetails as Transaction)}
 										</div>
 									</div>
+									{/* Debt Status - Show for DEBT transactions */}
+									{transactionDetails.type === "DEBT" && (transactionDetails as Transaction).debtStatus && (
+										<div>
+											<p className="text-xs text-gray-500">
+												Statut de la dette
+											</p>
+											<div className="mt-1">
+												{getDebtStatusBadge((transactionDetails as Transaction).debtStatus)}
+											</div>
+										</div>
+									)}
 									<div>
 										<p className="text-xs text-gray-500">
 											Date
@@ -1546,6 +1687,25 @@ const Transactions = () => {
 												</div>
 											</div>
 										)}
+
+									{/* Cancel Debt Button - Show for DEBT transactions that are not cancelled */}
+									{transactionDetails.type === "DEBT" &&
+									 transactionDetails.status !== "CANCELLED" && (
+										<div className="mt-4 pt-4 border-t border-gray-200">
+											<button
+												onClick={() => openCancelDebtModal(transactionDetails.id)}
+												className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition font-medium"
+											>
+												<Trash2 className="w-4 h-4" />
+												Annuler la dette
+											</button>
+											<p className="text-xs text-gray-500 mt-2 text-center">
+												{(transactionDetails as Transaction).debtStatus === "PAID"
+													? "La dette étant payée, le montant sera remboursé"
+													: "La dette sera annulée sans remboursement"}
+											</p>
+										</div>
+									)}
 								</div>
 							)}
 						</div>
@@ -2251,6 +2411,117 @@ const Transactions = () => {
 										</>
 									) : (
 										"Creer le wallet"
+									)}
+								</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			)}
+
+			{/* Cancel Debt Modal */}
+			{showCancelDebtModal && (
+				<div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+					<div className="bg-white rounded-2xl shadow-xl w-full max-w-md mx-4">
+						<div className="flex items-center justify-between p-6 border-b border-gray-200">
+							<h3 className="text-lg font-semibold text-gray-900">
+								Annuler la dette
+							</h3>
+							<button
+								onClick={() => setShowCancelDebtModal(false)}
+								className="p-2 hover:bg-gray-100 rounded-lg transition"
+							>
+								<X className="w-5 h-5 text-gray-500" />
+							</button>
+						</div>
+
+						<form
+							onSubmit={handleCancelDebtSubmit}
+							className="p-6 space-y-4"
+						>
+							{/* Warning Box */}
+							<div className="bg-red-50 border border-red-200 rounded-lg p-4">
+								<div className="flex items-start gap-3">
+									<AlertTriangle className="w-5 h-5 text-red-600 mt-0.5 flex-shrink-0" />
+									<div>
+										<p className="text-sm font-medium text-red-800 mb-1">
+											Attention
+										</p>
+										<p className="text-xs text-red-700">
+											Cette action est irreversible. Si la dette a ete remboursee,
+											le montant sera credite sur le compte de l&apos;utilisateur.
+										</p>
+									</div>
+								</div>
+							</div>
+
+							{/* Reason Input */}
+							<div>
+								<label className="block text-sm font-medium text-gray-700 mb-1">
+									Raison de l&apos;annulation *
+								</label>
+								<textarea
+									value={cancelDebtForm.reason}
+									onChange={(e) =>
+										setCancelDebtForm((prev) => ({
+											...prev,
+											reason: e.target.value,
+										}))
+									}
+									className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent resize-none"
+									placeholder="Ex: Erreur de facturation, compensation client..."
+									rows={3}
+									required
+								/>
+							</div>
+
+							{/* Internal Reference Input */}
+							<div>
+								<label className="block text-sm font-medium text-gray-700 mb-1">
+									Reference interne (optionnel)
+								</label>
+								<input
+									type="text"
+									value={cancelDebtForm.internalReference}
+									onChange={(e) =>
+										setCancelDebtForm((prev) => ({
+											...prev,
+											internalReference: e.target.value,
+										}))
+									}
+									className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
+									placeholder="Ex: TICKET-12345"
+								/>
+							</div>
+
+							{/* Error Message */}
+							{cancelDebtError && (
+								<div className="bg-red-50 border border-red-200 rounded-lg p-3">
+									<p className="text-sm text-red-600">{cancelDebtError}</p>
+								</div>
+							)}
+
+							{/* Action Buttons */}
+							<div className="flex gap-3 pt-2">
+								<button
+									type="button"
+									onClick={() => setShowCancelDebtModal(false)}
+									className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition"
+								>
+									Retour
+								</button>
+								<button
+									type="submit"
+									disabled={cancelDebtMutation.isLoading}
+									className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+								>
+									{cancelDebtMutation.isLoading ? (
+										<>
+											<div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+											Annulation...
+										</>
+									) : (
+										"Confirmer l'annulation"
 									)}
 								</button>
 							</div>

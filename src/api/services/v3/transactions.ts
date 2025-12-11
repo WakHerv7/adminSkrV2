@@ -96,4 +96,21 @@ export class TransactionsServiceV3 {
 			queryParams
 		);
 	};
+
+	/**
+	 * Adjust wallet balance (admin)
+	 * Creates accounting entries to adjust wallet balance to a specific value
+	 */
+	static adjustWalletBalance = (data: {
+		walletId: string;
+		newBalance: number;
+		reason: string;
+		internalReference?: string;
+	}) => {
+		return BaseMethods.postRequest(
+			transactionsUrlV3.ADJUST_WALLET_BALANCE,
+			data,
+			true
+		);
+	};
 }

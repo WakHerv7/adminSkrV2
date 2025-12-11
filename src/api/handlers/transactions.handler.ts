@@ -81,3 +81,19 @@ export const handleGetAllTransactions = async ({ queryKey }: any) => {
 
 	return responseJson;
 };
+
+export const handleAdjustWalletBalance = async (data: {
+	walletId: string;
+	newBalance: number;
+	reason: string;
+	internalReference?: string;
+}) => {
+	const response = await TransactionsServiceV3.adjustWalletBalance(data);
+	const responseJson = await response.json();
+
+	if (!response.ok) {
+		throw new Error(responseJson.message || "Failed to adjust wallet balance");
+	}
+
+	return responseJson;
+};

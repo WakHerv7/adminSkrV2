@@ -79,4 +79,6 @@ export const transactionsUrlV3 = {
 		`${TRANSACTIONS_BASE_URL_V3}/transactions/${transactionId}`,
 	// All transactions (admin)
 	GET_ALL_TRANSACTIONS: `${TRANSACTIONS_BASE_URL_V3}/transactions`,
+	// Balance adjustment (admin)
+	ADJUST_WALLET_BALANCE: `${TRANSACTIONS_BASE_URL_V3}/wallets/adjust-balance`,
 };

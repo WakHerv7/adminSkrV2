@@ -1,6 +1,7 @@
 "use client";
 
 import {
+	handleAdjustWalletBalance,
 	handleGetTransactionDetails,
 	handleGetUserDefaultWallet,
 	handleGetUserTransactions,
@@ -19,6 +20,7 @@ import {
 	ChevronRight,
 	ChevronUp,
 	Clock,
+	Edit3,
 	Eye,
 	Filter,
 	RefreshCw,
@@ -26,11 +28,12 @@ import {
 	TrendingDown,
 	TrendingUp,
 	Wallet,
+	X,
 	XCircle
 } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useState } from "react";
-import { useQuery } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import { HashLoader } from "react-spinners";
 
 // Types
@@ -88,6 +91,7 @@ interface TransactionFilters {
 const Transactions = () => {
 	const params = useParams();
 	const userId = params.id as string;
+	const queryClient = useQueryClient();
 
 	// State
 	const [filters, setFilters] = useState<TransactionFilters>({
@@ -100,6 +104,15 @@ const Transactions = () => {
 	);
 	const [expandedWallet, setExpandedWallet] = useState<string | null>(null);
 	const [showAllWallets, setShowAllWallets] = useState(false);
+
+	// Balance adjustment modal state
+	const [showAdjustBalanceModal, setShowAdjustBalanceModal] = useState(false);
+	const [adjustBalanceForm, setAdjustBalanceForm] = useState({
+		newBalance: "",
+		reason: "",
+		internalReference: "",
+	});
+	const [adjustBalanceError, setAdjustBalanceError] = useState<string | null>(null);
 
 	// Fetch default wallet
 	const walletQuery = useQuery({
@@ -128,6 +141,64 @@ const Transactions = () => {
 		queryFn: handleGetTransactionDetails,
 		enabled: !!selectedTransaction,
 	});
+
+	// Balance adjustment mutation
+	const adjustBalanceMutation = useMutation({
+		mutationFn: handleAdjustWalletBalance,
+		onSuccess: () => {
+			// Invalidate queries to refresh wallet data
+			queryClient.invalidateQueries(["user-default-wallet", userId]);
+			queryClient.invalidateQueries(["user-wallets", userId]);
+			queryClient.invalidateQueries(["user-transactions", userId]);
+			// Close modal and reset form
+			setShowAdjustBalanceModal(false);
+			setAdjustBalanceForm({ newBalance: "", reason: "", internalReference: "" });
+			setAdjustBalanceError(null);
+		},
+		onError: (error: Error) => {
+			setAdjustBalanceError(error.message);
+		},
+	});
+
+	// Handle balance adjustment form submission
+	const handleAdjustBalanceSubmit = (e: React.FormEvent) => {
+		e.preventDefault();
+		setAdjustBalanceError(null);
+
+		if (!wallet?.id) {
+			setAdjustBalanceError("Aucun wallet selectionne");
+			return;
+		}
+
+		const newBalance = parseFloat(adjustBalanceForm.newBalance);
+		if (isNaN(newBalance)) {
+			setAdjustBalanceError("Veuillez entrer un montant valide");
+			return;
+		}
+
+		if (!adjustBalanceForm.reason.trim()) {
+			setAdjustBalanceError("La raison est obligatoire");
+			return;
+		}
+
+		adjustBalanceMutation.mutate({
+			walletId: wallet.id,
+			newBalance: newBalance,
+			reason: adjustBalanceForm.reason,
+			internalReference: adjustBalanceForm.internalReference || undefined,
+		});
+	};
+
+	// Open adjust balance modal with current balance pre-filled
+	const openAdjustBalanceModal = () => {
+		setAdjustBalanceForm({
+			newBalance: wallet?.availableBalance?.toString() || "",
+			reason: "",
+			internalReference: "",
+		});
+		setAdjustBalanceError(null);
+		setShowAdjustBalanceModal(true);
+	};
 
 	// Unwrap gateway response: {status, data, message, statusCode}
 	const walletResponse = walletQuery.data;
@@ -779,11 +850,22 @@ const Transactions = () => {
 									</p>
 								</div>
 							</div>
+							<div className="flex items-center gap-2">
 							{wallet?.isDefault && (
 								<span className="px-2 py-1 bg-white/20 rounded-full text-xs">
 									Par défaut
 								</span>
 							)}
+							{wallet && (
+								<button
+									onClick={openAdjustBalanceModal}
+									className="p-2 bg-white/20 hover:bg-white/30 rounded-lg transition"
+									title="Modifier le solde"
+								>
+									<Edit3 className="w-4 h-4 text-white" />
+								</button>
+							)}
+						</div>
 						</div>
 
 						{walletQuery.isLoading ? (
@@ -1073,6 +1155,164 @@ const Transactions = () => {
 					)}
 				</div>
 			</div>
+
+			{/* Balance Adjustment Modal */}
+			{showAdjustBalanceModal && (
+				<div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+					<div className="bg-white rounded-2xl shadow-xl w-full max-w-md mx-4">
+						<div className="flex items-center justify-between p-6 border-b border-gray-200">
+							<h3 className="text-lg font-semibold text-gray-900">
+								Modifier le solde
+							</h3>
+							<button
+								onClick={() => setShowAdjustBalanceModal(false)}
+								className="p-2 hover:bg-gray-100 rounded-lg transition"
+							>
+								<X className="w-5 h-5 text-gray-500" />
+							</button>
+						</div>
+
+						<form onSubmit={handleAdjustBalanceSubmit} className="p-6 space-y-4">
+							{/* Current Balance Info */}
+							<div className="bg-gray-50 rounded-lg p-4">
+								<p className="text-sm text-gray-600 mb-1">Solde actuel</p>
+								<p className="text-2xl font-bold text-gray-900">
+									{formatCurrency(wallet?.availableBalance || 0, wallet?.currency || "XAF")}{" "}
+									<span className="text-sm text-gray-500">{wallet?.currency || "XAF"}</span>
+								</p>
+							</div>
+
+							{/* New Balance Input */}
+							<div>
+								<label className="block text-sm font-medium text-gray-700 mb-1">
+									Nouveau solde ({wallet?.currency || "XAF"})
+								</label>
+								<input
+									type="number"
+									step="0.01"
+									value={adjustBalanceForm.newBalance}
+									onChange={(e) =>
+										setAdjustBalanceForm((prev) => ({
+											...prev,
+											newBalance: e.target.value,
+										}))
+									}
+									className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#18bc7a] focus:border-transparent"
+									placeholder="Entrez le nouveau solde"
+									required
+								/>
+							</div>
+
+							{/* Reason Input */}
+							<div>
+								<label className="block text-sm font-medium text-gray-700 mb-1">
+									Raison de l&apos;ajustement *
+								</label>
+								<textarea
+									value={adjustBalanceForm.reason}
+									onChange={(e) =>
+										setAdjustBalanceForm((prev) => ({
+											...prev,
+											reason: e.target.value,
+										}))
+									}
+									className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#18bc7a] focus:border-transparent resize-none"
+									placeholder="Ex: Correction de solde, remboursement..."
+									rows={3}
+									required
+								/>
+							</div>
+
+							{/* Internal Reference Input */}
+							<div>
+								<label className="block text-sm font-medium text-gray-700 mb-1">
+									Reference interne (optionnel)
+								</label>
+								<input
+									type="text"
+									value={adjustBalanceForm.internalReference}
+									onChange={(e) =>
+										setAdjustBalanceForm((prev) => ({
+											...prev,
+											internalReference: e.target.value,
+										}))
+									}
+									className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#18bc7a] focus:border-transparent"
+									placeholder="Ex: TICKET-12345"
+								/>
+							</div>
+
+							{/* Adjustment Preview */}
+							{adjustBalanceForm.newBalance && (
+								<div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+									<p className="text-xs text-blue-600 font-medium mb-1">
+										Apercu de l&apos;ajustement
+									</p>
+									<div className="flex items-center justify-between">
+										<span className="text-sm text-blue-700">
+											{parseFloat(adjustBalanceForm.newBalance) > (wallet?.availableBalance || 0)
+												? "CREDIT"
+												: parseFloat(adjustBalanceForm.newBalance) < (wallet?.availableBalance || 0)
+												? "DEBIT"
+												: "Aucun changement"}
+										</span>
+										<span
+											className={`text-sm font-bold ${
+												parseFloat(adjustBalanceForm.newBalance) > (wallet?.availableBalance || 0)
+													? "text-green-600"
+													: parseFloat(adjustBalanceForm.newBalance) < (wallet?.availableBalance || 0)
+													? "text-red-600"
+													: "text-gray-600"
+											}`}
+										>
+											{parseFloat(adjustBalanceForm.newBalance) > (wallet?.availableBalance || 0)
+												? "+"
+												: ""}
+											{formatCurrency(
+												parseFloat(adjustBalanceForm.newBalance) - (wallet?.availableBalance || 0),
+												wallet?.currency || "XAF"
+											)}{" "}
+											{wallet?.currency || "XAF"}
+										</span>
+									</div>
+								</div>
+							)}
+
+							{/* Error Message */}
+							{adjustBalanceError && (
+								<div className="bg-red-50 border border-red-200 rounded-lg p-3">
+									<p className="text-sm text-red-600">{adjustBalanceError}</p>
+								</div>
+							)}
+
+							{/* Action Buttons */}
+							<div className="flex gap-3 pt-2">
+								<button
+									type="button"
+									onClick={() => setShowAdjustBalanceModal(false)}
+									className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition"
+								>
+									Annuler
+								</button>
+								<button
+									type="submit"
+									disabled={adjustBalanceMutation.isLoading}
+									className="flex-1 px-4 py-2 bg-[#18bc7a] text-white rounded-lg hover:bg-emerald-600 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+								>
+									{adjustBalanceMutation.isLoading ? (
+										<>
+											<div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+											Traitement...
+										</>
+									) : (
+										"Confirmer"
+									)}
+								</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			)}
 		</div>
 	);
 };

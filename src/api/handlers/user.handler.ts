@@ -38,7 +38,7 @@ export const handleUpdateUser = async ({
 	data: any;
 }) => {
 	console.log("data dans le handler", data);
-	const response = await UserManagementServiceV3.updateuser(id, data);
+	const response = await UserManagementServiceV3.updateUserProfile(id, data);
 
 	const responseJson = await response.json();
 

@@ -254,8 +254,7 @@ const Details = () => {
 		};
 
 		const config =
-			genderConfig[gender as keyof typeof genderConfig] ||
-			genderConfig.M;
+			genderConfig[gender as keyof typeof genderConfig] || genderConfig.M;
 
 		return (
 			<span
@@ -336,7 +335,7 @@ const Details = () => {
 	const age = calculateAge(formData.dateOfBirth);
 
 	return (
-		<div className="min-h-screen bg-gray-50 p-4">
+		<div className="min-h-screen p-4">
 			{/* Header avec boutons d'action */}
 			<div className="mb-6 flex justify-between items-center">
 				<div>
@@ -515,7 +514,9 @@ const Details = () => {
 								) : (
 									<div className="space-y-1">
 										<div className="text-base font-medium text-gray-900 bg-gray-50 p-3 rounded border border-gray-200">
-											{formatBirthDate(formData.dateOfBirth)}
+											{formatBirthDate(
+												formData.dateOfBirth
+											)}
 										</div>
 										{age !== null && (
 											<p className="text-sm text-gray-500">
@@ -541,7 +542,9 @@ const Details = () => {
 										className="w-full p-3 border border-gray-300 rounded-md bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#18bc7a] focus:border-transparent"
 										disabled={updateMutation.isLoading}
 									>
-										<option value="">Sélectionnez un genre</option>
+										<option value="">
+											Sélectionnez un genre
+										</option>
 										<option value="M">Masculin</option>
 										<option value="F">Féminin</option>
 									</select>

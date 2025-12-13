@@ -27,10 +27,16 @@ import {
 	X,
 	ChevronDown,
 	Edit3,
+	Loader2,
+	RefreshCcw,
+	Search,
+	Globe,
 } from "lucide-react";
 import { KYCRaisonRejectServiceV3 } from "@/api/services/v3/kycRaisonReject";
-import { kycRejectReasonsEN } from "@/constants/v3/kycRejectReasons";
-import { Search } from "lucide-react";
+import {
+	kycRejectReasonsEN,
+	kycRejectReasonsFR,
+} from "@/constants/v3/kycRejectReasons";
 
 const handleGetKyc = async ({ queryKey }: any) => {
 	const [_key, userId] = queryKey;
@@ -94,10 +100,11 @@ const ManageKyc = () => {
 	const [dropdownOpen, setDropdownOpen] = useState(false);
 	const [selectedReasons, setSelectedReasons] = useState<string[]>([]);
 	const [customReason, setCustomReason] = useState("");
+	const [rejectLanguage, setRejectLanguage] = useState<"fr" | "en">("fr"); // Nouveau state pour la langue
 
 	// State pour l'édition des informations utilisateur dans le modal d'approbation
-	const [userProfileForm, setUserProfileForm] = useState<UpdateUserProfileData>(
-		{
+	const [userProfileForm, setUserProfileForm] =
+		useState<UpdateUserProfileData>({
 			firstName: "",
 			lastName: "",
 			email: "",
@@ -106,11 +113,16 @@ const ManageKyc = () => {
 			gender: "",
 			dateOfBirth: "",
 			city: "",
-		}
-	);
+		});
 	const [searchQuery, setSearchQuery] = useState("");
 
-	// Fonctions pour gérer les raisons personnalisées
+	// Fonction pour obtenir les raisons selon la langue sélectionnée
+	const getCurrentRejectReasons = () => {
+		return rejectLanguage === "fr"
+			? kycRejectReasonsFR
+			: kycRejectReasonsEN;
+	};
+
 	const addCustomRejectReason = () => {
 		setCustomRejectReasons([...customRejectReasons, ""]);
 	};
@@ -135,11 +147,6 @@ const ManageKyc = () => {
 			document.removeEventListener("mousedown", handleClickOutside);
 		};
 	}, [dropdownOpen]);
-
-	// Ajoutez la ref au container
-	<div className="relative" ref={dropdownRef}>
-		{/* Votre dropdown */}
-	</div>;
 
 	const removeCustomRejectReason = (index: number) => {
 		if (customRejectReasons.length > 1) {
@@ -197,7 +204,6 @@ const ManageKyc = () => {
 		},
 	});
 
-	// Mutation pour mettre à jour le profil utilisateur
 	const updateUserProfile = useMutation({
 		mutationFn: async ({
 			userId,
@@ -223,11 +229,9 @@ const ManageKyc = () => {
 
 	const { data: kycData, isLoading, isError, refetch } = kycQuery;
 
-	// Initialiser le formulaire avec les données utilisateur quand elles sont chargées
 	useEffect(() => {
 		if (kycData?.user) {
 			const user = kycData.user;
-			// Extraire firstName et lastName du fullName si nécessaire
 			const nameParts = (user.fullName || "").split(" ");
 			const firstName = user.firstName || nameParts[0] || "";
 			const lastName =
@@ -248,7 +252,6 @@ const ManageKyc = () => {
 		}
 	}, [kycData]);
 
-	// Fonctions pour gérer les raisons de rejet
 	const addRejectReason = () => {
 		setRejectReasons([...rejectReasons, ""]);
 	};
@@ -268,32 +271,47 @@ const ManageKyc = () => {
 
 	const getStatusBadge = (status: string) => {
 		const statusConfig = {
-			COMPLETED: {
+			Approved: {
 				icon: CheckCircle,
-				bg: "bg-green-50",
-				text: "text-[#18bc7a]",
-				border: "border-[#18bc7a]",
-				label: "Completed",
-			},
-			PENDING: {
-				icon: Clock,
-				bg: "bg-yellow-50",
-				text: "text-yellow-700",
-				border: "border-yellow-300",
-				label: "En attente",
+				bg: "bg-[#18BC7A]/10",
+				text: "text-[#18BC7A]",
+				border: "border-[#18BC7A]",
+				label: "Approuvé",
 			},
 			REJECTED: {
 				icon: XCircle,
-				bg: "bg-red-50",
-				text: "text-red-700",
-				border: "border-red-300",
-				label: "Rejeté",
+				bg: "bg-[#F85D4B]/10",
+				text: "text-[#F85D4B]",
+				border: "border-[#F85D4B]",
+				label: "Refusé",
+			},
+			PENDING: {
+				icon: Clock,
+				bg: "bg-[#999]/10",
+				text: "text-[#999]",
+				border: "border-[#999]",
+				label: "En Attente",
+			},
+			IN_PROGRESS: {
+				icon: Loader2,
+				bg: "bg-[#FFA500]/10",
+				text: "text-[#FFA500]",
+				border: "border-[#FFA500]",
+				label: "En Progression",
+			},
+			RESEND_INFO: {
+				icon: RefreshCcw,
+				bg: "bg-[#1E90FF]/10",
+				text: "text-[#1E90FF]",
+				border: "border-[#1E90FF]",
+				label: "Renvoi d'informations",
 			},
 		};
 
 		const config =
 			statusConfig[status as keyof typeof statusConfig] ||
 			statusConfig.PENDING;
+
 		const Icon = config.icon;
 
 		return (
@@ -1051,6 +1069,45 @@ const ManageKyc = () => {
 							:
 						</p>
 
+						{/* Sélecteur de langue */}
+						<div className="mb-6">
+							<label className="block text-sm font-medium text-gray-700 mb-2">
+								Langue des raisons de rejet :
+							</label>
+							<div className="flex gap-3">
+								<button
+									type="button"
+									onClick={() => setRejectLanguage("fr")}
+									className={`flex-1 px-4 py-3 border rounded-lg flex items-center justify-center gap-2 transition ${
+										rejectLanguage === "fr"
+											? "bg-[#18bc7a] text-white border-[#18bc7a]"
+											: "border-gray-300 text-gray-700 hover:border-gray-400"
+									}`}
+								>
+									<Globe className="w-4 h-4" />
+									Français
+									{rejectLanguage === "fr" && (
+										<Check className="w-4 h-4" />
+									)}
+								</button>
+								<button
+									type="button"
+									onClick={() => setRejectLanguage("en")}
+									className={`flex-1 px-4 py-3 border rounded-lg flex items-center justify-center gap-2 transition ${
+										rejectLanguage === "en"
+											? "bg-[#18bc7a] text-white border-[#18bc7a]"
+											: "border-gray-300 text-gray-700 hover:border-gray-400"
+									}`}
+								>
+									<Globe className="w-4 h-4" />
+									English
+									{rejectLanguage === "en" && (
+										<Check className="w-4 h-4" />
+									)}
+								</button>
+							</div>
+						</div>
+
 						{/* VRAIE LISTE DÉROULANTE PERSONNALISÉE AVEC RECHERCHE */}
 						<div className="mb-6">
 							<label className="block text-sm font-medium text-gray-700 mb-2">
@@ -1058,7 +1115,7 @@ const ManageKyc = () => {
 							</label>
 
 							{/* Bouton qui ouvre la liste déroulante */}
-							<div className="relative">
+							<div className="relative" ref={dropdownRef}>
 								<button
 									type="button"
 									onClick={() =>
@@ -1100,7 +1157,12 @@ const ManageKyc = () => {
 																		.value
 																)
 															}
-															placeholder="Rechercher une raison..."
+															placeholder={
+																rejectLanguage ===
+																"fr"
+																	? "Rechercher une raison..."
+																	: "Search for a reason..."
+															}
 															className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#18bc7a] focus:border-transparent text-sm"
 															onClick={(e) =>
 																e.stopPropagation()
@@ -1127,7 +1189,7 @@ const ManageKyc = () => {
 														onClick={() => {
 															const filteredKeys =
 																Object.entries(
-																	kycRejectReasonsEN
+																	getCurrentRejectReasons()
 																)
 																	.filter(
 																		([
@@ -1215,7 +1277,7 @@ const ManageKyc = () => {
 															{(() => {
 																const filteredKeys =
 																	Object.entries(
-																		kycRejectReasonsEN
+																		getCurrentRejectReasons()
 																	)
 																		.filter(
 																			([
@@ -1279,7 +1341,7 @@ const ManageKyc = () => {
 															{(() => {
 																const filteredKeys =
 																	Object.entries(
-																		kycRejectReasonsEN
+																		getCurrentRejectReasons()
 																	)
 																		.filter(
 																			([
@@ -1308,7 +1370,10 @@ const ManageKyc = () => {
 																	filteredKeys.length ===
 																	0
 																)
-																	return "Aucun résultat";
+																	return rejectLanguage ===
+																		"fr"
+																		? "Aucun résultat"
+																		: "No results";
 
 																const selectedFilteredCount =
 																	filteredKeys.filter(
@@ -1322,13 +1387,22 @@ const ManageKyc = () => {
 																	selectedFilteredCount ===
 																	0
 																)
-																	return "Tout sélectionner (filtré)";
+																	return rejectLanguage ===
+																		"fr"
+																		? "Tout sélectionner (filtré)"
+																		: "Select all (filtered)";
 																if (
 																	selectedFilteredCount ===
 																	filteredKeys.length
 																)
-																	return "Tout désélectionner (filtré)";
-																return `Sélectionner tout (${selectedFilteredCount}/${filteredKeys.length})`;
+																	return rejectLanguage ===
+																		"fr"
+																		? "Tout désélectionner (filtré)"
+																		: "Deselect all (filtered)";
+																return rejectLanguage ===
+																	"fr"
+																	? `Sélectionner tout (${selectedFilteredCount}/${filteredKeys.length})`
+																	: `Select all (${selectedFilteredCount}/${filteredKeys.length})`;
 															})()}
 														</span>
 													</div>
@@ -1339,7 +1413,7 @@ const ManageKyc = () => {
 													{(() => {
 														const filteredReasons =
 															Object.entries(
-																kycRejectReasonsEN
+																getCurrentRejectReasons()
 															).filter(
 																([
 																	key,
@@ -1365,14 +1439,16 @@ const ManageKyc = () => {
 																<div className="text-center py-8 text-gray-500">
 																	<Search className="w-8 h-8 mx-auto mb-2 text-gray-300" />
 																	<p>
-																		Aucune
-																		raison
-																		trouvée
+																		{rejectLanguage ===
+																		"fr"
+																			? "Aucune raison trouvée"
+																			: "No reasons found"}
 																	</p>
 																	<p className="text-sm mt-1">
-																		{`Essayez
-																		d'autres
-																		mots-clés`}
+																		{rejectLanguage ===
+																		"fr"
+																			? "Essayez d'autres mots-clés"
+																			: "Try other keywords"}
 																	</p>
 																</div>
 															);
@@ -1456,7 +1532,9 @@ const ManageKyc = () => {
 								<div className="mt-3">
 									<div className="flex items-center justify-between mb-2">
 										<p className="text-sm font-medium text-gray-700">
-											Raisons sélectionnées :
+											{rejectLanguage === "fr"
+												? "Raisons sélectionnées :"
+												: "Selected reasons:"}
 										</p>
 										<button
 											type="button"
@@ -1465,7 +1543,9 @@ const ManageKyc = () => {
 											}
 											className="text-sm text-red-600 hover:text-red-800"
 										>
-											Tout effacer
+											{rejectLanguage === "fr"
+												? "Tout effacer"
+												: "Clear all"}
 										</button>
 									</div>
 									<div className="flex flex-wrap gap-2 max-h-48 overflow-y-auto p-2 bg-gray-50 rounded-lg">
@@ -1475,7 +1555,11 @@ const ManageKyc = () => {
 												className="inline-flex items-center gap-2 bg-white border border-gray-300 text-gray-700 px-3 py-2 rounded-lg shadow-sm"
 											>
 												<span className="text-sm">
-													{kycRejectReasonsEN[key]}
+													{
+														getCurrentRejectReasons()[
+															key
+														]
+													}
 												</span>
 												<button
 													type="button"
@@ -1503,14 +1587,20 @@ const ManageKyc = () => {
 						{/* Champ pour raison personnalisée supplémentaire */}
 						<div className="mb-6">
 							<label className="block text-sm font-medium text-gray-700 mb-2">
-								Raison supplémentaire (optionnelle) :
+								{rejectLanguage === "fr"
+									? "Raison supplémentaire (optionnelle) :"
+									: "Additional reason (optional):"}
 							</label>
 							<textarea
 								value={customReason}
 								onChange={(e) =>
 									setCustomReason(e.target.value)
 								}
-								placeholder="Ajoutez une raison personnalisée si nécessaire..."
+								placeholder={
+									rejectLanguage === "fr"
+										? "Ajoutez une raison personnalisée si nécessaire..."
+										: "Add a custom reason if needed..."
+								}
 								className="w-full h-24 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#18bc7a] focus:border-transparent resize-none"
 								disabled={updateKyc.isLoading}
 							/>
@@ -1525,11 +1615,12 @@ const ManageKyc = () => {
 									setCustomReason("");
 									setDropdownOpen(false);
 									setSearchQuery("");
+									setRejectLanguage("fr"); // Réinitialiser à la langue par défaut
 								}}
 								disabled={updateKyc.isLoading}
 								className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition disabled:opacity-50"
 							>
-								Annuler
+								{rejectLanguage === "fr" ? "Annuler" : "Cancel"}
 							</button>
 							<button
 								onClick={() => {
@@ -1538,7 +1629,9 @@ const ManageKyc = () => {
 										customReason.trim() === ""
 									) {
 										toast.error(
-											"Veuillez sélectionner au moins une raison"
+											rejectLanguage === "fr"
+												? "Veuillez sélectionner au moins une raison"
+												: "Please select at least one reason"
 										);
 										return;
 									}
@@ -1546,7 +1639,9 @@ const ManageKyc = () => {
 									// Préparer les raisons pour l'API
 									const reasons = selectedReasons.map(
 										(key) =>
-											`${key}: ${kycRejectReasonsEN[key]}`
+											`${key}: ${
+												getCurrentRejectReasons()[key]
+											}`
 									);
 
 									// Ajouter la raison personnalisée si remplie
@@ -1574,10 +1669,14 @@ const ManageKyc = () => {
 								{updateKyc.isLoading ? (
 									<>
 										<div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-										Traitement...
+										{rejectLanguage === "fr"
+											? "Traitement..."
+											: "Processing..."}
 									</>
-								) : (
+								) : rejectLanguage === "fr" ? (
 									"Rejeter"
+								) : (
+									"Reject"
 								)}
 							</button>
 						</div>

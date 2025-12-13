@@ -10,9 +10,7 @@ import React, { useState } from "react";
 import toast from "react-hot-toast";
 import { QueryFunctionContext, useQuery } from "react-query";
 
-const handleGetKycs = async (
-	context: QueryFunctionContext<[string, any]>
-) => {
+const handleGetKycs = async (context: QueryFunctionContext<[string, any]>) => {
 	const [_key, params] = context.queryKey;
 
 	const response = await KYCServiceV3.getkycs(params);
@@ -32,6 +30,7 @@ const AllKyc = () => {
 	// Construire les paramètres de requête avec les filtres
 	const queryParams = {
 		...filterContent,
+		limit: 100,
 	};
 
 	const allKycQuery = useQuery({
@@ -51,52 +50,51 @@ const AllKyc = () => {
 		: allKycQuery.data?.data?.data || [];
 
 	const rearrangedTableData = kycData?.map((item: any, index: number) => {
-			return {
-				serial: index + 1,
+		return {
+			serial: index + 1,
 
-				// Suppression de la logique d'édition
-				name: item.user.fullName,
+			// Suppression de la logique d'édition
+			name: item.user.fullName,
 
-				email: item.user.email,
+			email: item.user.email,
 
-				phone: item.user.phoneNumber,
+			phone: item.user.phoneNumber,
 
-				status:
-					item.status === "Approved" ? (
-						<LabelWithBadge label="Approuvé" badgeColor="#18BC7A" />
-					) : item.status === "REJECTED" ? (
-						<LabelWithBadge label="Refusé" badgeColor="#F85D4B" />
-					) : item.status === "PENDING" ? (
-						<LabelWithBadge label="En Attente" badgeColor="#999" />
-					) : item.status === "IN_PROGRESS" ? (
-						<LabelWithBadge
-							label="En Progression"
-							badgeColor="#FFA500"
-						/>
-					) : item.status === "RESEND_INFO" ? (
-						<LabelWithBadge
-							label="Renvoi d'informations"
-							badgeColor="#1E90FF"
-						/>
-					) : (
-						<LabelWithBadge label="Aucun" badgeColor="#000" />
-					),
-
-				created: getFormattedDateTime(item.createdAt),
-
-				actions: (
-					<div className="flex gap-2 items-center">
-						<CButton
-							text={"Manager"}
-							href={`${URLConfigV3.kyc.manage}/${item.userId}`}
-							btnStyle={"dark"}
-							icon={<FourDots />}
-						/>
-					</div>
+			status:
+				item.status === "COMPLETED" ? (
+					<LabelWithBadge label="Approuvé" badgeColor="#18BC7A" />
+				) : item.status === "REJECTED" ? (
+					<LabelWithBadge label="Refusé" badgeColor="#F85D4B" />
+				) : item.status === "PENDING" ? (
+					<LabelWithBadge label="En Attente" badgeColor="#999" />
+				) : item.status === "IN_PROGRESS" ? (
+					<LabelWithBadge
+						label="En Progression"
+						badgeColor="#FFA500"
+					/>
+				) : item.status === "RESEND_INFO" ? (
+					<LabelWithBadge
+						label="Renvoi d'informations"
+						badgeColor="#1E90FF"
+					/>
+				) : (
+					<LabelWithBadge label="Aucun" badgeColor="#000" />
 				),
-			};
-		}
-	);
+
+			created: getFormattedDateTime(item.createdAt),
+
+			actions: (
+				<div className="flex gap-2 items-center">
+					<CButton
+						text={"Manager"}
+						href={`${URLConfigV3.kyc.manage}/${item.userId}`}
+						btnStyle={"dark"}
+						icon={<FourDots />}
+					/>
+				</div>
+			),
+		};
+	});
 
 	return (
 		<section>

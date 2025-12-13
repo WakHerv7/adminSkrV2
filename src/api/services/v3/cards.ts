@@ -50,11 +50,22 @@ export class CardsServiceV3 {
 		);
 	};
 
-	static getCardTransactions = (cardId: string) => {
-		console.log("dans le service", cardId);
+	static getCardTransactions = (
+		cardId: string,
+		params?: { filters?: Record<string, any> }
+	) => {
+		const filters = params?.filters ?? {};
+
+		const query_params: Record<string, string> = {};
+		Object.entries(filters).forEach(([key, value]) => {
+			if (value !== undefined && value !== null && value !== "") {
+				query_params[key] = String(value);
+			}
+		});
 		return BaseMethods.getRequest(
 			cardsUrlV3.CARD_TRANSACTION(cardId),
-			true
+			true,
+			query_params
 		);
 	};
 

@@ -40,6 +40,17 @@ export class UserManagementServiceV3 {
 		);
 	};
 
+	static updateUserProfile = (
+		userId: string,
+		data: UpdateUserProfileData
+	) => {
+		return BaseMethods.patchRequest(
+			usermanagementUrlsV3.UPDATE_USER_PROFILE(userId),
+			data,
+			true
+		);
+	};
+
 	static updateuser = (userId: string, data: any) => {
 		return BaseMethods.patchRequest(
 			usermanagementUrlsV3.UPDATE_USER(userId),

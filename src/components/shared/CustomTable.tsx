@@ -20,6 +20,7 @@ import RegularisationFilterForm from "./CustomTableFilters/RegularisationFilterF
 import PaymentProviderFilterForm from "./CustomTableFilters/V3/PaymentProviderFilterForm";
 import UserFilterForm from "./CustomTableFilters/V3/UserFilterForm";
 import KycFilterForm from "./CustomTableFilters/V3/KycFilterForm";
+import TransactionsFilterFormV3 from "./CustomTableFilters/V3/TransactionsFilterFormV3";
 
 interface CustomTableProps {
 	btn?: React.ReactNode;
@@ -213,6 +214,11 @@ const CustomTable: React.FC<CustomTableProps> = ({
 							filterContent={filterContent}
 							setFilterContent={setFilterContent}
 							hideStatusFilter={hideStatusFilter}
+						/>
+					) : filterType === "transactionsV3" ? (
+						<TransactionsFilterFormV3
+							filterContent={filterContent}
+							setFilterContent={setFilterContent}
 						/>
 					) : (
 						<></>

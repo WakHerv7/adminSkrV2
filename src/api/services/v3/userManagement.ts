@@ -40,7 +40,18 @@ export class UserManagementServiceV3 {
 		);
 	};
 
-	static updateUserProfile = (userId: string, data: UpdateUserProfileData) => {
+	static updateUserProfile = (
+		userId: string,
+		data: UpdateUserProfileData
+	) => {
+		return BaseMethods.patchRequest(
+			usermanagementUrlsV3.UPDATE_USER_PROFILE(userId),
+			data,
+			true
+		);
+	};
+
+	static updateuser = (userId: string, data: any) => {
 		return BaseMethods.patchRequest(
 			usermanagementUrlsV3.UPDATE_USER(userId),
 			data,
@@ -52,6 +63,25 @@ export class UserManagementServiceV3 {
 		return BaseMethods.patchRequest(
 			usermanagementUrlsV3.DEACTIVATE_USER(userId),
 			{},
+			true
+		);
+	};
+
+	static activateUser = (userId: string) => {
+		return BaseMethods.patchRequest(
+			usermanagementUrlsV3.ACTIVATE_USER(userId),
+			{},
+			true
+		);
+	};
+
+	static updateTransactionStatus = (
+		userId: string,
+		transactionEnableStatus: string
+	) => {
+		return BaseMethods.patchRequest(
+			usermanagementUrlsV3.UPDATE_TRANSACTION_STATUS(userId),
+			{ transactionEnableStatus },
 			true
 		);
 	};

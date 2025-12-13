@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
 	MapPin,
 	Calendar,
@@ -12,6 +12,16 @@ import {
 	Play,
 	Trash2,
 	ArrowRightLeft,
+	X,
+	Hash,
+	FileText,
+	User,
+	Globe,
+	CheckCircle,
+	XCircle,
+	Clock,
+	RefreshCcw,
+	CreditCard,
 } from "lucide-react";
 import { useMutation, useQuery } from "react-query";
 import { useParams, useRouter } from "next/navigation";
@@ -30,6 +40,353 @@ import CustomTable from "@/components/shared/CustomTable";
 import { transactionsHeaderData } from "@/constants/v3/cardsDataV3";
 import LabelWithBadge from "@/components/shared/LabelWithBadge";
 
+// Composant pour afficher les détails de la transaction
+const TransactionDetailsContent: React.FC<{ transaction: any }> = ({
+	transaction,
+}) => {
+	const getStatusBadge = (status: string) => {
+		const statusConfig = {
+			SUCCESS: {
+				icon: CheckCircle,
+				bg: "bg-green-100",
+				text: "text-green-800",
+				border: "border-green-200",
+				label: "Réussi",
+			},
+			FAILED: {
+				icon: XCircle,
+				bg: "bg-red-100",
+				text: "text-red-800",
+				border: "border-red-200",
+				label: "Échoué",
+			},
+			PENDING: {
+				icon: Clock,
+				bg: "bg-yellow-100",
+				text: "text-yellow-800",
+				border: "border-yellow-200",
+				label: "En cours",
+			},
+			PROCESSING: {
+				icon: RefreshCcw,
+				bg: "bg-blue-100",
+				text: "text-blue-800",
+				border: "border-blue-200",
+				label: "Traitement",
+			},
+		};
+
+		const config =
+			statusConfig[status as keyof typeof statusConfig] ||
+			statusConfig.PENDING;
+
+		const Icon = config.icon;
+
+		return (
+			<span
+				className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full ${config.bg} ${config.text} ${config.border} border text-sm font-medium`}
+			>
+				<Icon className="w-4 h-4" />
+				{config.label}
+			</span>
+		);
+	};
+
+	const getTypeLabel = (type: string) => {
+		const typeLabels: Record<string, string> = {
+			PAYMENT: "Paiement",
+			INITIAL_LOAD: "Chargement initial",
+			PURCHASE: "Achat",
+			REFUND: "Remboursement",
+			TRANSFER: "Transfert",
+			WITHDRAWAL: "Retrait",
+		};
+		return typeLabels[type] || type;
+	};
+
+	const formatDate = (dateString: string) => {
+		const date = new Date(dateString);
+		return date.toLocaleDateString("fr-FR", {
+			year: "numeric",
+			month: "long",
+			day: "numeric",
+			hour: "2-digit",
+			minute: "2-digit",
+			second: "2-digit",
+		});
+	};
+
+	return (
+		<div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl mx-4">
+			{/* En-tête du modal */}
+			<div className="flex items-center justify-between p-6 border-b border-gray-200">
+				<div className="flex items-center gap-3">
+					<div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+						<CreditCard className="w-5 h-5 text-blue-600" />
+					</div>
+					<div>
+						<h2 className="text-xl font-bold text-gray-900">
+							Détails de la transaction
+						</h2>
+						<p className="text-sm text-gray-500">
+							Référence : {transaction.reference}
+						</p>
+					</div>
+				</div>
+			</div>
+
+			{/* Contenu du modal */}
+			<div className="p-6 max-h-[70vh] overflow-y-auto">
+				{/* Section principale */}
+				<div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+					{/* Informations de base */}
+					<div className="space-y-4">
+						<div>
+							<h3 className="text-sm font-medium text-gray-500 mb-2">
+								Statut
+							</h3>
+							{getStatusBadge(transaction.status)}
+						</div>
+
+						<div>
+							<h3 className="text-sm font-medium text-gray-500 mb-2">
+								Type
+							</h3>
+							<p className="text-lg font-semibold text-gray-900">
+								{getTypeLabel(transaction.type)}
+							</p>
+						</div>
+
+						<div>
+							<h3 className="text-sm font-medium text-gray-500 mb-2">
+								Montant
+							</h3>
+							<div className="flex items-center gap-2">
+								<DollarSign className="w-5 h-5 text-gray-400" />
+								<p className="text-2xl font-bold text-gray-900">
+									{transaction.amount} {transaction.currency}
+								</p>
+							</div>
+							{transaction.amountUSD !== undefined && (
+								<p className="text-sm text-gray-500 mt-1">
+									≈ {transaction.amountUSD} USD
+								</p>
+							)}
+						</div>
+					</div>
+
+					{/* Dates */}
+					<div className="space-y-4">
+						<div>
+							<h3 className="text-sm font-medium text-gray-500 mb-2">
+								Date de création
+							</h3>
+							<div className="flex items-center gap-2">
+								<Calendar className="w-4 h-4 text-gray-400" />
+								<p className="text-gray-900">
+									{formatDate(transaction.createdAt)}
+								</p>
+							</div>
+						</div>
+
+						{transaction.completedAt && (
+							<div>
+								<h3 className="text-sm font-medium text-gray-500 mb-2">
+									Date de complétion
+								</h3>
+								<div className="flex items-center gap-2">
+									<Calendar className="w-4 h-4 text-gray-400" />
+									<p className="text-gray-900">
+										{formatDate(transaction.completedAt)}
+									</p>
+								</div>
+							</div>
+						)}
+
+						<div>
+							<h3 className="text-sm font-medium text-gray-500 mb-2">
+								Cross-border
+							</h3>
+							<div className="flex items-center gap-2">
+								<Globe className="w-4 h-4 text-gray-400" />
+								<p className="text-gray-900">
+									{transaction.isCrossborder ? "Oui" : "Non"}
+								</p>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				{/* Identifiants */}
+				<div className="mb-8">
+					<h3 className="text-sm font-medium text-gray-500 mb-3">
+						Identifiants
+					</h3>
+					<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+						<div className="p-3 bg-gray-50 rounded-lg">
+							<p className="text-xs text-gray-500 mb-1">
+								ID Transaction
+							</p>
+							<p className="text-sm font-medium text-gray-900 break-all">
+								{transaction.id}
+							</p>
+						</div>
+						<div className="p-3 bg-gray-50 rounded-lg">
+							<p className="text-xs text-gray-500 mb-1">
+								Référence externe
+							</p>
+							<p className="text-sm font-medium text-gray-900 break-all">
+								{transaction.externalReference || "N/A"}
+							</p>
+						</div>
+						<div className="p-3 bg-gray-50 rounded-lg">
+							<p className="text-xs text-gray-500 mb-1">
+								ID Carte
+							</p>
+							<p className="text-sm font-medium text-gray-900 break-all">
+								{transaction.cardId}
+							</p>
+						</div>
+						<div className="p-3 bg-gray-50 rounded-lg">
+							<p className="text-xs text-gray-500 mb-1">
+								ID Utilisateur
+							</p>
+							<p className="text-sm font-medium text-gray-900 break-all">
+								{transaction.userId}
+							</p>
+						</div>
+					</div>
+				</div>
+
+				{/* Solde carte */}
+				<div className="mb-8">
+					<h3 className="text-sm font-medium text-gray-500 mb-3">
+						Solde de la carte
+					</h3>
+					<div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+						<div className="p-4 bg-blue-50 rounded-lg">
+							<p className="text-xs text-blue-600 mb-1">
+								Avant transaction
+							</p>
+							<p className="text-lg font-bold text-gray-900">
+								{transaction.cardBalanceBefore}{" "}
+								{transaction.currency}
+							</p>
+						</div>
+						<div className="p-4 bg-green-50 rounded-lg">
+							<p className="text-xs text-green-600 mb-1">
+								Après transaction
+							</p>
+							<p className="text-lg font-bold text-gray-900">
+								{transaction.cardBalanceAfter}{" "}
+								{transaction.currency}
+							</p>
+						</div>
+						<div className="p-4 bg-purple-50 rounded-lg">
+							<p className="text-xs text-purple-600 mb-1">
+								Différence
+							</p>
+							<p className="text-lg font-bold text-gray-900">
+								{(
+									transaction.cardBalanceBefore -
+									transaction.cardBalanceAfter
+								).toFixed(2)}{" "}
+								{transaction.currency}
+							</p>
+						</div>
+					</div>
+				</div>
+
+				{/* Frais */}
+				{transaction.fees && (
+					<div className="mb-8">
+						<h3 className="text-sm font-medium text-gray-500 mb-3">
+							Frais
+						</h3>
+						<div className="bg-gray-50 rounded-lg p-4">
+							<div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+								<div>
+									<p className="text-xs text-gray-500 mb-1">
+										Total des frais
+									</p>
+									<p className="font-medium text-gray-900">
+										{transaction.fees.totalFees}{" "}
+										{transaction.currency}
+									</p>
+								</div>
+								<div>
+									<p className="text-xs text-gray-500 mb-1">
+										Frais d'échec
+									</p>
+									<p className="font-medium text-gray-900">
+										{transaction.fees.failureFee}{" "}
+										{transaction.currency}
+									</p>
+								</div>
+								<div>
+									<p className="text-xs text-gray-500 mb-1">
+										Frais de succès
+									</p>
+									<p className="font-medium text-gray-900">
+										{transaction.fees.successFee}{" "}
+										{transaction.currency}
+									</p>
+								</div>
+								<div>
+									<p className="text-xs text-gray-500 mb-1">
+										Frais cross-border
+									</p>
+									<p className="font-medium text-gray-900">
+										{transaction.fees.crossborderFee}{" "}
+										{transaction.currency}
+									</p>
+								</div>
+							</div>
+							{transaction.fees.feesPaidFrom && (
+								<div className="mt-3 pt-3 border-t border-gray-200">
+									<p className="text-xs text-gray-500 mb-1">
+										Frais payés depuis
+									</p>
+									<p className="font-medium text-gray-900 capitalize">
+										{transaction.fees.feesPaidFrom}
+									</p>
+								</div>
+							)}
+						</div>
+					</div>
+				)}
+
+				{/* Métadonnées */}
+				{transaction.metadata && (
+					<div>
+						<h3 className="text-sm font-medium text-gray-500 mb-3">
+							Métadonnées
+						</h3>
+						<div className="bg-gray-50 rounded-lg p-4">
+							<pre className="text-sm text-gray-800 whitespace-pre-wrap break-words">
+								{JSON.stringify(transaction.metadata, null, 2)}
+							</pre>
+						</div>
+					</div>
+				)}
+			</div>
+
+			{/* Pied du modal */}
+			<div className="p-6 border-t border-gray-200 flex justify-end">
+				<button
+					onClick={() => {
+						const event = new CustomEvent("closeTransactionModal");
+						window.dispatchEvent(event);
+					}}
+					className="px-6 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg font-medium transition"
+				>
+					Fermer
+				</button>
+			</div>
+		</div>
+	);
+};
+
 const CardDetailsPage = () => {
 	const params = useParams();
 	const router = useRouter();
@@ -39,6 +396,11 @@ const CardDetailsPage = () => {
 	const [pendingAction, setPendingAction] = useState<
 		"freeze" | "unfreeze" | "terminate" | null
 	>(null);
+	const [filterContent, setFilterContent] = useState();
+
+	// États pour le modal de transaction
+	const [selectedTransaction, setSelectedTransaction] = useState<any>(null);
+	const [isTransactionModalOpen, setIsTransactionModalOpen] = useState(false);
 
 	const getCardDetails = useQuery({
 		queryKey: ["card-details", id],
@@ -49,7 +411,7 @@ const CardDetailsPage = () => {
 	});
 
 	const getCardTransaction = useQuery({
-		queryKey: ["card-transaction", id],
+		queryKey: ["card-transaction", id, filterContent],
 		queryFn: handleGetCardTransactions,
 		onError: (err: any) => {
 			toast.error(err.message);
@@ -98,7 +460,7 @@ const CardDetailsPage = () => {
 		},
 	});
 
-	// Fonctions pour ouvrir les modales
+	// Fonctions pour ouvrir les modales de carte
 	const handleOpenFreezeModal = () => {
 		setPendingAction("freeze");
 		setModalOpen(true);
@@ -114,7 +476,38 @@ const CardDetailsPage = () => {
 		setModalOpen(true);
 	};
 
-	// Fonction pour confirmer l'action
+	// Fonction pour ouvrir le modal de transaction
+	const handleViewTransactionDetails = (transaction: any) => {
+		setSelectedTransaction(transaction);
+		setIsTransactionModalOpen(true);
+	};
+
+	// Fonction pour fermer le modal de transaction
+	const handleCloseTransactionModal = () => {
+		setIsTransactionModalOpen(false);
+		setSelectedTransaction(null);
+	};
+
+	// Écouter l'événement de fermeture du modal de transaction
+	useEffect(() => {
+		const handleCloseTransactionModalEvent = () => {
+			handleCloseTransactionModal();
+		};
+
+		window.addEventListener(
+			"closeTransactionModal",
+			handleCloseTransactionModalEvent
+		);
+
+		return () => {
+			window.removeEventListener(
+				"closeTransactionModal",
+				handleCloseTransactionModalEvent
+			);
+		};
+	}, []);
+
+	// Fonction pour confirmer l'action de carte
 	const handleConfirmAction = () => {
 		if (!pendingAction || !id) return;
 
@@ -133,7 +526,7 @@ const CardDetailsPage = () => {
 		}
 	};
 
-	// Fonction pour fermer la modale
+	// Fonction pour fermer la modale de carte
 	const handleCloseModal = () => {
 		if (!isProcessing) {
 			setModalOpen(false);
@@ -225,7 +618,7 @@ const CardDetailsPage = () => {
 		}
 	};
 
-	// Contenu de la modale
+	// Contenu de la modale de carte
 	const getModalContent = () => {
 		if (!pendingAction) return null;
 
@@ -339,7 +732,16 @@ const CardDetailsPage = () => {
 					date: new Date(transaction.createdAt).toLocaleDateString(
 						"fr-FR"
 					),
-					// actions: <span>Détails</span>, // Version simple
+					actions: (
+						<CButton
+							text="Détails"
+							btnStyle={"dark"}
+							icon={<Info className="w-4 h-4" />}
+							onClick={() =>
+								handleViewTransactionDetails(transaction)
+							}
+						/>
+					),
 				};
 			}
 		) || [];
@@ -655,7 +1057,6 @@ const CardDetailsPage = () => {
 				</div>
 
 				{/* Section Transactions avec CustomTable */}
-
 				<div className="mt-12">
 					<div className="mb-6 flex items-center justify-between">
 						<div>
@@ -684,16 +1085,33 @@ const CardDetailsPage = () => {
 								getCardTransaction.isLoading ||
 								getCardTransaction.isFetching
 							}
+							filter
+							filterType={"transactionsV3"}
+							filterContent={filterContent}
+							setFilterContent={setFilterContent}
 						/>
 					</section>
 				</div>
 			</div>
 
-			{/* Utilisation de votre composant Modal existant */}
+			{/* Modal pour les actions de carte */}
 			<Modal
 				isOpen={modalOpen}
 				setIsOpen={setModalOpen}
 				modalContent={getModalContent()}
+			/>
+
+			{/* Modal pour les détails de transaction */}
+			<Modal
+				isOpen={isTransactionModalOpen}
+				setIsOpen={setIsTransactionModalOpen}
+				modalContent={
+					selectedTransaction ? (
+						<TransactionDetailsContent
+							transaction={selectedTransaction}
+						/>
+					) : null
+				}
 			/>
 		</Layout>
 	);

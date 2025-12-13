@@ -18,9 +18,7 @@ type Props = {
 	setSearch?: (data?: any) => void;
 };
 
-const handleGetKycs = async (
-	context: QueryFunctionContext<[string, any]>
-) => {
+const handleGetKycs = async (context: QueryFunctionContext<[string, any]>) => {
 	const [_key, params] = context.queryKey;
 
 	const response = await KYCServiceV3.getkycs(params);
@@ -39,12 +37,13 @@ const KycPendingV3 = ({ isLoading, search, setSearch }: Props) => {
 
 	// Construire les paramètres de requête avec le statut par défaut et les filtres
 	const queryParams = {
-		status: ["PENDING", "IN_PROGRESS"],
+		status: ["PENDING", "IN_PROGRESS", "RESEND_INFO"],
 		...filterContent,
+		limit: 100,
 	};
 
 	const pendingKycQuery = useQuery({
-		queryKey: ["pending-kyc", ["PENDING", "IN_PROGRESS", "RESEND_INFO"]],
+		queryKey: ["pending-kyc", queryParams],
 		queryFn: handleGetKycs,
 		onError: (err: any) => toast.error(err.message),
 	});
@@ -55,45 +54,44 @@ const KycPendingV3 = ({ isLoading, search, setSearch }: Props) => {
 		: pendingKycQuery.data?.data?.data || [];
 
 	const rearrangedTableData = kycData?.map((item: any, index: number) => {
-			return {
-				serial: index + 1,
-				name: item.user.fullName,
-				email: item.user.email,
-				phone: item.user.phoneNumber,
-				status:
-					item.status === "Approved" ? (
-						<LabelWithBadge label="Approuvé" badgeColor="#18BC7A" />
-					) : item.status === "Declined" ? (
-						<LabelWithBadge label="Refusé" badgeColor="#F85D4B" />
-					) : item.status === "PENDING" ? (
-						<LabelWithBadge label="En Attente" badgeColor="#999" />
-					) : item.status === "IN_PROGRESS" ? (
-						<LabelWithBadge
-							label="En Progression"
-							badgeColor="#FFA500"
-						/>
-					) : item.status === "RESEND_INFO" ? (
-						<LabelWithBadge
-							label="Renvoi d'informations"
-							badgeColor="#1E90FF"
-						/>
-					) : (
-						<LabelWithBadge label="Aucun" badgeColor="#000" />
-					),
-				created: getFormattedDateTime(item.createdAt),
-				actions: (
-					<div className="flex gap-2 items-center">
-						<CButton
-							text={"Manager"}
-							href={`${URLConfigV3.kyc.manage}/${item.userId}`}
-							btnStyle={"dark"}
-							icon={<FourDots />}
-						/>
-					</div>
+		return {
+			serial: index + 1,
+			name: item.user.fullName,
+			email: item.user.email,
+			phone: item.user.phoneNumber,
+			status:
+				item.status === "Approved" ? (
+					<LabelWithBadge label="Approuvé" badgeColor="#18BC7A" />
+				) : item.status === "REJECTED" ? (
+					<LabelWithBadge label="Refusé" badgeColor="#F85D4B" />
+				) : item.status === "PENDING" ? (
+					<LabelWithBadge label="En Attente" badgeColor="#999" />
+				) : item.status === "IN_PROGRESS" ? (
+					<LabelWithBadge
+						label="En Progression"
+						badgeColor="#FFA500"
+					/>
+				) : item.status === "RESEND_INFO" ? (
+					<LabelWithBadge
+						label="Renvoi d'informations"
+						badgeColor="#1E90FF"
+					/>
+				) : (
+					<LabelWithBadge label="Aucun" badgeColor="#000" />
 				),
-			};
-		}
-	);
+			created: getFormattedDateTime(item.createdAt),
+			actions: (
+				<div className="flex gap-2 items-center">
+					<CButton
+						text={"Manager"}
+						href={`${URLConfigV3.kyc.manage}/${item.userId}`}
+						btnStyle={"dark"}
+						icon={<FourDots />}
+					/>
+				</div>
+			),
+		};
+	});
 
 	return (
 		<section>

@@ -37,6 +37,7 @@ export const kycRejectReasonsEN: Record<string, string> = {
 	PASSPORT_FIRST_PAGE_NOT_VISIBLE: "First page of the passport not visible",
 	FRONT_DOCUMENT_UNREADABLE: "Front document/photo unreadable",
 	UNDERAGE: "Not old enough",
+	EXPIRED: "Expired document",
 };
 
 // Version française si besoin
@@ -77,4 +78,5 @@ export const kycRejectReasonsFR: Record<string, string> = {
 	PASSPORT_FIRST_PAGE_NOT_VISIBLE: "Première page du passeport non visible",
 	FRONT_DOCUMENT_UNREADABLE: "Recto illisible",
 	UNDERAGE: "Mineur",
+	EXPIRED: "Document expiré",
 };

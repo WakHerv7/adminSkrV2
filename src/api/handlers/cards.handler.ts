@@ -17,8 +17,10 @@ export const handleGetCards = async ({ queryKey }: any) => {
 export const handleGetAllCardsTransations = async ({ queryKey }: any) => {
 	const [_key, userId, filters] = queryKey;
 
+	const finalFilters = { ...filters, limit: 100 };
+
 	const response = await CardsServiceV3.getAllCardsTransactions(userId, {
-		filters,
+		filters: finalFilters,
 	});
 
 	const responseJson = await response.json();
@@ -47,10 +49,12 @@ export const handleGetCardDetail = async ({ queryKey }: any) => {
 };
 
 export const handleGetCardTransactions = async ({ queryKey }: any) => {
-	const [_key, cardId] = queryKey;
+	const [_key, cardId, filters] = queryKey;
 	console.log("card id", cardId);
 
-	const response = await CardsServiceV3.getCardTransactions(cardId);
+	const response = await CardsServiceV3.getCardTransactions(cardId, {
+		filters,
+	});
 
 	const responseJson = await response.json();
 

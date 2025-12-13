@@ -6,9 +6,11 @@ import {
 	handleUpdateUser,
 	hanldeDeactivateUser,
 } from "@/api/handlers/user.handler";
-import { useParams } from "next/navigation";
+import { UserManagementServiceV3 } from "@/api/services/v3/userManagement";
+import URLConfigV3 from "@/config/urls_v3";
+import { useParams, useRouter } from "next/navigation";
 import React, { useState } from "react";
-import { useQuery, useMutation } from "react-query";
+import { useQuery, useMutation, useQueryClient } from "react-query";
 import {
 	Phone,
 	Mail,
@@ -36,6 +38,9 @@ import {
 	ToggleRight,
 	Hash,
 	Calendar,
+	FileText,
+	ExternalLink,
+	Loader2,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import toast from "react-hot-toast";
@@ -43,6 +48,8 @@ import { Button } from "@/components/ui/button";
 
 const Details = () => {
 	const params = useParams();
+	const router = useRouter();
+	const queryClient = useQueryClient();
 	const id = params.id as string;
 	const [isEditing, setIsEditing] = useState(false);
 	const [formData, setFormData] = useState<any>({});
@@ -97,6 +104,48 @@ const Details = () => {
 
 	const { data: userData, isLoading, isError } = getUserDetails;
 
+	// Mutation pour activer/désactiver les transactions
+	const toggleTransactionStatus = useMutation({
+		mutationFn: async () => {
+			const newStatus =
+				formData.transactionEnableStatus === "ENABLED"
+					? "DISABLED"
+					: "ENABLED";
+			const response = await UserManagementServiceV3.updateTransactionStatus(
+				id,
+				newStatus
+			);
+			const responseJson = await response.json();
+			if (!response.ok) {
+				throw new Error(
+					responseJson.message ||
+						"Erreur lors de la mise à jour du statut des transactions"
+				);
+			}
+			return responseJson;
+		},
+		onSuccess: () => {
+			toast.success(
+				formData.transactionEnableStatus === "ENABLED"
+					? "Transactions désactivées"
+					: "Transactions activées"
+			);
+			queryClient.invalidateQueries(["user-details", id]);
+		},
+		onError: (error: any) => {
+			toast.error(error.message || "Une erreur est survenue");
+		},
+	});
+
+	// Navigation vers la page KYC
+	const navigateToKyc = () => {
+		if (formData.kycId) {
+			router.push(`${URLConfigV3.kyc.manage}/${id}`);
+		} else {
+			toast.error("Aucune demande KYC pour cet utilisateur");
+		}
+	};
+
 	const handleInputChange = (field: string, value: any) => {
 		setFormData((prev: any) => ({
 			...prev,
@@ -115,6 +164,8 @@ const Details = () => {
 			lastName: formData.lastName,
 			email: formData.email,
 			city: formData.city,
+			gender: formData.gender,
+			dateOfBirth: formData.dateOfBirth,
 		};
 		console.log("donnees soumise", dataToSend);
 
@@ -254,8 +305,7 @@ const Details = () => {
 		};
 
 		const config =
-			genderConfig[gender as keyof typeof genderConfig] ||
-			genderConfig.M;
+			genderConfig[gender as keyof typeof genderConfig] || genderConfig.M;
 
 		return (
 			<span
@@ -336,7 +386,7 @@ const Details = () => {
 	const age = calculateAge(formData.dateOfBirth);
 
 	return (
-		<div className="min-h-screen bg-gray-50 p-4">
+		<div className="min-h-screen p-4">
 			{/* Header avec boutons d'action */}
 			<div className="mb-6 flex justify-between items-center">
 				<div>
@@ -515,7 +565,9 @@ const Details = () => {
 								) : (
 									<div className="space-y-1">
 										<div className="text-base font-medium text-gray-900 bg-gray-50 p-3 rounded border border-gray-200">
-											{formatBirthDate(formData.dateOfBirth)}
+											{formatBirthDate(
+												formData.dateOfBirth
+											)}
 										</div>
 										{age !== null && (
 											<p className="text-sm text-gray-500">
@@ -541,7 +593,9 @@ const Details = () => {
 										className="w-full p-3 border border-gray-300 rounded-md bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#18bc7a] focus:border-transparent"
 										disabled={updateMutation.isLoading}
 									>
-										<option value="">Sélectionnez un genre</option>
+										<option value="">
+											Sélectionnez un genre
+										</option>
 										<option value="M">Masculin</option>
 										<option value="F">Féminin</option>
 									</select>
@@ -624,25 +678,9 @@ const Details = () => {
 									<Flag className="w-4 h-4 text-[#18bc7a]" />
 									{`Pays`}
 								</label>
-								{isEditing ? (
-									<Input
-										value={formData.countryName || ""}
-										onChange={(e) =>
-											handleInputChange(
-												"countryName",
-												e.target.value
-											)
-										}
-										className="w-full"
-										placeholder="Entrez le pays"
-										disabled={updateMutation.isLoading}
-									/>
-								) : (
-									<div className="text-base font-medium text-gray-900 bg-gray-50 p-3 rounded border border-gray-200">
-										{formData.countryName ||
-											"Non renseigné"}
-									</div>
-								)}
+								<div className="text-base font-medium text-gray-900 bg-gray-50 p-3 rounded border border-gray-200">
+									{formData.countryName || "Non renseigné"}
+								</div>
 							</div>
 							<div>
 								<label className="text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
@@ -865,70 +903,58 @@ const Details = () => {
 						</div>
 					</div>
 
-					{/* Actions rapides */}
-					{/* <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+						{/* Actions rapides */}
+					<div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
 						<h2 className="text-lg font-semibold text-gray-900 mb-4 pb-2 border-b border-gray-200">
 							{`Actions rapides`}
 						</h2>
 						<div className="space-y-3">
+							{/* Bouton Activer/Désactiver les transactions */}
 							<button
-								onClick={handleSendEmail}
-								className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-[#18bc7a] text-white rounded-lg hover:bg-[#15a669] transition disabled:opacity-50 disabled:cursor-not-allowed"
-								disabled={
-									updateMutation.isLoading ||
-									deactivateMutation.isLoading ||
-									reactivateMutation.isLoading ||
-									getUserDetails.isRefetching
-								}
+								onClick={() => toggleTransactionStatus.mutate()}
+								disabled={toggleTransactionStatus.isLoading}
+								className={`w-full flex items-center justify-center gap-2 px-4 py-3 rounded-lg transition disabled:opacity-50 ${
+									formData.transactionEnableStatus === "ENABLED"
+										? "border border-orange-300 text-orange-700 hover:bg-orange-50"
+										: "border border-blue-300 text-blue-700 hover:bg-blue-50"
+								}`}
 							>
-								<Mail className="w-4 h-4" />
-								{`Envoyer un email`}
-							</button>
-							<button
-								onClick={handleCallUser}
-								className="w-full flex items-center justify-center gap-2 px-4 py-3 border border-[#18bc7a] text-[#18bc7a] rounded-lg hover:bg-[#18bc7a] hover:text-white transition disabled:opacity-50 disabled:cursor-not-allowed"
-								disabled={
-									updateMutation.isLoading ||
-									deactivateMutation.isLoading ||
-									reactivateMutation.isLoading ||
-									getUserDetails.isRefetching
-								}
-							>
-								<Phone className="w-4 h-4" />
-								{`Appeler l'utilisateur`}
-							</button>
-							<button
-								onClick={handleToggleAccountStatus}
-								className="w-full flex items-center justify-center gap-2 px-4 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition disabled:opacity-50 disabled:cursor-not-allowed"
-								disabled={
-									updateMutation.isLoading ||
-									deactivateMutation.isLoading ||
-									reactivateMutation.isLoading ||
-									getUserDetails.isRefetching
-								}
-							>
-								{deactivateMutation.isLoading ||
-								reactivateMutation.isLoading ? (
+								{toggleTransactionStatus.isLoading ? (
+									<Loader2 className="w-4 h-4 animate-spin" />
+								) : formData.transactionEnableStatus === "ENABLED" ? (
 									<>
-										<div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-700"></div>
-										{formData.isActive
-											? "Désactivation..."
-											: "Activation..."}
-									</>
-								) : formData.isActive ? (
-									<>
-										<EyeOff className="w-4 h-4" />
-										{`Désactiver le compte`}
+										<ToggleLeft className="w-4 h-4" />
+										{`Désactiver les transactions`}
 									</>
 								) : (
 									<>
-										<Eye className="w-4 h-4" />
-										{`Activer le compte`}
+										<ToggleRight className="w-4 h-4" />
+										{`Activer les transactions`}
 									</>
 								)}
 							</button>
+
+							{/* Bouton Voir la demande KYC */}
+							{formData.kycStatus &&
+								formData.kycStatus !== "PENDING" && (
+									<button
+										onClick={navigateToKyc}
+										className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-[#18bc7a] text-white rounded-lg hover:bg-[#15a669] transition"
+									>
+										<FileText className="w-4 h-4" />
+										{`Voir la demande KYC`}
+										<ExternalLink className="w-3 h-3" />
+									</button>
+								)}
+
+							{/* Afficher le KYC ID si disponible */}
+							{formData.kycId && (
+								<div className="text-xs text-gray-500 text-center mt-2">
+									KYC ID: {formData.kycId.substring(0, 8)}...
+								</div>
+							)}
 						</div>
-					</div> */}
+					</div>
 				</div>
 			</div>
 		</div>
